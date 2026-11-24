@@ -115,11 +115,40 @@
   #acm-root .doc-checklist-row{display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:2px}
   #acm-root .doc-checkbox{display:inline-block;width:11px;height:11px;border:1px solid #000;text-align:center;line-height:10px;font-size:9px;font-weight:800;margin-right:5px}
   #acm-root .doc-footer-code{text-align:right;font-size:10px;margin-top:8px}
+  #acm-root .ref-img-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){#acm-root .ref-img-grid{grid-template-columns:1fr}}
+  #acm-root .ref-img-card{border:1px solid var(--line);border-radius:12px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,box-shadow .2s}
+  #acm-root .ref-img-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+  #acm-root .ref-img-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
+  #acm-root .ref-img-badge{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
+  #acm-root .badge-before{background:#fef3c7;color:#b45309}
+  #acm-root .badge-after{background:#d1fae5;color:#047857}
+  #acm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  #acm-root .ref-img-stage{position:relative;aspect-ratio:16/10;min-height:185px;display:flex;align-items:center;justify-content:center;background:#f8fafc;cursor:pointer;overflow:hidden}
+  #acm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:8px;width:100%;height:100%;border:2px dashed #cbd5e1;margin:10px;border-radius:10px;transition:all .15s}
+  #acm-root .ref-img-stage:hover .ref-img-empty{border-color:var(--accent);background:#eff6ff}
+  #acm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(37,99,235,.15)}
+  #acm-root .ref-img-empty-title{font-size:.82rem;font-weight:700;color:var(--ink)}
+  #acm-root .ref-img-empty-sub{font-size:.7rem;color:var(--text-sec)}
+  #acm-root .ref-img-preview{width:100%;height:100%;object-fit:cover;display:block}
+  #acm-root .ref-img-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:var(--paper);border-top:1px solid var(--line)}
+  #acm-root .ref-img-btn{flex:1;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);padding:6px 8px;border-radius:7px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+  #acm-root .ref-img-btn:hover{background:var(--line);color:var(--ink)}
+  #acm-root .ref-img-btn.cam{background:#eff6ff;border-color:#bfdbfe;color:var(--accent)}
+  #acm-root .ref-img-btn.cam:hover{background:#dbeafe}
+  #acm-root .ref-img-btn.del{background:#fef2f2;border-color:#fecaca;color:var(--crit)}
+  #acm-root .ref-img-btn.del:hover{background:#fee2e2}
+  #acm-root #acm-lightbox-overlay{position:fixed;inset:0;background:rgba(15,23,42,.88);z-index:100000;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+  #acm-root #acm-lightbox-overlay.active{display:flex}
+  #acm-root #acm-lightbox-card{background:var(--paper);border-radius:14px;max-width:860px;width:100%;overflow:hidden;box-shadow:0 20px 45px rgba(0,0,0,.4)}
+  #acm-root #acm-lightbox-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:800;font-size:.9rem}
+  #acm-root #acm-lightbox-body{background:#0f172a;display:flex;align-items:center;justify-content:center;max-height:78vh;overflow:auto}
+  #acm-root #acm-lightbox-body img{max-width:100%;max-height:78vh;object-fit:contain;display:block}
   .tc{text-align:center} .vm{vertical-align:middle} .b{font-weight:700} 
   @media print{
     @page{size:A4 portrait;margin:10mm 10mm 0 10mm}
     body,html{margin:0;padding:0;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    #acm-root .topbar,#acm-root .doc-toolbar,#acm-modal-overlay{display:none!important}
+    #acm-root .topbar,#acm-root .doc-toolbar,#acm-modal-overlay,#acm-lightbox-overlay{display:none!important}
     #acm-root .wrap{padding:0!important;margin:0!important;max-width:none!important}
     #acm-root .doc-scroll{padding:0!important;background:transparent!important;overflow:visible!important;max-height:none!important}
     #acm-root .doc-page{box-shadow:none!important;margin:0!important;padding:0!important;page-break-after:avoid}
@@ -149,7 +178,6 @@
   const CATS = { opError:'Op.Error', stoppage:'Stoppage', damage:'Damage', noise:'Noise etc.', othersType1:'Others' };
   const CATS2 = { mech:'Mech.', elec:'Elec.', it:'I.T.', operation:'Operation', othersType2:'Others' };
   const URGENCY = { veryCritical:'Very Critical', within24hrs:'Within 24hrs', within2months:'Within 2 months', within1week:'Within 1 week' };
-  const ACTION_CAT = { reset:'Reset', adjustment:'Adjustment', replace:'Replace', temporary:'Temporary', othersAction:'Others' };
   const RESULT_CAT = { testedOK:'Tested OK', modified:'Modified', pending:'Pending', temporary2:'Temporary', rectified:'Rectified', forceRun:'Force Run', kiv:'KIV' };
   const URGENCY_MS = { veryCritical: 4*3600000, within24hrs: 24*3600000, within1week: 7*86400000, within2months: 60*86400000 };
   const GROUP_OPTIONS = ['Shift A', 'Shift B', 'Shift C', 'Shift D', 'OH', 'Vendor'];
@@ -181,7 +209,7 @@
   }
 
   function blankRecord() {
-    return { createdAt: Date.now(), isDraft: true, status: '', notificationNo: '', workOrderNo: '', maintenanceType: '', reportNo: '', happeningDate: '', timeOfHappening:'', dd:'', mm:'', yy:'', issuedBy:'', issuedGroup:'', checkedBy:'', title:'', conveyorItem:'', lineEquipment:'', equipNo:'', cat1: {}, cat2: {}, urgency:'', reasonDetail:'', monitoring: [ {d1:'',b1:'',r1:'',d2:'',b2:'',r2:''} ], spStock:'', spStockQty:'', spStockCritical:'', spCheckedBy:'', spQty:'', spLocation:'', spCheckBy:'', spRequestDate:'', spDeliveryDate:'', spLocation2:'', requestOfAction:'', actionDate: '', actDoneBy:'', actGroup:'', actStartTime:'', actEndTime:'', actDd:'', actMm:'', actYy:'', actionCat:'', actionDetail:'', history: [ {date:'',remark:''}, {date:'',remark:''}, {date:'',remark:''} ], resultCat:'', paramSpeed:'', paramTemp:'', paramCurrent:'', paramVoltage:'', resultDetail:'', parts: Array.from({length:9}, () => ({ item:'', spec:'', part:'', qty:'', dismantle:'', sap:'' })), flags: { createNotification:false, createWorkOrder:false, releaseWorkOrder:false, gmps:false, timeConfirmation:false, teco:false, businessCompletion:false }, doneByName:'', checkByName:'', confirmedByName:'' };
+    return { createdAt: Date.now(), isDraft: true, status: '', notificationNo: '', workOrderNo: '', maintenanceType: '', reportNo: '', happeningDate: '', timeOfHappening:'', dd:'', mm:'', yy:'', issuedBy:'', issuedGroup:'', checkedBy:'', title:'', conveyorItem:'', lineEquipment:'', equipNo:'', cat1: {}, cat2: {}, urgency:'', beforeImage:'', beforeImageDate:'', beforeImageTime:'', afterImage:'', afterImageDate:'', afterImageTime:'', reasonDetail:'', monitoring: [ {d1:'',b1:'',r1:'',d2:'',b2:'',r2:''} ], spStock:'', spStockQty:'', spStockCritical:'', spCheckedBy:'', spQty:'', spLocation:'', spCheckBy:'', spRequestDate:'', spDeliveryDate:'', spLocation2:'', requestOfAction:'', actionDate: '', actDoneBy:'', actGroup:'', actStartTime:'', actEndTime:'', actDd:'', actMm:'', actYy:'', actionCat:'', actionDetail:'', history: [ {date:'',remark:''}, {date:'',remark:''}, {date:'',remark:''} ], resultCat:'', paramSpeed:'', paramTemp:'', paramCurrent:'', paramVoltage:'', resultDetail:'', parts: Array.from({length:9}, () => ({ item:'', spec:'', part:'', qty:'', dismantle:'', sap:'' })), flags: { createNotification:false, createWorkOrder:false, releaseWorkOrder:false, gmps:false, timeConfirmation:false, teco:false, businessCompletion:false }, doneByName:'', checkByName:'', confirmedByName:'' };
   }
 
   let state = { tab: 'dashboard', records: [], activeId: null, cleanActiveRecord: null, isDirty: false, loaded: false, showErrors: false };
@@ -237,16 +265,11 @@
 
   function getStatus(r) {
     const wordCount = str => (str || '').trim().split(/\s+/).filter(w => w.length > 0).length;
-    let agBase = r.actGroup || '', actGroupValid = agBase.toUpperCase().startsWith('VENDOR') ? agBase.substring(6).replace(/^:\s*/, '').trim().length > 0 : agBase.trim() !== '';
-    const hasActionDate = checkReq(r.actionDate) || (checkReq(r.actDd) && checkReq(r.actMm) && checkReq(r.actYy));
-    const actionComplete = hasActionDate && checkReq(r.actDoneBy) && actGroupValid && checkReq(r.actStartTime) && checkReq(r.actEndTime) && checkReq(r.actionCat) && wordCount(r.actionDetail) >= 2;
     const resultComplete = checkReq(r.resultCat) && wordCount(r.resultDetail) >= 2;
-    const f = r.flags || {};
-    const checklistComplete = f.createNotification || f.createWorkOrder || f.releaseWorkOrder || f.gmps || f.timeConfirmation || f.teco || f.businessCompletion;
     const confirmValid = checkReq(r.confirmedByName);
     const signOffComplete = (r.doneByName || '').trim().length >= 3 && (r.checkByName || '').trim().length >= 3 && confirmValid;
-    if (actionComplete && resultComplete && checklistComplete && signOffComplete) return 'done';
-    return (confirmValid || hasActionDate || r.actionCat || r.resultCat || r.doneByName || r.checkByName) ? 'progress' : 'open';
+    if (resultComplete && signOffComplete) return 'done';
+    return (confirmValid || r.resultCat || r.doneByName || r.checkByName || r.afterImage) ? 'progress' : 'open';
   }
 
   let timelineChart = null, categoryChart = null, urgencyChart = null;
@@ -1015,10 +1038,140 @@
     if (!state.showErrors) return;
     container.querySelectorAll('.err-highlight, .err-sec').forEach(el => el.classList.remove('err-highlight', 'err-sec'));
     ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'conveyorItem', 'lineEquipment', 'equipNo'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
+    if(!checkReq(r.beforeImage)) container.querySelector('#sec-ref-images')?.classList.add('err-sec');
     if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) container.querySelector('[data-path="reasonDetail"]')?.classList.add('err-highlight');
     let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) container.querySelectorAll('[data-calc-group="issuedGroup"]').forEach(el=>el.classList.add('err-highlight'));
-    if(!(r.cat1 && Object.keys(CATS).some(k=>r.cat1[k])) || !(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) container.querySelector('#sec-category')?.classList.add('err-sec');
-    if(!r.urgency) container.querySelector('#sec-urgency')?.classList.add('err-sec');
+    if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) container.querySelector('#sec-category')?.classList.add('err-sec');
+  }
+
+  /**
+   * Resizes camera photo and renders a crisp bottom watermark bar containing
+   * Date, Time, and Location (Line/Equipment & No.).
+   */
+  async function optimizeCameraImage(file, watermarkInfo = {}, maxDim = 1280, quality = 0.78) {
+    if (!file || !file.type.startsWith('image/')) throw new Error('Invalid image capture');
+    let source, width, height, cleanup = () => {};
+    if (typeof createImageBitmap === 'function') {
+      const bitmap = await createImageBitmap(file);
+      source = bitmap;
+      width = bitmap.width;
+      height = bitmap.height;
+      cleanup = () => { try { bitmap.close(); } catch (e) {} };
+    } else {
+      const objUrl = URL.createObjectURL(file);
+      cleanup = () => URL.revokeObjectURL(objUrl);
+      source = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = objUrl;
+      });
+      width = source.naturalWidth || source.width;
+      height = source.naturalHeight || source.height;
+    }
+    try {
+      const scale = Math.min(1, maxDim / Math.max(width, height));
+      const targetW = Math.max(1, Math.round(width * scale));
+      const targetH = Math.max(1, Math.round(height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, targetW, targetH);
+      ctx.drawImage(source, 0, 0, targetW, targetH);
+
+      // Draw Watermark Overlay (Date, Time, Location)
+      const wmDate = watermarkInfo.date || '—';
+      const wmTime = watermarkInfo.time || '—';
+      const wmLoc = watermarkInfo.location || 'Not Specified';
+      const wmTag = watermarkInfo.tag || '';
+
+      const padX = Math.max(14, Math.round(targetW * 0.022));
+      const padY = Math.max(10, Math.round(targetH * 0.016));
+      const fontSize = Math.max(13, Math.round(Math.min(targetW, targetH) * 0.026));
+      const lineGap = Math.round(fontSize * 1.42);
+      const lines = [
+        `Date     : ${wmDate}`,
+        `Time     : ${wmTime}`,
+        `Location : ${wmLoc}`
+      ];
+      const boxHeight = (padY * 2) + (lineGap * lines.length) - Math.round(fontSize * 0.35);
+      const boxY = targetH - boxHeight;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.74)';
+      ctx.fillRect(0, boxY, targetW, boxHeight);
+
+      ctx.fillStyle = watermarkInfo.accentColor || '#2563eb';
+      ctx.fillRect(0, boxY, Math.max(5, Math.round(targetW * 0.006)), boxHeight);
+
+      ctx.font = `700 ${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
+      ctx.textBaseline = 'top';
+      ctx.textAlign = 'left';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+      ctx.shadowBlur = 4;
+      ctx.fillStyle = '#f8fafc';
+
+      lines.forEach((txt, idx) => {
+        ctx.fillText(txt, padX + 6, boxY + padY + (idx * lineGap));
+      });
+
+      if (wmTag) {
+        ctx.textAlign = 'right';
+        ctx.font = `800 ${Math.max(11, Math.round(fontSize * 0.85))}px ui-sans-serif, system-ui, sans-serif`;
+        ctx.fillStyle = watermarkInfo.accentColor || '#93c5fd';
+        ctx.fillText(wmTag.toUpperCase(), targetW - padX, boxY + padY);
+      }
+      ctx.restore();
+
+      return canvas.toDataURL('image/jpeg', quality);
+    } finally {
+      cleanup();
+    }
+  }
+
+  function openImageLightbox(title, imgSrc) {
+    if (!imgSrc) return;
+    let lb = document.getElementById('acm-lightbox-overlay');
+    if (!lb) {
+      lb = document.createElement('div');
+      lb.id = 'acm-lightbox-overlay';
+      lb.innerHTML = `<div id="acm-lightbox-card"><div id="acm-lightbox-head"><span id="acm-lightbox-title"></span><button type="button" class="btn btn-ghost" id="acm-lightbox-close" style="padding:4px 10px;font-size:.75rem">Close ✕</button></div><div id="acm-lightbox-body"><img id="acm-lightbox-img" alt="Reference Preview"/></div></div>`;
+      lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('active'); });
+      lb.querySelector('#acm-lightbox-close').addEventListener('click', () => lb.classList.remove('active'));
+    }
+    if (lb.parentNode !== ROOT) ROOT.appendChild(lb);
+    lb.querySelector('#acm-lightbox-title').textContent = title;
+    lb.querySelector('#acm-lightbox-img').src = imgSrc;
+    lb.classList.add('active');
+  }
+
+  function renderRefImageCard(slot, label, badgeClass, imgData, imgDate, imgTime) {
+    const camSvg = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>`;
+    const zoomSvg = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/></svg>`;
+    const trashSvg = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
+    const metaLabel = (imgDate || imgTime) ? `${imgDate ? imgDate + ' ' : ''}${imgTime || ''}`.trim() : 'Camera Only';
+    return `<div class="ref-img-card" data-ref-card="${slot}">
+      <input type="file" accept="image/*" capture="environment" data-cam-input="${slot}" style="display:none"/>
+      <div class="ref-img-header">
+        <span class="ref-img-badge ${badgeClass}">${label}</span>
+        <span class="ref-img-meta" data-ref-meta="${slot}">${metaLabel}</span>
+      </div>
+      <div class="ref-img-stage" data-ref-stage="${slot}">
+        ${imgData
+          ? `<img src="${imgData}" alt="${label} Reference Image" class="ref-img-preview"/>`
+          : `<div class="ref-img-empty">
+               <div class="ref-cam-circle">${camSvg}</div>
+               <div class="ref-img-empty-title">Capture "${label}" Photo</div>
+               <div class="ref-img-empty-sub">Tap to launch device rear camera</div>
+             </div>`}
+      </div>
+      <div class="ref-img-footer">
+        <button type="button" class="ref-img-btn cam" data-cam-trigger="${slot}">${camSvg} <span>${imgData ? 'Retake' : 'Open Camera'}</span></button>
+        ${imgData ? `<button type="button" class="ref-img-btn" data-cam-zoom="${slot}">${zoomSvg} <span>Zoom</span></button><button type="button" class="ref-img-btn del" data-cam-clear="${slot}">${trashSvg} <span>Clear</span></button>` : ''}
+      </div>
+    </div>`;
   }
 
   function getActive() { return state.activeId ? (state.records.find(r => String(r.createdAt) === String(state.activeId)) || null) : null; }
@@ -1033,14 +1186,91 @@
 
     const options = state.records.slice().sort((a,b)=>b.createdAt-a.createdAt).map(x => `<option value="${x.createdAt}" ${String(x.createdAt)===String(r.createdAt)?'selected':''}>${x.isDraft?'[Draft] ':''}BHS/PPM ${x.reportNo||'N/A'}</option>`).join('');
     let igBase = r.issuedGroup||'', igVendor = ''; if(igBase.toUpperCase().startsWith('VENDOR')){ igBase = 'Vendor'; igVendor = (r.issuedGroup||'').substring(6).replace(/^:\s*/,'').trim(); }
-    let agBase = r.actGroup||'', agVendor = ''; if(agBase.toUpperCase().startsWith('VENDOR')){ agBase = 'Vendor'; agVendor = (r.actGroup||'').substring(6).replace(/^:\s*/,'').trim(); }
     const currentLine = r.lineEquipment || '', noOptions = (currentLine && EQUIP_DB[currentLine]) ? Object.keys(EQUIP_DB[currentLine]).sort() : [];
     if(currentLine) noOptions.push('OTHERS');
+    const autoReadonlyAttr = 'readonly tabindex="-1" style="background:var(--line);cursor:not-allowed;pointer-events:none"';
 
-    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text','readonly style="background:var(--line);cursor:not-allowed"')}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time')}</div><div class="grid g4" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date')}${field('Issued By','issuedBy',r.issuedBy)}${groupField('Group','issuedGroup',igBase,igVendor)}${field('Checked (TA/ST)','checkedBy',r.checkedBy)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text','readonly style="background:var(--line);cursor:not-allowed"')}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category &amp; Type of Error</div><div class="check-row">${Object.entries(CATS).map(([k,l])=>checkbox(l,(r.cat1||{})[k],'cat1.'+k)).join('')}</div><div class="check-row" style="margin-top:8px">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-urgency"><div class="sec-title">Degree of Urgency</div><div class="radio-row">${Object.entries(URGENCY).map(([k,l])=>radio('urgency',l,k,r.urgency===k,'urgency')).join('')}</div></div><div class="sec"><div class="sec-title">Reason / Detail</div>${field('Describe the reason and detail of the fault','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Request of Action</div>${field('Request of action','requestOfAction',r.requestOfAction,'textarea')}</div><div class="sec"><div class="sec-title">Action</div><div class="grid g3">${field('Date','actionDate',r.actionDate,'date')}${field('Done By','actDoneBy',r.actDoneBy)}${groupField('Group','actGroup',agBase,agVendor)}</div><div class="grid g2" style="margin-top:10px">${field('Start time','actStartTime',r.actStartTime,'time')}${field('End time','actEndTime',r.actEndTime,'time')}</div><div style="margin-top:10px"><div class="sec-title" style="font-size:.65rem">Category</div><div class="radio-row">${Object.entries(ACTION_CAT).map(([k,l])=>radio('actionCat',l,k,r.actionCat===k,'actionCat')).join('')}</div></div><div style="margin-top:10px">${field('Detail','actionDetail',r.actionDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Completion Checklist</div><div class="check-row">${checkbox('Create Notification',(r.flags||{}).createNotification,'flags.createNotification')}${checkbox('Create Work Order',(r.flags||{}).createWorkOrder,'flags.createWorkOrder')}${checkbox('Release Work Order',(r.flags||{}).releaseWorkOrder,'flags.releaseWorkOrder')}${checkbox('GMPS',(r.flags||{}).gmps,'flags.gmps')}</div><div class="check-row" style="margin-top:8px">${checkbox('Time Confirmation',(r.flags||{}).timeConfirmation,'flags.timeConfirmation')}${checkbox('TECO',(r.flags||{}).teco,'flags.teco')}${checkbox('Business Completion',(r.flags||{}).businessCompletion,'flags.businessCompletion')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${field('Done By (TECH)','doneByName',r.doneByName)}${field('Check By (TO/SP)','checkByName',r.checkByName)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div></div>`;
+    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text',autoReadonlyAttr)}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g4" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${field('Issued By','issuedBy',r.issuedBy)}${groupField('Group','issuedGroup',igBase,igVendor)}${field('Checked (TA/ST)','checkedBy',r.checkedBy)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text',autoReadonlyAttr)}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category &amp; Type of Error</div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="sec-title">Reference Image</div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',r.beforeImage,r.beforeImageDate,r.beforeImageTime)}${renderRefImageCard('after','After','badge-after',r.afterImage,r.afterImageDate,r.afterImageTime)}</div></div><div class="sec"><div class="sec-title">Reason / Detail</div>${field('Describe the reason and detail of the fault','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Request of Action</div>${field('Request of action','requestOfAction',r.requestOfAction,'textarea')}</div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${field('Done By (TECH)','doneByName',r.doneByName)}${field('Check By (TO/SP)','checkByName',r.checkByName)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div></div>`;
 
     updateHighlights(container, r);
-    const wrapAction = async (cb) => { if(state.isDirty){ const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved"); if(!discard) return false; revertActiveRecord(); } return true; };
+    const wrapAction = async () => { if(state.isDirty){ const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved"); if(!discard) return false; revertActiveRecord(); } return true; };
+
+    ['before', 'after'].forEach(slot => {
+      const fileInp = container.querySelector(`[data-cam-input="${slot}"]`);
+      const triggerCamera = () => { if (fileInp) { fileInp.value = ''; fileInp.click(); } };
+      container.querySelector(`[data-cam-trigger="${slot}"]`)?.addEventListener('click', triggerCamera);
+      container.querySelector(`[data-ref-stage="${slot}"]`)?.addEventListener('click', () => {
+        const currentImg = slot === 'before' ? r.beforeImage : r.afterImage;
+        if (currentImg) openImageLightbox(`${slot === 'before' ? 'Before' : 'After'} Reference Image`, currentImg);
+        else triggerCamera();
+      });
+      container.querySelector(`[data-cam-zoom="${slot}"]`)?.addEventListener('click', () => {
+        const currentImg = slot === 'before' ? r.beforeImage : r.afterImage;
+        if (currentImg) openImageLightbox(`${slot === 'before' ? 'Before' : 'After'} Reference Image`, currentImg);
+      });
+      container.querySelector(`[data-cam-clear="${slot}"]`)?.addEventListener('click', () => {
+        state.isDirty = true;
+        if (slot === 'before') {
+          r.beforeImage = '';
+          r.beforeImageDate = '';
+          r.beforeImageTime = '';
+          r.happeningDate = '';
+          r.timeOfHappening = '';
+        } else {
+          r.afterImage = '';
+          r.afterImageDate = '';
+          r.afterImageTime = '';
+        }
+        saveRecords();
+        renderInput(container);
+      });
+      fileInp?.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const metaEl = container.querySelector(`[data-ref-meta="${slot}"]`);
+        if (metaEl) metaEl.textContent = 'Processing watermark...';
+        try {
+          const capturedAt = new Date();
+          const yyyy = capturedAt.getFullYear();
+          const mm = String(capturedAt.getMonth() + 1).padStart(2, '0');
+          const dd = String(capturedAt.getDate()).padStart(2, '0');
+          const hh = String(capturedAt.getHours()).padStart(2, '0');
+          const min = String(capturedAt.getMinutes()).padStart(2, '0');
+
+          const isoDate = `${yyyy}-${mm}-${dd}`;
+          const formattedDate = `${dd}/${mm}/${yyyy}`;
+          const formattedTime = `${hh}:${min}`;
+          const locationText = [r.lineEquipment, r.equipNo].filter(Boolean).join(' - ') || 'Not Specified';
+
+          const optimizedDataUrl = await optimizeCameraImage(file, {
+            date: formattedDate,
+            time: formattedTime,
+            location: locationText,
+            tag: slot === 'before' ? 'Before' : 'After',
+            accentColor: slot === 'before' ? '#f59e0b' : '#10b981'
+          }, 1280, 0.78);
+
+          state.isDirty = true;
+          if (slot === 'before') {
+            r.beforeImage = optimizedDataUrl;
+            r.beforeImageDate = formattedDate;
+            r.beforeImageTime = formattedTime;
+            r.happeningDate = isoDate;
+            r.timeOfHappening = formattedTime;
+          } else {
+            r.afterImage = optimizedDataUrl;
+            r.afterImageDate = formattedDate;
+            r.afterImageTime = formattedTime;
+          }
+          saveRecords();
+          renderInput(container);
+        } catch (err) {
+          console.error(err);
+          if (metaEl) metaEl.textContent = 'Camera Only';
+          await showModal("Camera Error", "Unable to process captured photo. Please capture an image using your device camera.", "alert", true);
+        }
+      });
+    });
 
     container.querySelector('#acm-recpick').addEventListener('change', async (e) => { if(await wrapAction()){ state.showErrors = false; state.activeId = String(e.target.value); state.isDirty = false; render(); } else e.target.value = state.activeId; });
     container.querySelector('#acm-new-btn').addEventListener('click', async () => { if(await wrapAction()){ await showModal("Notice", "Please enter accurate INPUT for records", "alert"); const nr = blankRecord(); nr.reportNo = getNextReportNo(); state.records.unshift(nr); state.activeId = nr.createdAt; state.showErrors = false; state.isDirty = false; saveRecords(); render(); } });
@@ -1056,15 +1286,13 @@
     
     container.querySelector('#acm-submit-btn').addEventListener('click', async () => {
       state.showErrors = true; let errs = [];
-      if(!checkReq(r.happeningDate)) errs.push("[Notification & Work Order] Date");
+      if(!checkReq(r.happeningDate) || !checkReq(r.timeOfHappening)) errs.push("[Notification & Work Order] Date & Time of Happening (Capture 'Before' image in Reference Image)");
       if(!checkReq(r.issuedBy)) errs.push("[Notification & Work Order] Issued By");
       let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) errs.push("[Notification & Work Order] Group (Include Vendor Name if applicable)");
       if(!checkReq(r.reportNo)) errs.push("[Notification & Work Order] Report No. (BHS/PPM)");
       if(!checkReq(r.maintenanceType)) errs.push("[Notification & Work Order] Maintenance Type");
-      if(!checkReq(r.timeOfHappening)) errs.push("[Notification & Work Order] Time of Happening");
       if(!checkReq(r.title) || !checkReq(r.conveyorItem) || !checkReq(r.lineEquipment) || !checkReq(r.equipNo)) errs.push("[Title & Equipment] All details are required");
-      if(!(r.cat1 && Object.keys(CATS).some(k=>r.cat1[k])) || !(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) errs.push("[Category & Type of Error] Select at least one category and one type");
-      if(!r.urgency) errs.push("[Degree of Urgency] Please select one");
+      if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) errs.push("[Category & Type of Error] Select at least one type");
       if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) errs.push("[Reason / Detail] Please write at least 2 words");
       updateHighlights(container, r);
 
@@ -1143,9 +1371,9 @@
 })();
 </script>
 <script>
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js');
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 </script>
