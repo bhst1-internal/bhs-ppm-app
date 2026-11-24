@@ -70,7 +70,7 @@
   #acm-root .btn-danger:hover{background:#fca5a5}
   #acm-root .btn-solid-danger{background:var(--crit);color:#fff}
   #acm-root .btn-solid-danger:hover{background:#b91c1c}
-  #acm-root .btn-row{display:flex;gap:8px}
+  #acm-root .btn-row{display:flex;gap:8px;flex-wrap:wrap}
   #acm-root .btn-export-excel{background-color:var(--ok);color:#ffffff;font-size:.875rem;font-weight:700;padding:8px 16px;border-radius:4px;border:none;cursor:pointer;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.05);display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
   #acm-root .btn-export-excel:hover{background-color:#047857}
   #acm-root .btn-export-excel svg{width:16px;height:16px}
@@ -175,9 +175,27 @@
   }
   const CONF_PASS = {'Anisah':'134510','Azlan':'111306','Eylia':'131091','Fairus':'123092','Fariz':'134828','Hafizah':'134449','Khairoulnizam':'110143','Samsulnazri':'111289','Zahidah':'131530','Zulkiple':'133513'};
   const CONF_NAMES = Object.keys(CONF_PASS).sort();
+  const TECH_NAMES = Array.from(new Set([
+    "Shahrulnizam", "A'zzuddin", "Soo Yun Loy", "Halim", "Hazaidi", "Fazli",
+    "Hakimi", "Muzafar", "Adam", "Adnan", "Ikhwan", "Saifuddin", "Afiq",
+    "Rezlan", "Wazli", "Rashlan", "Shaharil", "Syafiq", "Asyraf", "Shippy",
+    "Emirul", "Azmi", "Shahrul", "Syahmi", "Fazreen", "Iltizam", "Nuur",
+    "Eaw Guan Huat", "Teong Meng Kow", "Omar", "Aziman", "Farid", "Ammar",
+    "Khairulazman", "Taufik", "Zahari", "Aminullah", "Harith", "Saiful",
+    "Firkhan", "Hanif", "Razif", "Zaini", "Ruhaizan", "Sani", "Khairil",
+    "Rafi", "Ifsan", "Irfan", "Zarizee", "Rahim", "Nizam", "Yassin",
+    "Luqman", "Iman", "Chang Chak Foo", "Tai Mun Kon", "Daud", "Hashim",
+    "Shafri"
+  ])).sort((a, b) => a.localeCompare(b));
+  const TO_NAMES = Array.from(new Set([
+    "Amirul", "Azammudin", "Hazim", "Zarizal", "Ainuddin", "Azman",
+    "Zahiruddin", "Jafri", "Norizan", "Rashidi", "Azraf", "Asree",
+    "Zaki", "Johari", "Sharipunnahar", "Zubir", "Shamsul", "Fauzi"
+  ])).sort((a, b) => a.localeCompare(b));
   const CATS = { opError:'Op.Error', stoppage:'Stoppage', damage:'Damage', noise:'Noise etc.', othersType1:'Others' };
-  const CATS2 = { mech:'Mech.', elec:'Elec.', it:'I.T.', operation:'Operation', othersType2:'Others' };
+  const CATS2 = { mech:'Mechanical', elec:'Electrical', it:'I.T.', operation:'Operation', othersType2:'Others' };
   const URGENCY = { veryCritical:'Very Critical', within24hrs:'Within 24hrs', within2months:'Within 2 months', within1week:'Within 1 week' };
+  const ACTION_CAT = { reset:'Reset', adjustment:'Adjustment', replace:'Replace', temporary:'Temporary', othersAction:'Others' };
   const RESULT_CAT = { testedOK:'Tested OK', modified:'Modified', pending:'Pending', temporary2:'Temporary', rectified:'Rectified', forceRun:'Force Run', kiv:'KIV' };
   const URGENCY_MS = { veryCritical: 4*3600000, within24hrs: 24*3600000, within1week: 7*86400000, within2months: 60*86400000 };
   const GROUP_OPTIONS = ['Shift A', 'Shift B', 'Shift C', 'Shift D', 'OH', 'Vendor'];
@@ -262,6 +280,18 @@
     if (t && timeStr && typeof timeStr === 'string') { const parts = timeStr.split(':'); if (parts.length >= 2) t += ((parseInt(parts[0], 10) || 0) * 3600000) + ((parseInt(parts[1], 10) || 0) * 60000); }
     return t;
   }
+  function parseRefDateTime(dStr, tStr) {
+    if (!dStr || typeof dStr !== 'string') return null;
+    const p = dStr.split('/');
+    if (p.length !== 3) return null;
+    let t = new Date(parseInt(p[2], 10), parseInt(p[1], 10) - 1, parseInt(p[0], 10)).getTime();
+    if (isNaN(t)) return null;
+    if (tStr && typeof tStr === 'string') {
+      const tp = tStr.split(':');
+      if (tp.length >= 2) t += ((parseInt(tp[0], 10) || 0) * 3600000) + ((parseInt(tp[1], 10) || 0) * 60000);
+    }
+    return t;
+  }
 
   function getStatus(r) {
     const wordCount = str => (str || '').trim().split(/\s+/).filter(w => w.length > 0).length;
@@ -308,7 +338,7 @@
     });
     completed.forEach(r => {
       const t0 = getExactTs(r.happeningDate, r.dd, r.mm, r.yy, r.timeOfHappening);
-      const t1 = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actEndTime);
+      const t1 = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actEndTime) || parseRefDateTime(r.afterImageDate, r.afterImageTime);
       if(t0 && t1 && t1 >= t0) resTimes.push((t1 - t0) / 86400000); 
       if(t0 && t1 && URGENCY_MS[r.urgency]) { ratedTotal++; if((t1 - t0) <= URGENCY_MS[r.urgency]) onTime++; }
     });
@@ -408,7 +438,7 @@
       timelineFiltered.forEach(r => {
         let t0 = getExactTs(r.happeningDate, r.dd, r.mm, r.yy, r.timeOfHappening) || parseInt(r.createdAt, 10); if(isNaN(t0)) t0 = nowTs;
         let tAction = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actStartTime);
-        let t1 = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actEndTime);
+        let t1 = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actEndTime) || parseRefDateTime(r.afterImageDate, r.afterImageTime);
         let statusLogic = getStatus(r);
         
         if (statusLogic !== 'done' || !t1 || isNaN(t1)) t1 = nowTs;
@@ -530,7 +560,7 @@
     const btn = document.getElementById(btnId);
     if (!btn) return;
     btn.addEventListener('click', () => {
-      if (typeof html2canvas === 'undefined') { alert("Export library is loading. Try again in a few seconds."); return; }
+      if (typeof html2canvas === 'undefined') { showModal("Notice", "Export library is loading. Try again in a few seconds."); return; }
       const panel = targetId ? document.getElementById(targetId) : btn.closest('.panel');
       
       const toolbar = panel.querySelector('.fv-toolbar-actions');
@@ -685,7 +715,7 @@
     for (let l in EQUIP_DB) for (let n in EQUIP_DB[l]) { allLinesNos.push(l + '-' + n); allConveyors.add(EQUIP_DB[l][n]); }
     allConveyors.add('OTHERS'); allConveyors = Array.from(allConveyors).sort(); allLinesNos.sort();
 
-    container.innerHTML = `<div class="form-shell" style="margin-bottom:16px;padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0;font-size:.875rem;font-weight:800;color:var(--ink)">Global Filters &amp; Controls</h3><button class="btn btn-ghost" id="dash-reset-btn" style="padding:4px 10px;font-size:.75rem">Reset All Filters</button></div><div class="grid g4" id="dash-filters"><label class="f">Start Date<input type="date" id="dash-start" value="${defStart}"/></label><label class="f">End Date<input type="date" id="dash-end" value="${defEnd}"/></label><label class="f">Urgency<div class="dd-wrapper" id="dd-urgency-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu">${Object.entries(URGENCY).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-urgency" value="${k}"/> <span>${v}</span></label>`).join('')}</div></div></label><label class="f">Status<div class="dd-wrapper" id="dd-status-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu"><label class="chk"><input type="checkbox" name="dash-status" value="open"/> <span>Open</span></label><label class="chk"><input type="checkbox" name="dash-status" value="progress"/> <span>In progress</span></label><label class="chk"><input type="checkbox" name="dash-status" value="done"/> <span>Completed</span></label></div></div></label><label class="f">Category/Type<div class="dd-wrapper" id="dd-cat-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu"><div style="font-size:.65rem;font-weight:800;color:var(--text-sec)">Category</div>${Object.entries(CATS).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-cat" value="${k}"/> <span>${v}</span></label>`).join('')}<div style="font-size:.65rem;font-weight:800;color:var(--text-sec);margin-top:4px">Type of Error</div>${Object.entries(CATS2).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-cat" value="${k}"/> <span>${v}</span></label>`).join('')}</div></div></label><label class="f">Line/Equipment - No.<input type="text" id="dash-line" list="dl-lines" placeholder="e.g. BM1-04" autocomplete="off"/><datalist id="dl-lines">${allLinesNos.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label><label class="f">Conveyor/Item<input type="text" id="dash-conveyor" list="dl-conv" placeholder="e.g. TRANSFER CONVEYOR" autocomplete="off"/><datalist id="dl-conv">${allConveyors.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label></div></div><div class="kpi-grid" id="dash-kpi-grid"></div><div class="panel" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">ACM Timeline</h3><div style="display:flex;gap:6px;"><button class="export-chart-btn" id="full-view-btn" title="Open Full Screen View" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>Full View</button><button class="export-chart-btn" id="save-chart-btn" title="Save Section as JPEG" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>JPEG</button></div></div><div class="hint">Gantt-style timeline showing submission to completion duration for filtered records.<br/><b>Note:</b> Drag inside chart area to pan (up/down/left/right). Scroll mouse wheel to zoom. Double-click to reset view.</div><div id="timeline-custom-legend" style="display:flex; justify-content:flex-end; gap:16px; margin-bottom: 8px; font-size: 11px; padding-right:10px;"><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(5, 150, 105, 0.45); border:1px solid rgba(5, 150, 105, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="0" style="display:none"> Completed</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(217, 119, 6, 0.45); border:1px solid rgba(217, 119, 6, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="1" style="display:none"> In progress</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(156, 163, 175, 0.45); border:1px solid rgba(156, 163, 175, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="2" style="display:none"> Open</label></div><div style="background:transparent;padding:0;margin-top:0;position:relative"><div id="timeline-empty-state" style="display:none;text-align:center;padding-top:40px;color:var(--text-sec);font-size:12px;position:absolute;top:0;left:0;width:100%;height:100%;background:var(--paper);z-index:10">No memos found for the selected view.</div><div class="chart-wrap" style="height:345px;overflow:hidden;position:relative;"><div id="timeline-scroll-container" style="position:relative;width:100%;height:345px;"><canvas id="acm-timeline-chart"></canvas></div></div></div></div>
+    container.innerHTML = `<div class="form-shell" style="margin-bottom:16px;padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0;font-size:.875rem;font-weight:800;color:var(--ink)">Global Filters &amp; Controls</h3><button class="btn btn-ghost" id="dash-reset-btn" style="padding:4px 10px;font-size:.75rem">Reset All Filters</button></div><div class="grid g4" id="dash-filters"><label class="f">Start Date<input type="date" id="dash-start" value="${defStart}"/></label><label class="f">End Date<input type="date" id="dash-end" value="${defEnd}"/></label><label class="f">Urgency<div class="dd-wrapper" id="dd-urgency-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu">${Object.entries(URGENCY).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-urgency" value="${k}"/> <span>${v}</span></label>`).join('')}</div></div></label><label class="f">Status<div class="dd-wrapper" id="dd-status-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu"><label class="chk"><input type="checkbox" name="dash-status" value="open"/> <span>Open</span></label><label class="chk"><input type="checkbox" name="dash-status" value="progress"/> <span>In progress</span></label><label class="chk"><input type="checkbox" name="dash-status" value="done"/> <span>Completed</span></label></div></div></label><label class="f">Category/Type<div class="dd-wrapper" id="dd-cat-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu"><div style="font-size:.65rem;font-weight:800;color:var(--text-sec)">Category</div>${Object.entries(CATS).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-cat" value="${k}"/> <span>${v}</span></label>`).join('')}<div style="font-size:.65rem;font-weight:800;color:var(--text-sec);margin-top:4px">Type of Error</div>${Object.entries(CATS2).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-cat" value="${k}"/> <span>${v}</span></label>`).join('')}</div></div></label><label class="f">Line/Equipment - No.<input type="text" id="dash-line" list="dl-lines" placeholder="e.g. BM1-04" autocomplete="off"/><datalist id="dl-lines">${allLinesNos.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label><label class="f">Conveyor/Item<input type="text" id="dash-conveyor" list="dl-conv" placeholder="e.g. TRANSFER CONVEYOR" autocomplete="off"/><datalist id="dl-conv">${allConveyors.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label></div></div><div class="kpi-grid" id="dash-kpi-grid"></div><div class="panel" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">PPM Timeline</h3><div style="display:flex;gap:6px;"><button class="export-chart-btn" id="full-view-btn" title="Open Full Screen View" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>Full View</button><button class="export-chart-btn" id="save-chart-btn" title="Save Section as JPEG" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>JPEG</button></div></div><div class="hint">Gantt-style timeline showing submission to completion duration for filtered records.<br/><b>Note:</b> Drag inside chart area to pan (up/down/left/right). Scroll mouse wheel to zoom. Double-click to reset view.</div><div id="timeline-custom-legend" style="display:flex; justify-content:flex-end; gap:16px; margin-bottom: 8px; font-size: 11px; padding-right:10px;"><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(5, 150, 105, 0.45); border:1px solid rgba(5, 150, 105, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="0" style="display:none"> Completed</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(217, 119, 6, 0.45); border:1px solid rgba(217, 119, 6, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="1" style="display:none"> In progress</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(156, 163, 175, 0.45); border:1px solid rgba(156, 163, 175, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="2" style="display:none"> Open</label></div><div style="background:transparent;padding:0;margin-top:0;position:relative"><div id="timeline-empty-state" style="display:none;text-align:center;padding-top:40px;color:var(--text-sec);font-size:12px;position:absolute;top:0;left:0;width:100%;height:100%;background:var(--paper);z-index:10">No memos found for the selected view.</div><div class="chart-wrap" style="height:345px;overflow:hidden;position:relative;"><div id="timeline-scroll-container" style="position:relative;width:100%;height:345px;"><canvas id="acm-timeline-chart"></canvas></div></div></div></div>
     
     <div class="charts-grid">
       <div class="panel">
@@ -711,7 +741,7 @@
     <div id="full-view-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(17,24,39,0.85); z-index:999999; align-items:center; justify-content:center; backdrop-filter:blur(3px);">
       <div id="full-view-modal-content" style="background:var(--paper); width:96%; height:96%; border-radius:14px; display:flex; flex-direction:column; padding:20px; box-shadow:0 12px 32px rgba(0,0,0,0.3); overflow:hidden;">
          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-shrink:0;">
-            <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:var(--ink);">ACM Timeline - Full View</h3>
+            <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:var(--ink);">PPM Timeline - Full View</h3>
             <div class="fv-toolbar-actions" style="display:flex; gap:8px;">
                 <button class="btn btn-primary" id="full-view-export-btn" style="background:var(--ok);">Save as JPEG</button>
                 <button class="btn btn-ghost" id="full-view-close-btn" style="background:var(--line);">Close</button>
@@ -789,10 +819,10 @@
 
     document.getElementById('full-view-close-btn').addEventListener('click', () => { document.getElementById('full-view-overlay').style.display = 'none'; });
 
-    bindJPEGExport('save-chart-btn', 'ACM_Timeline.jpg');
+    bindJPEGExport('save-chart-btn', 'PPM_Timeline.jpg');
     bindJPEGExport('save-cat-btn', 'Fault_Category.jpg');
     bindJPEGExport('save-urg-btn', 'Urgency_Distribution.jpg');
-    bindJPEGExport('full-view-export-btn', 'ACM_Timeline_FullView.jpg', 'full-view-modal-content');
+    bindJPEGExport('full-view-export-btn', 'PPM_Timeline_FullView.jpg', 'full-view-modal-content');
 
     ensureChartJs(() => {
       if(typeof Chart === 'undefined') { const errDiv = document.getElementById('timeline-scroll-container'); if(errDiv) errDiv.innerHTML = `<div style="text-align:center;padding-top:40px;color:#dc2626;font-weight:bold;font-size:14px;">Chart.js could not be loaded. Please check your network or firewall.</div>`; return; }
@@ -1026,119 +1056,14 @@
     });
   }
 
-  function checkbox(lbl, chk, path) { return `<label class="chk"><input type="checkbox" data-path="${path}" ${chk?'checked':''}/> ${lbl}</label>`; }
-  function radio(nm, lbl, val, chk, path) { return `<label class="rad"><input type="radio" name="${nm}" data-path="${path}" value="${val}" ${chk?'checked':''}/> ${lbl}</label>`; }
-  function field(lbl, path, val, typ='text', ext='') { return `<label class="f">${lbl}${typ==='textarea'?`<textarea data-path="${path}" ${ext}>${val||''}</textarea>`:`<input type="${typ}" data-path="${path}" value="${val||''}" ${ext}/>`}</label>`; }
-  function selectField(lbl, path, val, opts) { return `<label class="f">${lbl}<select data-path="${path}"><option value=""></option>${opts.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select></label>`; }
-  function groupField(lbl, tKey, bVal, vVal) { return `<label class="f">${lbl}<div style="display:flex;gap:6px"><select style="flex:1;min-width:0" data-calc-group="${tKey}" data-part="base"><option value=""></option>${GROUP_OPTIONS.map(o=>`<option value="${o}" ${bVal===o?'selected':''}>${o}</option>`).join('')}</select>${bVal==='Vendor'?`<input type="text" style="flex:1;min-width:0" placeholder="Vendor Name..." data-calc-group="${tKey}" data-part="vendor" value="${vVal}"/>`:''}</div></label>`; }
-  function searchableSelectField(lbl, path, val, opts, lid) { return `<label class="f">${lbl}<input type="text" data-path="${path}" value="${val||''}" list="${lid}" autocomplete="off" placeholder="Type or select..."/><datalist id="${lid}">${opts.map(o=>`<option value="${o}"></option>`).join('')}</datalist></label>`; }
-  function ensureRows(arr, len, tplFn) { arr = arr||[]; while(arr.length < len) arr.push(tplFn()); return arr; }
-
-  function updateHighlights(container, r) {
-    if (!state.showErrors) return;
-    container.querySelectorAll('.err-highlight, .err-sec').forEach(el => el.classList.remove('err-highlight', 'err-sec'));
-    ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'conveyorItem', 'lineEquipment', 'equipNo'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
-    if(!checkReq(r.beforeImage)) container.querySelector('#sec-ref-images')?.classList.add('err-sec');
-    if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) container.querySelector('[data-path="reasonDetail"]')?.classList.add('err-highlight');
-    let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) container.querySelectorAll('[data-calc-group="issuedGroup"]').forEach(el=>el.classList.add('err-highlight'));
-    if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) container.querySelector('#sec-category')?.classList.add('err-sec');
-  }
-
-  /**
-   * Resizes camera photo and renders a crisp bottom watermark bar containing
-   * Date, Time, and Location (Line/Equipment & No.).
-   */
-  async function optimizeCameraImage(file, watermarkInfo = {}, maxDim = 1280, quality = 0.78) {
-    if (!file || !file.type.startsWith('image/')) throw new Error('Invalid image capture');
-    let source, width, height, cleanup = () => {};
-    if (typeof createImageBitmap === 'function') {
-      const bitmap = await createImageBitmap(file);
-      source = bitmap;
-      width = bitmap.width;
-      height = bitmap.height;
-      cleanup = () => { try { bitmap.close(); } catch (e) {} };
-    } else {
-      const objUrl = URL.createObjectURL(file);
-      cleanup = () => URL.revokeObjectURL(objUrl);
-      source = await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = objUrl;
-      });
-      width = source.naturalWidth || source.width;
-      height = source.naturalHeight || source.height;
-    }
-    try {
-      const scale = Math.min(1, maxDim / Math.max(width, height));
-      const targetW = Math.max(1, Math.round(width * scale));
-      const targetH = Math.max(1, Math.round(height * scale));
-      const canvas = document.createElement('canvas');
-      canvas.width = targetW;
-      canvas.height = targetH;
-      const ctx = canvas.getContext('2d', { alpha: false });
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, targetW, targetH);
-      ctx.drawImage(source, 0, 0, targetW, targetH);
-
-      // Draw Watermark Overlay (Date, Time, Location)
-      const wmDate = watermarkInfo.date || '—';
-      const wmTime = watermarkInfo.time || '—';
-      const wmLoc = watermarkInfo.location || 'Not Specified';
-      const wmTag = watermarkInfo.tag || '';
-
-      const padX = Math.max(14, Math.round(targetW * 0.022));
-      const padY = Math.max(10, Math.round(targetH * 0.016));
-      const fontSize = Math.max(13, Math.round(Math.min(targetW, targetH) * 0.026));
-      const lineGap = Math.round(fontSize * 1.42);
-      const lines = [
-        `Date     : ${wmDate}`,
-        `Time     : ${wmTime}`,
-        `Location : ${wmLoc}`
-      ];
-      const boxHeight = (padY * 2) + (lineGap * lines.length) - Math.round(fontSize * 0.35);
-      const boxY = targetH - boxHeight;
-
-      ctx.save();
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.74)';
-      ctx.fillRect(0, boxY, targetW, boxHeight);
-
-      ctx.fillStyle = watermarkInfo.accentColor || '#2563eb';
-      ctx.fillRect(0, boxY, Math.max(5, Math.round(targetW * 0.006)), boxHeight);
-
-      ctx.font = `700 ${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
-      ctx.textBaseline = 'top';
-      ctx.textAlign = 'left';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-      ctx.shadowBlur = 4;
-      ctx.fillStyle = '#f8fafc';
-
-      lines.forEach((txt, idx) => {
-        ctx.fillText(txt, padX + 6, boxY + padY + (idx * lineGap));
-      });
-
-      if (wmTag) {
-        ctx.textAlign = 'right';
-        ctx.font = `800 ${Math.max(11, Math.round(fontSize * 0.85))}px ui-sans-serif, system-ui, sans-serif`;
-        ctx.fillStyle = watermarkInfo.accentColor || '#93c5fd';
-        ctx.fillText(wmTag.toUpperCase(), targetW - padX, boxY + padY);
-      }
-      ctx.restore();
-
-      return canvas.toDataURL('image/jpeg', quality);
-    } finally {
-      cleanup();
-    }
-  }
-
   function openImageLightbox(title, imgSrc) {
     if (!imgSrc) return;
     let lb = document.getElementById('acm-lightbox-overlay');
     if (!lb) {
       lb = document.createElement('div');
       lb.id = 'acm-lightbox-overlay';
-      lb.innerHTML = `<div id="acm-lightbox-card"><div id="acm-lightbox-head"><span id="acm-lightbox-title"></span><button type="button" class="btn btn-ghost" id="acm-lightbox-close" style="padding:4px 10px;font-size:.75rem">Close ✕</button></div><div id="acm-lightbox-body"><img id="acm-lightbox-img" alt="Reference Preview"/></div></div>`;
-      lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('active'); });
+      lb.innerHTML = `<div id="acm-lightbox-card"><div id="acm-lightbox-head"><span id="acm-lightbox-title"></span><button type="button" class="btn btn-ghost" id="acm-lightbox-close" style="padding:4px 10px;font-size:.75rem">Close</button></div><div id="acm-lightbox-body"><img id="acm-lightbox-img" alt="Reference Preview"/></div></div>`;
+      lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('active'); });
       lb.querySelector('#acm-lightbox-close').addEventListener('click', () => lb.classList.remove('active'));
     }
     if (lb.parentNode !== ROOT) ROOT.appendChild(lb);
@@ -1147,31 +1072,140 @@
     lb.classList.add('active');
   }
 
-  function renderRefImageCard(slot, label, badgeClass, imgData, imgDate, imgTime) {
-    const camSvg = `<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>`;
-    const zoomSvg = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/></svg>`;
-    const trashSvg = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>`;
-    const metaLabel = (imgDate || imgTime) ? `${imgDate ? imgDate + ' ' : ''}${imgTime || ''}`.trim() : 'Camera Only';
+  function optimizeCameraImage(file, watermark = {}, maxDim = 1280, quality = 0.78) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type || !file.type.startsWith('image/')) {
+        return reject(new Error('Invalid image file'));
+      }
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Failed to read image'));
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Failed to decode image'));
+        img.onload = () => {
+          let w = img.naturalWidth || img.width;
+          let h = img.naturalHeight || img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w >= h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // Burn Date, Time & Location watermarks onto the captured photo
+          const wmDate = watermark.date || '';
+          const wmTime = watermark.time || '';
+          const wmLoc = watermark.location || 'Not Specified';
+          const wmTag = (watermark.tag || '').toUpperCase();
+          const accent = watermark.accentColor || '#2563eb';
+
+          const pad = Math.max(12, Math.round(w * 0.018));
+          const fontSize = Math.max(13, Math.round(w * 0.021));
+          const lineHeight = Math.round(fontSize * 1.42);
+          const barHeight = lineHeight * 2 + pad * 1.5;
+          const barY = h - barHeight;
+
+          const grad = ctx.createLinearGradient(0, barY - pad, 0, h);
+          grad.addColorStop(0, 'rgba(15, 23, 42, 0.58)');
+          grad.addColorStop(1, 'rgba(15, 23, 42, 0.90)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, barY, w, barHeight);
+
+          ctx.fillStyle = accent;
+          ctx.fillRect(0, barY, Math.max(4, Math.round(w * 0.006)), barHeight);
+
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+          ctx.shadowBlur = 4;
+
+          ctx.font = `700 ${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
+          ctx.fillStyle = '#f8fafc';
+          ctx.textAlign = 'left';
+          const row1Y = barY + pad * 0.75 + lineHeight * 0.5;
+          const row2Y = row1Y + lineHeight;
+          ctx.fillText(`Date: ${wmDate}   |   Time: ${wmTime}`, pad * 1.35, row1Y);
+
+          ctx.font = `600 ${fontSize}px ui-sans-serif, system-ui, -apple-system, sans-serif`;
+          ctx.fillStyle = '#e2e8f0';
+          const maxLocWidth = w - pad * 3.5;
+          let locDisplay = `Location: ${wmLoc}`;
+          while (ctx.measureText(locDisplay).width > maxLocWidth && locDisplay.length > 14) {
+            locDisplay = locDisplay.slice(0, -4) + '...';
+          }
+          ctx.fillText(locDisplay, pad * 1.35, row2Y);
+
+          if (wmTag) {
+            ctx.font = `800 ${Math.max(11, Math.round(fontSize * 0.82))}px ui-sans-serif, system-ui, sans-serif`;
+            ctx.fillStyle = accent;
+            ctx.textAlign = 'right';
+            ctx.fillText(wmTag, w - pad, row1Y);
+          }
+
+          ctx.shadowBlur = 0;
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderRefImageCard(slot, label, badgeCls, imgData, imgDate, imgTime) {
+    const hasImg = Boolean(imgData);
+    const metaText = hasImg ? `${imgDate || ''}${imgTime ? ' ' + imgTime : ''}`.trim() : 'Camera Only';
     return `<div class="ref-img-card" data-ref-card="${slot}">
-      <input type="file" accept="image/*" capture="environment" data-cam-input="${slot}" style="display:none"/>
       <div class="ref-img-header">
-        <span class="ref-img-badge ${badgeClass}">${label}</span>
-        <span class="ref-img-meta" data-ref-meta="${slot}">${metaLabel}</span>
+        <span class="ref-img-badge ${badgeCls}">${label}</span>
+        <span class="ref-img-meta" data-ref-meta="${slot}">${metaText}</span>
       </div>
-      <div class="ref-img-stage" data-ref-stage="${slot}">
-        ${imgData
-          ? `<img src="${imgData}" alt="${label} Reference Image" class="ref-img-preview"/>`
+      <div class="ref-img-stage" data-ref-stage="${slot}" title="${hasImg ? 'Tap to enlarge photo' : 'Tap to open camera'}">
+        ${hasImg
+          ? `<img class="ref-img-preview" src="${imgData}" alt="${label} Reference"/>`
           : `<div class="ref-img-empty">
-               <div class="ref-cam-circle">${camSvg}</div>
+               <div class="ref-cam-circle">
+                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+               </div>
                <div class="ref-img-empty-title">Capture "${label}" Photo</div>
-               <div class="ref-img-empty-sub">Tap to launch device rear camera</div>
+               <div class="ref-img-empty-sub">Tap to launch device camera</div>
              </div>`}
       </div>
+      <input type="file" accept="image/*" capture="environment" data-cam-input="${slot}" style="display:none"/>
       <div class="ref-img-footer">
-        <button type="button" class="ref-img-btn cam" data-cam-trigger="${slot}">${camSvg} <span>${imgData ? 'Retake' : 'Open Camera'}</span></button>
-        ${imgData ? `<button type="button" class="ref-img-btn" data-cam-zoom="${slot}">${zoomSvg} <span>Zoom</span></button><button type="button" class="ref-img-btn del" data-cam-clear="${slot}">${trashSvg} <span>Clear</span></button>` : ''}
+        <button type="button" class="ref-img-btn cam" data-cam-trigger="${slot}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          ${hasImg ? 'Retake' : 'Take Photo'}
+        </button>
+        ${hasImg ? `<button type="button" class="ref-img-btn" data-cam-zoom="${slot}">Zoom</button><button type="button" class="ref-img-btn del" data-cam-clear="${slot}">Clear</button>` : ''}
       </div>
     </div>`;
+  }
+
+  function checkbox(lbl, chk, path) { return `<label class="chk"><input type="checkbox" data-path="${path}" ${chk?'checked':''}/> ${lbl}</label>`; }
+  function radio(nm, lbl, val, chk, path) { return `<label class="rad"><input type="radio" name="${nm}" data-path="${path}" value="${val}" ${chk?'checked':''}/> ${lbl}</label>`; }
+  function field(lbl, path, val, typ='text', ext='') { return `<label class="f">${lbl}${typ==='textarea'?`<textarea data-path="${path}" ${ext}>${val||''}</textarea>`:`<input type="${typ}" data-path="${path}" value="${val||''}" ${ext}/>`}</label>`; }
+  function selectField(lbl, path, val, opts) { const list = (val && !opts.includes(val)) ? [val, ...opts] : opts; return `<label class="f">${lbl}<select data-path="${path}"><option value=""></option>${list.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select></label>`; }
+  function groupField(lbl, tKey, bVal, vVal) { return `<label class="f">${lbl}<div style="display:flex;gap:6px"><select style="flex:1;min-width:0" data-calc-group="${tKey}" data-part="base"><option value=""></option>${GROUP_OPTIONS.map(o=>`<option value="${o}" ${bVal===o?'selected':''}>${o}</option>`).join('')}</select>${bVal==='Vendor'?`<input type="text" style="flex:1;min-width:0" placeholder="Vendor Name..." data-calc-group="${tKey}" data-part="vendor" value="${vVal}"/>`:''}</div></label>`; }
+  function searchableSelectField(lbl, path, val, opts, lid) { return `<label class="f">${lbl}<input type="text" data-path="${path}" value="${val||''}" list="${lid}" autocomplete="off" placeholder="Type or select..."/><datalist id="${lid}">${opts.map(o=>`<option value="${o}"></option>`).join('')}</datalist></label>`; }
+  function ensureRows(arr, len, tplFn) { arr = arr||[]; while(arr.length < len) arr.push(tplFn()); return arr; }
+
+  function updateHighlights(container, r) {
+    if (!state.showErrors) return;
+    container.querySelectorAll('.err-highlight, .err-sec').forEach(el => el.classList.remove('err-highlight', 'err-sec'));
+    ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'conveyorItem', 'lineEquipment', 'equipNo'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
+    if(!r.beforeImage) container.querySelector('[data-ref-card="before"]')?.classList.add('err-highlight');
+    if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) container.querySelector('[data-path="reasonDetail"]')?.classList.add('err-highlight');
+    let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) container.querySelectorAll('[data-calc-group="issuedGroup"]').forEach(el=>el.classList.add('err-highlight'));
+    if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) container.querySelector('#sec-category')?.classList.add('err-sec');
   }
 
   function getActive() { return state.activeId ? (state.records.find(r => String(r.createdAt) === String(state.activeId)) || null) : null; }
@@ -1188,9 +1222,9 @@
     let igBase = r.issuedGroup||'', igVendor = ''; if(igBase.toUpperCase().startsWith('VENDOR')){ igBase = 'Vendor'; igVendor = (r.issuedGroup||'').substring(6).replace(/^:\s*/,'').trim(); }
     const currentLine = r.lineEquipment || '', noOptions = (currentLine && EQUIP_DB[currentLine]) ? Object.keys(EQUIP_DB[currentLine]).sort() : [];
     if(currentLine) noOptions.push('OTHERS');
-    const autoReadonlyAttr = 'readonly tabindex="-1" style="background:var(--line);cursor:not-allowed;pointer-events:none"';
+    const autoReadonlyAttr = 'readonly style="background:var(--line);cursor:not-allowed"';
 
-    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text',autoReadonlyAttr)}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g4" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${field('Issued By','issuedBy',r.issuedBy)}${groupField('Group','issuedGroup',igBase,igVendor)}${field('Checked (TA/ST)','checkedBy',r.checkedBy)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text',autoReadonlyAttr)}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category &amp; Type of Error</div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="sec-title">Reference Image</div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',r.beforeImage,r.beforeImageDate,r.beforeImageTime)}${renderRefImageCard('after','After','badge-after',r.afterImage,r.afterImageDate,r.afterImageTime)}</div></div><div class="sec"><div class="sec-title">Reason / Detail</div>${field('Describe the reason and detail of the fault','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Request of Action</div>${field('Request of action','requestOfAction',r.requestOfAction,'textarea')}</div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${field('Done By (TECH)','doneByName',r.doneByName)}${field('Check By (TO/SP)','checkByName',r.checkByName)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div></div>`;
+    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text',autoReadonlyAttr)}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g3" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${selectField('Issued By','issuedBy',r.issuedBy,TECH_NAMES)}${groupField('Group','issuedGroup',igBase,igVendor)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text',autoReadonlyAttr)}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category &amp; Type of Error</div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="sec-title">Reference Image</div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',r.beforeImage,r.beforeImageDate,r.beforeImageTime)}${renderRefImageCard('after','After','badge-after',r.afterImage,r.afterImageDate,r.afterImageTime)}</div></div><div class="sec"><div class="sec-title">Reason / Detail</div>${field('Describe the reason and detail of the fault','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Request of Action</div>${field('Request of action','requestOfAction',r.requestOfAction,'textarea')}</div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${selectField('Done By (TECH)','doneByName',r.doneByName,TECH_NAMES)}${selectField('Check By (TO)','checkByName',r.checkByName,TO_NAMES)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div></div>`;
 
     updateHighlights(container, r);
     const wrapAction = async () => { if(state.isDirty){ const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved"); if(!discard) return false; revertActiveRecord(); } return true; };
