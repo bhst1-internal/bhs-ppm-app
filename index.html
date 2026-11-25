@@ -34,9 +34,11 @@
   #acm-root .pill-warn{background:#fef3c7;color:var(--warn)}
   #acm-root .pill-crit{background:#fee2e2;color:var(--crit)}
   #acm-root .dd-wrapper{position:relative;width:100%;margin-top:4px}
+  #acm-root .dd-wrapper.form-dd{margin-top:0}
   #acm-root .dd-btn{width:100%;text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--input-bg);font-size:.75rem;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-  #acm-root .dd-btn::after{content:"▼";font-size:.55rem;margin-left:6px;color:var(--line-dark)}
-  #acm-root .dd-menu{display:none;position:absolute;top:100%;left:0;width:100%;max-height:200px;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:7px;z-index:100;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,.15);margin-top:4px}
+  #acm-root .dd-btn.placeholder{color:var(--text-sec);font-weight:500}
+  #acm-root .dd-btn::after{content:"▼";font-size:.55rem;margin-left:6px;color:var(--line-dark);flex-shrink:0}
+  #acm-root .dd-menu{display:none;position:absolute;top:100%;left:0;width:100%;max-height:220px;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:7px;z-index:100;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,.15);margin-top:4px}
   #acm-root .dd-menu.open{display:flex;flex-direction:column;gap:6px}
   #acm-root [data-tooltip]{position:relative;cursor:help}
   #acm-root [data-tooltip]:hover::after{content:attr(data-tooltip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:6px 10px;border-radius:6px;font-size:.75rem;white-space:nowrap;z-index:100;margin-bottom:8px;pointer-events:none;font-weight:500;text-transform:none;box-shadow:0 4px 6px rgba(0,0,0,.1)}
@@ -155,6 +157,34 @@
   #acm-root .ppm-sign-line{width:92%;border-top:1px solid #0f172a;padding-top:3px;font-size:9.5px;font-weight:700;color:#334155}
   #acm-root .ppm-doc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:5px;border-top:1px solid #cbd5e1;font-size:9px;color:#475569;margin-top:2px}
   #acm-root .doc-footer-code{font-size:9.5px;font-weight:700;color:#1e293b;margin:0}
+  #acm-root .unit-bar-wrap{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  #acm-root .unit-bar-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  #acm-root .unit-bar-title{font-size:.75rem;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:6px}
+  #acm-root .unit-count-pill{background:#dbeafe;color:var(--accent-2);font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:999px}
+  #acm-root .unit-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #acm-root .unit-act-btn{border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);padding:4px 10px;border-radius:7px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+  #acm-root .unit-act-btn:hover{background:var(--line);color:var(--ink)}
+  #acm-root .unit-act-btn.primary{background:#eff6ff;border-color:#93c5fd;color:var(--accent-2)}
+  #acm-root .unit-act-btn.primary:hover{background:#dbeafe}
+  #acm-root .unit-act-btn.danger{background:#fef2f2;border-color:#fecaca;color:var(--crit)}
+  #acm-root .unit-act-btn.danger:hover{background:#fee2e2}
+  #acm-root .unit-tabs-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  #acm-root .unit-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:8px;border:1.5px solid var(--line);background:var(--input-bg);color:var(--ink-light);font-size:.75rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #acm-root .unit-pill:hover{border-color:#94a3b8;background:#f1f5f9}
+  #acm-root .unit-pill.active{border-color:var(--accent);background:#eff6ff;color:var(--accent-2);box-shadow:0 2px 6px rgba(37,99,235,.15)}
+  #acm-root .unit-pill.complete:not(.active){border-color:#a7f3d0;background:#ecfdf5;color:#065f46}
+  #acm-root .unit-pill-sub{font-size:.66rem;font-weight:600;opacity:.8;max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #acm-root .unit-active-card{background:#f8fafc;border:1px solid #cbd5e1;border-radius:9px;padding:10px 12px}
+  #acm-root .unit-active-banner{font-size:.72rem;font-weight:800;color:var(--accent-2);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  #acm-root .ppm-unit-matrix th{background:#f1f5f9;font-size:9px;font-weight:800;text-transform:uppercase;color:#1e293b;padding:4px 5px}
+  #acm-root .ppm-unit-matrix td{font-size:9.2px;padding:3.5px 5px;vertical-align:top;line-height:1.3}
+  #acm-root .ppm-multi-photo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;border:1px solid #334155;padding:6px;background:#ffffff}
+  #acm-root .ppm-multi-photo-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #acm-root .ppm-multi-photo-grid .ppm-photo-head{padding:2px 5px;font-size:8.5px}
+  #acm-root .ppm-multi-photo-grid .ppm-photo-tag{font-size:7.8px;padding:1px 5px}
+  #acm-root .ppm-multi-photo-grid .ppm-photo-ts{font-size:7.8px}
+  #acm-root .ppm-multi-photo-grid .ppm-photo-stage{height:92px}
+  #acm-root .ppm-multi-photo-grid.compact-5 .ppm-photo-stage{height:82px}
   #acm-root .ref-sec-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   #acm-root .ref-sec-header .sec-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:0}
   #acm-root .ref-cleaning-toggle-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px dashed #38bdf8;background:#f0f9ff;color:#0369a1;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s}
@@ -226,113 +256,21 @@
     #acm-root .doc-page{width:100%!important;min-height:0!important;box-shadow:none!important;margin:0!important;padding:0!important;page-break-after:avoid;page-break-inside:avoid}
     #acm-root .ppm-photo-stage{height:185px!important}
     #acm-root .ppm-photo-grid.cols-3 .ppm-photo-stage{height:170px!important}
+    #acm-root .ppm-multi-photo-grid .ppm-photo-stage{height:84px!important}
+    #acm-root .ppm-multi-photo-grid.compact-5 .ppm-photo-stage{height:74px!important}
   }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div id="acm-root"></div>
 <script>
-(function () {
+(function() {
+  const WEB_APP_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec";
+  const STORE_KEY = "bhs_ppm_records_v2";
+  const DELETE_QUEUE_KEY = "bhs_ppm_delete_queue_v2";
   const ROOT = document.getElementById('acm-root');
-  const STORE_KEY = 'ppm-records-v1';
-  const DELETE_QUEUE_KEY = 'ppm-delete-queue-v1';
-  // IMPORTANT: Replace this URL with your NEW Google Apps Script Web App deployment URL (/exec)
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyD85G0C_ZeJ7Mz2tnz4OilQVxeGEKMitIbEMQmvIC0njcwoeXXLN8h_t0Tyt3J35xg/exec";
+  if (!ROOT) return;
 
-  // IndexedDB Storage Engine (supports large offline Base64 camera photos reliably)
-  const OfflineDB = (function () {
-    const DB_NAME = 'BHS_PPM_OfflineDB';
-    const DB_VERSION = 1;
-    let dbPromise = null;
-
-    function open() {
-      if (dbPromise) return dbPromise;
-      dbPromise = new Promise((resolve, reject) => {
-        if (!window.indexedDB) return reject(new Error('IndexedDB unavailable'));
-        const req = indexedDB.open(DB_NAME, DB_VERSION);
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains('records')) {
-            db.createObjectStore('records', { keyPath: 'createdAt' });
-          }
-          if (!db.objectStoreNames.contains('meta')) {
-            db.createObjectStore('meta', { keyPath: 'key' });
-          }
-        };
-        req.onsuccess = (e) => resolve(e.target.result);
-        req.onerror = (e) => reject(e.target.error);
-      });
-      return dbPromise;
-    }
-
-    async function getAllRecords() {
-      try {
-        const db = await open();
-        return await new Promise((resolve, reject) => {
-          const tx = db.transaction('records', 'readonly');
-          const req = tx.objectStore('records').getAll();
-          req.onsuccess = () => resolve(req.result || []);
-          req.onerror = () => reject(req.error);
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-
-    async function saveAllRecords(records) {
-      try {
-        const db = await open();
-        await new Promise((resolve, reject) => {
-          const tx = db.transaction('records', 'readwrite');
-          const store = tx.objectStore('records');
-          store.clear();
-          (records || []).forEach(rec => {
-            if (rec && rec.createdAt !== undefined && rec.createdAt !== null) {
-              store.put(rec);
-            }
-          });
-          tx.oncomplete = () => resolve(true);
-          tx.onerror = () => reject(tx.error);
-        });
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    async function getMeta(key) {
-      try {
-        const db = await open();
-        return await new Promise((resolve, reject) => {
-          const tx = db.transaction('meta', 'readonly');
-          const req = tx.objectStore('meta').get(key);
-          req.onsuccess = () => resolve(req.result ? req.result.value : null);
-          req.onerror = () => reject(req.error);
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-
-    async function setMeta(key, value) {
-      try {
-        const db = await open();
-        await new Promise((resolve, reject) => {
-          const tx = db.transaction('meta', 'readwrite');
-          tx.objectStore('meta').put({ key, value });
-          tx.oncomplete = () => resolve(true);
-          tx.onerror = () => reject(tx.error);
-        });
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    return { getAllRecords, saveAllRecords, getMeta, setMeta };
-  })();
   const COMPRESSED_DB = {"BM1":{"BM LINE (HINGED DIVERTER TO MTB MAIN SORTER)":["BM4"],"TRANSFER CONVEYOR":["01","06","06-1","11","11-1","13","15","17","20","22","26","28","37"],"POWER CURVE CONVEYOR":["02","07","12","14","16","18","21","23","25","27","35"],"QUEUING CONVEYOR":["03","04","08","09","29","30","31","32","34","38","39"],"INJECTION CONVEYOR":["05","10","42"],"MERGE CONVEYOR":["19","24"],"1ST SCREENING STATION":["33"],"INDEX CONVEYOR":["40","41"]},"BM3":{"TRANSFER CONVEYOR":["01","01-1","03","07","09","13","15","17","19","21","27","29"],"POWER CURVE CONVEYOR":["02","04","08","10","14","16","28"],"QUEUING CONVEYOR":["05","11","22","23","24","25","30","31"],"INJECTION CONVEYOR":["06","12","34"],"MERGE CONVEYOR":["18","20"],"1ST SCREENING STATION":["26"],"INDEX CONVEYOR":["32","33"]},"BM4":{"TRANSFER CONVEYOR":["01","01-1","03","07","09","13","15","17","19","21","27","29","31","33"],"POWER CURVE CONVEYOR":["02","04","08","10","14","16","28","30","32"],"QUEUING CONVEYOR":["05","11","22","23","24","24-1","25","34","35"],"INJECTION CONVEYOR":["06","12","38"],"MERGE CONVEYOR":["18","20"],"1ST SCREENING STATION":["26"],"INDEX CONVEYOR":["36","37"]},"BR1":{"MTB BREAKDOWN CONVEYOR TO CL1 TO CL10":["BR10"],"POWER CURVE CONVEYOR":["01","03","12","14","18"],"TRANSFER CONVEYOR":["02","04","07","08","11","13","15","17","19"],"INJECTION CONVEYOR":["05","20"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["16"],"DIVERTER UNIT":["16-1"],"HINGED DIVERTER CONVEYOR":["16-2","16-3","16-4"]},"BR2":{"POWER CURVE CONVEYOR":["01","03"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","13","13-1","13-2"],"INJECTION CONVEYOR":["05","14"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["12"],"DIVERTER UNIT":["12-1"],"HINGED DIVERTER CONVEYOR":["12-2","12-3","12-4"]},"BR3":{"POWER CURVE CONVEYOR":["01","03","14","16"],"TRANSFER CONVEYOR":["02","04","07","08","11","13","15","17"],"INJECTION CONVEYOR":["05","18"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["12"],"DIVERTER UNIT":["12-1"],"HINGED DIVERTER CONVEYOR":["12-2","12-3","12-4"]},"BR4":{"POWER CURVE CONVEYOR":["01","03","12","16","18"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","13","15","17","19"],"INJECTION CONVEYOR":["05","20"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["14"],"DIVERTER UNIT":["14-1"],"HINGED DIVERTER CONVEYOR":["14-2","14-3","14-4"]},"BR6":{"POWER CURVE CONVEYOR":["01","03","12","16"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","13","14-5","15","17"],"INJECTION CONVEYOR":["05","18"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["14"],"DIVERTER UNIT":["14-1"],"HINGED DIVERTER CONVEYOR":["14-2","14-3","14-4"]},"BR7":{"POWER CURVE CONVEYOR":["01","03","14","16","18","20"],"TRANSFER CONVEYOR":["02","04","07","08","11","13","15","17","19","21"],"INJECTION CONVEYOR":["05","22"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["12"],"DIVERTER UNIT":["12-1"],"HINGED DIVERTER CONVEYOR":["12-2","12-3","12-4"]},"BR8":{"POWER CURVE CONVEYOR":["01","03","12","16"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","13","15","15-1","17"],"INJECTION CONVEYOR":["05","18"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["14"],"DIVERTER UNIT":["14-1"],"HINGED DIVERTER CONVEYOR":["14-2","14-3","14-4"]},"BR9":{"POWER CURVE CONVEYOR":["01","03","14"],"TRANSFER CONVEYOR":["02","04","07","08","11","13","15"],"INJECTION CONVEYOR":["05","16"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["12"],"DIVERTER UNIT":["12-1"],"HINGED DIVERTER CONVEYOR":["12-2","12-3","12-4"]},"BR10":{"POWER CURVE CONVEYOR":["01","03","12","16"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","13","15","17"],"INJECTION CONVEYOR":["05","18"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["14"],"DIVERTER UNIT":["14-1"],"HINGED DIVERTER CONVEYOR":["14-2","14-3","14-4"]},"BR11":{"MTB BREAKDOWN CONVEYOR TO CL11,CL12":["BR12"],"POWER CURVE CONVEYOR":["01","03","12"],"TRANSFER CONVEYOR":["02","04","07","08","11","13"],"INJECTION CONVEYOR":["05"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["14"],"DIVERTER UNIT":["14-1"],"HINGED DIVERTER CONVEYOR":["14-2","14-3","14-4"]},"BR12":{"POWER CURVE CONVEYOR":["01","03","12"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","13"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["14"],"DIVERTER UNIT":["14-1"],"HINGED DIVERTER CONVEYOR":["14-2","14-3","14-4"]},"BR14":{"POWER CURVE CONVEYOR":["01","03","10"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13"],"HINGED DIVERTER":["15"],"DIVERTER UNIT":["15-1"],"HINGED DIVERTER CONVEYOR":["15-2","15-3","15-4"],"QUEUING CONVEYOR":["16"]},"BR15":{"POWER CURVE CONVEYOR":["01","03","10","17"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16","18","20"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13","15"],"HINGED DIVERTER":["19"],"DIVERTER UNIT":["19-1"],"HINGED DIVERTER CONVEYOR":["19-2","19-3","19-4"],"QUEUING CONVEYOR":["21","22"]},"BR16":{"POWER CURVE CONVEYOR":["01","07","10"],"TRANSFER CONVEYOR":["02","03","04","08","11","12","14","16"],"INJECTION CONVEYOR":["05"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13"],"HINGED DIVERTER":["15"],"DIVERTER UNIT":["15-1"],"HINGED DIVERTER CONVEYOR":["15-2","15-3","15-4"],"QUEUING CONVEYOR":["17","18"]},"BR17":{"POWER CURVE CONVEYOR":["01","03","17","21"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16","18","20"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10","13","15"],"HINGED DIVERTER":["19"],"DIVERTER UNIT":["19-1"],"HINGED DIVERTER CONVEYOR":["19-2","19-3","19-4"],"QUEUING CONVEYOR":["22","23"]},"BR18":{"POWER CURVE CONVEYOR":["01","03","19"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16","18"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10","13","15"],"HINGED DIVERTER":["17"],"DIVERTER UNIT":["17-1"],"HINGED DIVERTER CONVEYOR":["17-2","17-3","17-4"],"QUEUING CONVEYOR":["20","21"]},"BR19":{"POWER CURVE CONVEYOR":["01","03","10"],"TRANSFER CONVEYOR":["02","04","07","08","11","12","14"],"INJECTION CONVEYOR":["05"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13"],"HINGED DIVERTER":["15"],"DIVERTER UNIT":["15-1"],"HINGED DIVERTER CONVEYOR":["15-2","15-3","15-4"],"QUEUING CONVEYOR":["16","17"]},"BR20":{"POWER CURVE CONVEYOR":["01","03","17"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10","13"],"HINGED DIVERTER":["15"],"DIVERTER UNIT":["15-1"],"HINGED DIVERTER CONVEYOR":["15-2","15-3","15-4"],"QUEUING CONVEYOR":["18","19"]},"BR21":{"POWER CURVE CONVEYOR":["01","03","15","19"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16","18"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10","13"],"HINGED DIVERTER":["17"],"DIVERTER UNIT":["17-1"],"HINGED DIVERTER CONVEYOR":["17-2","17-3","17-4"],"QUEUING CONVEYOR":["20","21"]},"BR22":{"POWER CURVE CONVEYOR":["01","07","10","15"],"TRANSFER CONVEYOR":["02","03","04","08","11","12","14","16","18"],"INJECTION CONVEYOR":["05"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13"],"HINGED DIVERTER":["17"],"DIVERTER UNIT":["17-1"],"HINGED DIVERTER CONVEYOR":["17-2","17-3","17-4"],"QUEUING CONVEYOR":["19","20"]},"BR23":{"POWER CURVE CONVEYOR":["01","03","10","17","21"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16","18","20"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13","15"],"HINGED DIVERTER":["19"],"DIVERTER UNIT":["19-1"],"HINGED DIVERTER CONVEYOR":["19-2","19-3","19-4"],"QUEUING CONVEYOR":["22","23"]},"BR24":{"POWER CURVE CONVEYOR":["01","03","10","17"],"BREAK DOWN CONVEYOR":["02","06"],"TRANSFER CONVEYOR":["04","07","08","11","12","14","16"],"INJECTION CONVEYOR":["05"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13"],"HINGED DIVERTER":["15"],"DIVERTER UNIT":["15-1"],"HINGED DIVERTER CONVEYOR":["15-2","15-3","15-4"],"QUEUING CONVEYOR":["18","19"]},"BT1":{"HINGED DIVERTER TO SAT TRANSFER SORTER":["BT6"],"TRANSFER CONVEYOR":["01","08","15"],"POWER CURVE CONVEYOR":["02","09","12","14","22"],"DECREASING CONVEYOR":["03","04","10","11"],"QUEUING CONVEYOR":["05","06","16","17","18","19","21","23","24","25"],"INJECTION CONVEYOR":["07","28"],"MERGE CONVEYOR":["13"],"1ST SCREENING STATION":["20"],"INDEX CONVEYOR":["26","27"]},"BT3":{"TRANSFER CONVEYOR":["01","07","11","13"],"DECREASING CONVEYOR":["02","03","08","09"],"QUEUING CONVEYOR":["04","05","14","15","16","17","19","21","22","23","24","25"],"INJECTION CONVEYOR":["06","28"],"POWER CURVE CONVEYOR":["10","12","20"],"MERGE CONVEYOR":["10-1"],"1ST SCREENING STATION":["18"],"INDEX CONVEYOR":["26","27"]},"BT6":{"TRANSFER CONVEYOR":["01","08","13","15","21"],"POWER CURVE CONVEYOR":["02","09","12","14","22"],"DECREASING CONVEYOR":["03","04","10","11"],"QUEUING CONVEYOR":["05","06","16","17","18","19","23","24","25","26","27"],"INJECTION CONVEYOR":["07","30"],"MERGE CONVEYOR":["12-1"],"1ST SCREENING STATION":["20"],"INDEX CONVEYOR":["28","29"]},"CC1":{"CC LINE (CAR PARK CHECK-IN LINE)":["CC2"],"MERGE CONVEYOR":["33-2"],"TRANSFER CONVEYOR":["34","36","38","40","42","43","44","46","50","52","05","07","07-1","08-1","09","09-1","10","12","14","16","19","21","23","25","30","32"],"POWER CURVE CONVEYOR":["35","37","39","41","45","47","49","51","53","08","08-2","11","13","15","17","20","22","24","33"],"DECREASING CONVEYOR":["48"],"QUEUING CONVEYOR":["54","55","56","58","59","33-1"],"1ST SCREENING STATION":["57"],"INDEX CONVEYOR":["60","61"],"INJECTION CONVEYOR":["62"],"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4"],"COLLECTING CONVEYOR":["04"],"SPIRALED POWER CURVE CONVEYOR":["06","25-1","30-1"],"CONFLUENT CONVEYOR":["18"]},"CH1":{"CHECK-IN LINE":["CH12"],"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"POWER CURVE CONVEYOR":["04","14"],"COLLECTING CONVEYOR":["06"],"TRANSFER CONVEYOR":["07"],"CONFLUENT CONVEYOR":["08"],"QUEUING CONVEYOR":["09","10","12","13"],"1ST SCREENING STATION":["11"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"]},"CH2":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"TRANSFER CONVEYOR":["04","08"],"POWER CURVE CONVEYOR":["05","16"],"COLLECTING CONVEYOR":["07"],"CONFLUENT CONVEYOR":["09"],"QUEUING CONVEYOR":["10","11","12","14","15"],"1ST SCREENING STATION":["13"],"INDEX CONVEYOR":["17","18"],"INJECTION CONVEYOR":["19"]},"CH3":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"POWER CURVE CONVEYOR":["04","14"],"COLLECTING CONVEYOR":["06"],"TRANSFER CONVEYOR":["07"],"QUEUING CONVEYOR":["09","10","12","13"],"1ST SCREENING STATION":["11"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"],"CONFLUENT CONVEYOR":["08"]},"CH11":{"CONFLUENT CONVEYOR":["08"],"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"POWER CURVE CONVEYOR":["04","14"],"COLLECTING CONVEYOR":["06"],"TRANSFER CONVEYOR":["07"],"QUEUING CONVEYOR":["09","10","12","13"],"1ST SCREENING STATION":["11"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"]},"CH4":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"TRANSFER CONVEYOR":["04","08"],"POWER CURVE CONVEYOR":["05","16"],"COLLECTING CONVEYOR":["07"],"CONFLUENT CONVEYOR":["09"],"QUEUING CONVEYOR":["10","11","12","14","15"],"1ST SCREENING STATION":["13"],"INDEX CONVEYOR":["17","18"],"INJECTION CONVEYOR":["19"]},"CH5":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"POWER CURVE CONVEYOR":["04","14"],"COLLECTING CONVEYOR":["06"],"TRANSFER CONVEYOR":["07"],"QUEUING CONVEYOR":["09","10","12","13"],"1ST SCREENING STATION":["11"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"],"CONFLUENT CONVEYOR":["08"]},"CH6":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"TRANSFER CONVEYOR":["04","08"],"POWER CURVE CONVEYOR":["05","16"],"COLLECTING CONVEYOR":["07"],"CONFLUENT CONVEYOR":["09"],"QUEUING CONVEYOR":["10","11","12","14","15"],"1ST SCREENING STATION":["13"],"INDEX CONVEYOR":["17","18"],"INJECTION CONVEYOR":["19"]},"CH7":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"POWER CURVE CONVEYOR":["04","14"],"COLLECTING CONVEYOR":["06"],"TRANSFER CONVEYOR":["07"],"QUEUING CONVEYOR":["09","10","12","13"],"1ST SCREENING STATION":["11"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"],"CONFLUENT CONVEYOR":["08"]},"CH8":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"TRANSFER CONVEYOR":["04","08"],"POWER CURVE CONVEYOR":["05","16"],"COLLECTING CONVEYOR":["07"],"CONFLUENT CONVEYOR":["09"],"QUEUING CONVEYOR":["10","11","12","14","15"],"1ST SCREENING STATION":["13"],"INDEX CONVEYOR":["17","18"],"INJECTION CONVEYOR":["19"]},"CH9":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"POWER CURVE CONVEYOR":["04","14"],"COLLECTING CONVEYOR":["06"],"TRANSFER CONVEYOR":["07"],"QUEUING CONVEYOR":["09","10","12","13"],"1ST SCREENING STATION":["11"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"],"CONFLUENT CONVEYOR":["08"]},"CH10":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"TRANSFER CONVEYOR":["04","08"],"POWER CURVE CONVEYOR":["05","16"],"COLLECTING CONVEYOR":["07"],"CONFLUENT CONVEYOR":["09"],"QUEUING CONVEYOR":["10","11","12","14","15"],"1ST SCREENING STATION":["13"],"INDEX CONVEYOR":["17","18"],"INJECTION CONVEYOR":["19"]},"CH12":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6","01-7","01-8","01-9","01-10","01-11","01-12","01-13","01-14","01-15","01-16","01-17","01-18"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6","02-7","02-8","02-9","02-10","02-11","02-12","02-13","02-14","02-15","02-16","02-17","02-18"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6","03-7","03-8","03-9","03-10","03-11","03-12","03-13","03-14","03-15","03-16","03-17","03-18"],"TRANSFER CONVEYOR":["04","08"],"POWER CURVE CONVEYOR":["05","16"],"COLLECTING CONVEYOR":["07"],"CONFLUENT CONVEYOR":["09"],"QUEUING CONVEYOR":["10","11","12","14","15"],"1ST SCREENING STATION":["13"],"INDEX CONVEYOR":["17","18"],"INJECTION CONVEYOR":["19"]},"CL1":{"CROSS HINGED CONVEYOR/UPPER C/V":["01-1","14"],"TRANSFER CONVEYOR":["01-2","03","05","06","11","13","15","17","19","21","23"],"POWER CURVE CONVEYOR":["02","04","07","10","12","16","18","20","22"],"DECREASING CONVEYOR":["08"],"MERGE CONVEYOR":["09"],"RECLAIM CONVEYOR":["25"]},"CL2":{"TRANSFER CONVEYOR":["01","03","05","06","13","14","16","18"],"POWER CURVE CONVEYOR":["02","04","07","09","12","15","17"],"DECREASING CONVEYOR":["08","10"],"MERGE CONVEYOR":["11"],"CROSS HINGED CONVEYOR/LOWER C/V":["13-1"],"CROSS HINGED CONVEYOR/HANGER":["13-2","13-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["13-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["13-5"],"RECLAIM CONVEYOR":["20"]},"CL3":{"TRANSFER CONVEYOR":["01","02","04","06","07","11","13"],"POWER CURVE CONVEYOR":["03","08"],"SPIRALED POWER CURVE CONVEYOR":["05"],"DECREASING CONVEYOR":["09"],"MERGE CONVEYOR":["10"],"CROSS HINGED CONVEYOR/LOWER C/V":["12-1"],"CROSS HINGED CONVEYOR/HANGER":["12-2","12-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["12-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["12-5"],"RECLAIM CONVEYOR":["15"]},"CL4":{"TRANSFER CONVEYOR":["01","03","05","06","10","11","13","15","17"],"POWER CURVE CONVEYOR":["02","04","07","12","14","16"],"DECREASING CONVEYOR":["08"],"MERGE CONVEYOR":["09"],"CROSS HINGED CONVEYOR/UPPER C/V":["10-1"],"RECLAIM CONVEYOR":["19"]},"CL5":{"TRANSFER CONVEYOR":["01","02","04","06","07","12","14","16","18","20","22"],"POWER CURVE CONVEYOR":["03","05","08","11","13","15","19","21"],"DECREASING CONVEYOR":["09"],"MERGE CONVEYOR":["10"],"CROSS HINGED CONVEYOR/UPPER C/V":["17"],"RECLAIM CONVEYOR":["24"]},"CL6":{"TRANSFER CONVEYOR":["01","03","05","06","11","14","16","18"],"POWER CURVE CONVEYOR":["02","04","10","12","15","17"],"SPIRALED POWER CURVE CONVEYOR":["07"],"DECREASING CONVEYOR":["08"],"MERGE CONVEYOR":["09"],"CROSS HINGED CONVEYOR/LOWER C/V":["13-1"],"CROSS HINGED CONVEYOR/HANGER":["13-2","13-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["13-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["13-5"],"RECLAIM CONVEYOR":["20"]},"CL7":{"TRANSFER CONVEYOR":["01","02","04","06","07","10-1","12","14","16","18","20"],"POWER CURVE CONVEYOR":["03","08","11","13","17","19"],"SPIRALED POWER CURVE CONVEYOR":["05"],"DECREASING CONVEYOR":["09"],"MERGE CONVEYOR":["10"],"CROSS HINGED CONVEYOR/UPPER C/V":["15"],"RECLAIM CONVEYOR":["22"]},"CL8":{"TRANSFER CONVEYOR":["01","06","07","08-1","09","11","12","14","16"],"POWER CURVE CONVEYOR":["02","08-2","09-1","13","15"],"DECREASING CONVEYOR":["03","04"],"SPIRALED POWER CURVE CONVEYOR":["05","08"],"MERGE CONVEYOR":["10"],"CROSS HINGED CONVEYOR/LOWER C/V":["11-1"],"CROSS HINGED CONVEYOR/HANGER":["11-2","11-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["11-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["11-5"],"RECLAIM CONVEYOR":["18"]},"CL9":{"TRANSFER CONVEYOR":["01","02","07","08","11","13","15","17","19","21"],"POWER CURVE CONVEYOR":["03","09","12","14","18","20"],"DECREASING CONVEYOR":["04","05"],"SPIRALED POWER CURVE CONVEYOR":["06"],"MERGE CONVEYOR":["10"],"CROSS HINGED CONVEYOR/UPPER C/V":["16"],"RECLAIM CONVEYOR":["23"]},"CL10":{"CROSS HINGED CONVEYOR/UPPER C/V":["01-1"],"TRANSFER CONVEYOR":["01-2","03","05","06","08","14","16","18"],"POWER CURVE CONVEYOR":["02","04","07","09","12","15","17"],"DECREASING CONVEYOR":["10"],"MERGE CONVEYOR":["11"],"CROSS HINGED CONVEYOR/LOWER C/V":["13-1"],"CROSS HINGED CONVEYOR/HANGER":["13-2","13-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["13-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["13-5"],"RECLAIM CONVEYOR":["20"]},"CL11":{"TRANSFER CONVEYOR":["01","03","05","07","09"],"POWER CURVE CONVEYOR":["02","04","08"],"CROSS HINGED CONVEYOR/LOWER C/V":["06-1"],"CROSS HINGED CONVEYOR/HANGER":["06-2","06-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["06-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["06-5"],"RECLAIM CONVEYOR":["11"]},"CL12":{"TRANSFER CONVEYOR":["01","02","04","06","08","10","11","13","15","17"],"POWER CURVE CONVEYOR":["03","05","07","09","12","14","16"],"CROSS HINGED CONVEYOR/UPPER C/V":["10-1"],"RECLAIM CONVEYOR":["19"]},"EE1":{"EBS TO EBS":["EE2"],"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05"],"INDEX CONVEYOR":["06"]},"EE2":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05"],"INDEX CONVEYOR":["06"]},"EM1":{"EBS TO MTB MAIN SORTER":["EM2"],"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"POWER CURVE CONVEYOR":["05","07","09","11","14","16","19"],"TRANSFER CONVEYOR":["06","08","10","12","13","15","17"],"QUEUING CONVEYOR":["18"],"INDEX CONVEYOR":["20","21"],"INJECTION CONVEYOR":["22"]},"EM2":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"POWER CURVE CONVEYOR":["05","07","09","11","14","16","19"],"TRANSFER CONVEYOR":["06","08","10","12","13","15","17"],"QUEUING CONVEYOR":["18"],"INDEX CONVEYOR":["20","21"],"INJECTION CONVEYOR":["22"]},"ES1":{"EBS STORAGE CONVEYOR":["ES50"],"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06","07","08","09","10","11","12","13","14","15","16"],"INDEX CONVEYOR FOR EBS":["17"]},"ES2":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES3":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES4":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES5":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES6":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES7":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES8":{"............":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES9":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES10":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES11":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES12":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES13":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES14":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES15":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES16":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES17":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES18":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES19":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES20":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES21":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES22":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES23":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES24":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES25":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES26":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06","07","08","09","10","11","12","13","14","15","16"],"INDEX CONVEYOR FOR EBS":["17"]},"ES27":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES28":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES29":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES30":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES31":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES32":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES33":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES34":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES35":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES36":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES37":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES38":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES39":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES40":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES41":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES42":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES43":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES44":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES45":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES46":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES47":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES48":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES49":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"ES50":{"TAKE AWAY CONVEYOR FOR EBS":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05"],"QUEUING CONVEYOR":["06"],"INDEX CONVEYOR FOR EBS":["07"]},"HR1":{"TRANSFER CONVEYOR":["01","02","04","06","07"],"ROLLER CONVEYOR":["03","08"],"POWER CURVE CONVEYOR":["05"]},"ME1":{"MAIN SORTER TO EBS":["ME2"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","11","13","15","17","19","21","21-1"],"SPIRALED POWER CURVE CONVEYOR":["05","08"],"POWER CURVE CONVEYOR":["10","12","14","16","18","22"],"HINGED BELT CONVEYOR":["20-1"],"DECREASING CONVEYOR":["23"],"QUEUING CONVEYOR":["24","25","26"],"INDEX CONVEYOR FOR EBS":["27"]},"ME2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","11","13","15","17","21","23"],"SPIRALED POWER CURVE CONVEYOR":["05","08"],"POWER CURVE CONVEYOR":["10","12","14","18","20","22"],"HINGED BELT CONVEYOR":["16-1"],"DECREASING CONVEYOR":["19"],"QUEUING CONVEYOR":["24","25","26"],"INDEX CONVEYOR FOR EBS":["27"]},"MF1":{"MAIN SORTER TO FINAL SORTER":["MF6"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","10"],"POWER CURVE CONVEYOR":["06","11"],"DECREASING CONVEYOR":["07"],"SPIRALED POWER CURVE CONVEYOR":["08"],"TRANSFER CONVEYOR":["09"],"INDEX CONVEYOR":["12","13"],"INJECTION CONVEYOR":["14"]},"MF2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","09"],"DECREASING CONVEYOR":["06"],"POWER CURVE CONVEYOR":["07","10"],"TRANSFER CONVEYOR":["08"],"INDEX CONVEYOR":["11","12"],"INJECTION CONVEYOR":["13"]},"MF3":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","09"],"DECREASING CONVEYOR":["06"],"POWER CURVE CONVEYOR":["07","10"],"TRANSFER CONVEYOR":["08"],"INDEX CONVEYOR":["11","12"],"INJECTION CONVEYOR":["13"]},"MF4":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","11"],"DECREASING CONVEYOR":["06"],"POWER CURVE CONVEYOR":["07","09","12"],"TRANSFER CONVEYOR":["08","10"],"INDEX CONVEYOR":["13","14"],"INJECTION CONVEYOR":["15"]},"MF5":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","09","12"],"QUEUING CONVEYOR":["05","06","07","11"],"DECREASING CONVEYOR":["08"],"TRANSFER CONVEYOR":["10"],"INDEX CONVEYOR":["13","14"],"INJECTION CONVEYOR":["15"]},"MF6":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","11"],"DECREASING CONVEYOR":["06"],"POWER CURVE CONVEYOR":["07","09","12"],"TRANSFER CONVEYOR":["08","10"],"INDEX CONVEYOR":["13","14"],"INJECTION CONVEYOR":["15"]},"MM1":{"BETWEEN MAIN SORTERS":["MM2"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","14","15","16"],"DECREASING CONVEYOR":["06"],"POWER CURVE CONVEYOR":["07","10","12","17"],"TRANSFER CONVEYOR":["08","09","11","13"],"INDEX CONVEYOR":["18","19"],"INJECTION CONVEYOR":["20"]},"MM2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","13","14","15","16"],"DECREASING CONVEYOR":["06"],"POWER CURVE CONVEYOR":["07","10","12","17"],"TRANSFER CONVEYOR":["08","09","11"],"INDEX CONVEYOR":["18","19"],"INJECTION CONVEYOR":["20"]},"MN1":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","11"],"SPIRALED POWER CURVE CONVEYOR":["05","08"],"POWER CURVE CONVEYOR":["10"],"QUEUING CONVEYOR":["12","13"]},"MN2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","10","12","14"],"SPIRALED POWER CURVE CONVEYOR":["05","11"],"POWER CURVE CONVEYOR":["08","13"],"QUEUING CONVEYOR":["15","16"]},"MN3":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","10-1","11","12"],"SPIRALED POWER CURVE CONVEYOR":["05","08"],"POWER CURVE CONVEYOR":["10"]},"MN4":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","10","12"],"SPIRALED POWER CURVE CONVEYOR":["05","08"],"POWER CURVE CONVEYOR":["11"],"QUEUING CONVEYOR":["13","14"]},"MN5":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","11","12-1"],"SPIRALED POWER CURVE CONVEYOR":["05","08","10"],"POWER CURVE CONVEYOR":["12"],"QUEUING CONVEYOR":["13","14"]},"MN6":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"TRANSFER CONVEYOR":["04","06","07","09","11","12"],"SPIRALED POWER CURVE CONVEYOR":["05"],"POWER CURVE CONVEYOR":["08","10"]},"NF1":{"HIGH SPEED CONVEYOR TO FINAL SORTER":["NF2"],"TRANSFER CONVEYOR":["01","02","03","04","05","06","08","10"],"POWER CURVE CONVEYOR":["07","09","12"],"DECREASING CONVEYOR":["11","13"],"QUEUING CONVEYOR":["14","15"],"INDEX CONVEYOR":["16","17"],"INJECTION CONVEYOR":["18"]},"NF2":{"TRANSFER CONVEYOR":["01","02","03","04","05","06","07","09","11","13","15"],"POWER CURVE CONVEYOR":["08","10","12","14","17"],"DECREASING CONVEYOR":["16","18"],"QUEUING CONVEYOR":["19","20"],"INDEX CONVEYOR":["21","22"],"INJECTION CONVEYOR":["23"]},"NM1":{"HIGH SPEED CONVEYOR TO MAIN SORTER":["NM2"],"TRANSFER CONVEYOR":["01","02","04","06","08","10","15","16","18","20"],"POWER CURVE CONVEYOR":["03","05","07","09","11","14","19","24"],"DECREASING CONVEYOR":["12","13"],"SPIRALED POWER CURVE CONVEYOR":["17"],"QUEUING CONVEYOR":["21","22","23"],"INDEX CONVEYOR":["25","26"],"INJECTION CONVEYOR":["27"]},"NM2":{"TRANSFER CONVEYOR":["01","02","04","06","07","12","13","15","17"],"POWER CURVE CONVEYOR":["03","05","08","11","16","21"],"DECREASING CONVEYOR":["09","10"],"SPIRALED POWER CURVE CONVEYOR":["14"],"QUEUING CONVEYOR":["18","19","20"],"INDEX CONVEYOR":["22","23"],"INJECTION CONVEYOR":["24"]},"NN1":{"INDEX CONVEYOR":["01-1","01-3"],"INJECTION CONVEYOR":["01-2"],"POWER CURVE CONVEYOR":["01-4","02","09","11","30","38","42","44"],"MERGE CONVEYOR":["01-5"],"TRANSFER CONVEYOR":["04","05","06","08","10","12","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","39","41","43","45","46","47"],"HINGED BELT CONVEYOR":["07-1","40-1"],"INCREASING / DECREASING CONVEYOR":["13","14"],"DECREASING / INCREASING CONVEYOR":["35","36"],"DECREASING CONVEYOR":["37"],"REVERSIBLE HIGH SPEED CONVEYOR":["NN2"]},"NN2":{"HINGED BELT CONVEYOR":["07-1","42-1"],"TRANSFER CONVEYOR":["08","10","12","14","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","33","34","35","36","41","43","45","47","02","04","06"],"POWER CURVE CONVEYOR":["09","11","13","32","40","44","46","01-2","03","05"],"INCREASING / DECREASING CONVEYOR":["15","16"],"DECREASING / INCREASING CONVEYOR":["37","38"],"DECREASING CONVEYOR":["39"],"INDEX CONVEYOR":["01-1","01-4"],"INJECTION CONVEYOR":["01-3"],"MERGE CONVEYOR":["01-5"]},"NN3":{"FROM SAT TO MTB (HIGH SPEED CONVEYOR)":["NN6"],"INDEX CONVEYOR":["01-1","01-4","10","45","61"],"POWER CURVE CONVEYOR":["01-2","02","04","06","08","30","38","41","43","49","53","56","58","60"],"INJECTION CONVEYOR":["01-3"],"MERGE CONVEYOR":["01-5","11","51"],"TRANSFER CONVEYOR":["03","05","07","12","13","16","17","18","19","20","21","22","23","24","25","26","27","28","29","31","32","33","34","39","40","42","44","48","50","52","54","55","57","59"],"QUEUING CONVEYOR":["09","46","62"],"INCREASING CONVEYOR":["14","15"],"DECREASING CONVEYOR":["35","36","37"],"HINGED DIVERTER":["47","63"],"DIVERTER UNIT":["47-1","63-1"],"HINGED DIVERTER CONVEYOR":["47-2","47-3","47-4","63-2","63-3","63-4"],"CROSS HINGED CONVEYOR/LOWER C/V":["54-1"],"CROSS HINGED CONVEYOR/CHAIN BLOCK":["54-2","54-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["54-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["54-5"]},"NN4":{"INDEX CONVEYOR":["01-1","01-4","42"],"POWER CURVE CONVEYOR":["01-2","03","05","07","09","11","29","37"],"INJECTION CONVEYOR":["01-3"],"MERGE CONVEYOR":["01-5"],"TRANSFER CONVEYOR":["02","04","06","08","10","12","15","16","17","18","19","20","21","22","23","24","25","26","27","28","30","31","32","33","38","39","40","41"],"INCREASING CONVEYOR":["13","14"],"DECREASING CONVEYOR":["34","35","36"],"CROSS HINGED CONVEYOR/LOWER C/V":["38-1"],"CROSS HINGED CONVEYOR/HANGER":["38-2","38-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["38-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["38-5"],"QUEUING CONVEYOR":["43"],"HINGED DIVERTER":["44"],"DIVERTER UNIT":["44-1"],"HINGED DIVERTER CONVEYOR":["44-2","44-3","44-4"]},"NN5":{"INDEX CONVEYOR":["01-1","01-4","10","39","60"],"POWER CURVE CONVEYOR":["01-2","02","04","06","13","31","43","45","49","52","54","56"],"INJECTION CONVEYOR":["01-3"],"MERGE CONVEYOR":["01-5","11","47"],"TRANSFER CONVEYOR":["03","05","07","12","14","17","18","19","20","21","22","23","24","25","26","27","28","29","30","32","33","34","35","42","44","46","48","50","51","53","55","57","59"],"QUEUING CONVEYOR":["08","09","40","61"],"INCREASING CONVEYOR":["15","16"],"DECREASING CONVEYOR":["36","37","38"],"HINGED DIVERTER":["41","62"],"DIVERTER UNIT":["41-1","62-1"],"HINGED DIVERTER CONVEYOR":["41-2","41-3","41-4","62-2","62-3","62-4"],"CROSS HINGED CONVEYOR/LOWER C/V":["50-1"],"CROSS HINGED CONVEYOR/CHAIN BLOCK":["50-2","50-3"],"CROSS HINGED CONVEYOR/SHORT C/V":["50-4"],"CROSS HINGED CONVEYOR/FOLD C/V":["50-5"],"SPIRALED POWER CURVE CONVEYOR":["58"]},"NN6":{"INDEX CONVEYOR":["01-1","01-4","49"],"POWER CURVE CONVEYOR":["01-2","03","05","07","09","27","35","37","39","41","45","47"],"INJECTION CONVEYOR":["01-3"],"MERGE CONVEYOR":["01-5"],"TRANSFER CONVEYOR":["02","04","06","08","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","28","29","30","31","36","38","40","42","44","46","48"],"INCREASING CONVEYOR":["10","11"],"DECREASING CONVEYOR":["32","33","34"],"CROSS HINGED CONVEYOR/UPPER C/V":["43"],"QUEUING CONVEYOR":["50"],"HINGED DIVERTER":["51"],"DIVERTER UNIT":["51-1"],"HINGED DIVERTER CONVEYOR":["51-2","51-3","51-4"]},"NN7":{"FROM MTB TO SAT FINAL SORTER":["NN8"],"INDEX CONVEYOR":["01-1","01-2","46","60","61","73","74"],"INJECTION CONVEYOR":["01-3","62","75"],"MERGE CONVEYOR":["01-4"],"TRANSFER CONVEYOR":["02","03","04","05","07","10","11","12","13","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","34","36","37","38","39","40","42","44","45","49","50","52","54","63","65","67"],"POWER CURVE CONVEYOR":["06","14","33","35","41","43","51","53","56","64","66","69"],"INCREASING CONVEYOR":["08","09"],"DECREASING CONVEYOR":["30","31","32","55","57","68","70"],"QUEUING CONVEYOR":["47","58","59","71","72"],"HINGED DIVERTER":["48"],"DIVERTER UNIT":["48-1"],"HINGED DIVERTER CONVEYOR":["48-2","48-3","48-4"]},"NN8":{"INDEX CONVEYOR":["01-1","01-2","49","63","64","76","77"],"INJECTION CONVEYOR":["01-3","65","78"],"MERGE CONVEYOR":["01-4"],"TRANSFER CONVEYOR":["02","03","04","06","09","10","11","12","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","33","35","36","38","40","41","42","43","45","47","48","52","53","55","57","66","68","70"],"POWER CURVE CONVEYOR":["05","13","32","34","37","39","44","46","54","56","59","67","69","72"],"INCREASING CONVEYOR":["07","08"],"DECREASING CONVEYOR":["29","30","31","58","60","71","73"],"QUEUING CONVEYOR":["50","61","62","74","75"],"HINGED DIVERTER":["51"],"DIVERTER UNIT":["51-1"],"HINGED DIVERTER CONVEYOR":["51-2","51-3","51-4"]},"NR1":{"NO READ LINE":["NR2"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","08"],"POWER CURVE CONVEYOR":["03","09","11","13","18"],"DECREASING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05","07","10","12"],"SPIRALED POWER CURVE CONVEYOR":["06"],"QUEUING CONVEYOR":["14","15","16","17","19"],"INDEX CONVEYOR":["20","21"],"INJECTION CONVEYOR":["22"]},"NR2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","08"],"POWER CURVE CONVEYOR":["03","10","12","14","19"],"DECREASING CONVEYOR":["04","13"],"TRANSFER CONVEYOR":["05","07","09","11"],"SPIRALED POWER CURVE CONVEYOR":["06"],"QUEUING CONVEYOR":["15","16","17","18","20"],"INDEX CONVEYOR":["21","22"],"INJECTION CONVEYOR":["23"]},"OA1":{"MTB GL TO ARRIVAL (OOG LINE)":["OA2"],"TRANSFER CONVEYOR":["03","04","06","08"],"POWER CURVE CONVEYOR":["05","07"],"BREAK DOWN CONVEYOR":["09"],"ROLLER CONVEYOR":["10"]},"OA2":{"TRANSFER CONVEYOR":["06","07","09","11"],"POWER CURVE CONVEYOR":["08","10"],"BREAK DOWN CONVEYOR":["12"],"ROLLER CONVEYOR":["13"]},"OC1":{"CHECK-IN TO MTB GL (OOG LINE)":["OC2"],"ROLLER CONVEYOR":["01-2","01-1","12"],"WEIGH CONVEYOR FOR OOG":["01"],"TRANSFER CONVEYOR":["02","04","06","07","08","10"],"POWER CURVE CONVEYOR":["03","05"],"HINGED DIVERTER (FOR OOG)":["09"],"DIVERTER UNIT":["09-1"],"HINGED DIVERTER CONVEYOR":["09-2","09-3","09-4"],"BREAK DOWN CONVEYOR":["11"]},"OC2":{"ROLLER CONVEYOR":["01-1","01-2","12"],"WEIGH CONVEYOR FOR OOG":["01"],"TRANSFER CONVEYOR":["02","04","06","07","08","10"],"POWER CURVE CONVEYOR":["03","05"],"HINGED DIVERTER (FOR OOG)":["09"],"DIVERTER UNIT":["09-1"],"HINGED DIVERTER CONVEYOR":["09-2","09-3","09-4"],"BREAK DOWN CONVEYOR":["11"]},"ON1":{"BETWEEN MTB AND SAT (OOG LINE)":["ON2"],"BREAK DOWN CONVEYOR":["01-1","58"],"TRANSFER CONVEYOR":["01-2","01","04","06","06-1","09","10","11","12","13","19","20","21","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","46","48","49","53","55","56","57"],"POWER CURVE CONVEYOR":["02","05","14","22","45","47","52","54"],"INCREASING / DECREASING CONVEYOR":["06-2","07","08","15","16","17","18"],"DECREASING / INCREASING CONVEYOR":["42","43","44","50","51"],"ROLLER CONVEYOR":["59"]},"ON2":{"ROLLER CONVEYOR":["01"],"BREAK DOWN CONVEYOR":["02","60"],"TRANSFER CONVEYOR":["03","04","06","08","12","13","15","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","40","41","46","48","50","54","56","58","59"],"POWER CURVE CONVEYOR":["05","07","09","14","16","39","45","47","49","53","55","57"],"INCREASING / DECREASING CONVEYOR":["10","11","17","18","19"],"DECREASING / INCREASING CONVEYOR":["42","43","44","51","52"]},"RC1":{"TRANSFER CONVEYOR":["20","20B","26","33","33-1","35","37","39","41","43","45","46","48","50","52","54","58","59","63"],"POWER CURVE CONVEYOR (90 degrees)":["20A","20C"],"POWER CURVE CONVEYOR":["21","34","36","38","40","42","44","47","49","51","53","64"],"QUEUING CONVEYOR":["22","23","55","56","60","61","65","66"],"INJECTION CONVEYOR":["24","69"],"MERGE CONVEYOR":["19"],"SPIRALED POWER CURVE CONVEYOR":["25","27","28","29","30","31","57"],"CONFLUENT CONVEYOR":["32"],"1ST SCREENING STATION":["62"],"INDEX CONVEYOR":["67","68"]},"SC1":{"3RD SCREENING STATION":["SC2","16"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"DECREASING CONVEYOR":["04"],"POWER CURVE CONVEYOR":["05","19","24"],"QUEUING CONVEYOR":["06","07","08","09","10","11","12","13","14","17","18","21","22","23"],"TRANSFER CONVEYOR":["20","25"],"INDEX CONVEYOR":["26","27"],"INJECTION CONVEYOR":["28"]},"SC2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","06"],"POWER CURVE CONVEYOR":["03","05","19","24"],"TRANSFER CONVEYOR":["04","20","25"],"QUEUING CONVEYOR":["07","08","09","10","11","12","13","14","17","18","21","22","23"],"3RD SCREENING STATION":["16"],"INDEX CONVEYOR":["26","27"],"INJECTION CONVEYOR":["28"]},"SC3A":{"4TH SCREENING LINE":["SC3B"],"TAKE AWAY CONVEYOR":["24","01"],"CONFLUENT CONVEYOR":["25","26","02","03"],"DECREASING CONVEYOR":["27","30","31"],"POWER CURVE CONVEYOR":["28","05","07","12","14","19","22"],"MERGE CONVEYOR":["29"],"TRANSFER CONVEYOR":["32","33","04","06","08","09","10","11","13","15","16","17","18"],"ROLLER CONVEYOR":["34"],"QUEUING CONVEYOR":["20","21"],"INJECTION CONVEYOR":["23"]},"SX1":{"3RD SCREENING STATION":["SX4","18"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","13","20"],"DECREASING CONVEYOR":["05","06"],"QUEUING CONVEYOR":["07","08","09","10","11","12","14","15","19","21","22"],"INDEX CONVEYOR":["23","24"],"INJECTION CONVEYOR":["25"]},"SX2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","13","20"],"DECREASING CONVEYOR":["05","06"],"QUEUING CONVEYOR":["07","08","09","10","11","12","14","15","19","21","22"],"3RD SCREENING STATION":["18"],"INDEX CONVEYOR":["23","24"],"INJECTION CONVEYOR":["25"]},"SX4":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","09","14"],"DECREASING CONVEYOR":["05"],"QUEUING CONVEYOR":["06","07","08","10","13"],"3RD SCREENING STATION":["12"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"]},"TC1":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4","01-5","01-6"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4","02-5","02-6"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4","03-5","03-6"],"COLLECTING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05","07","08","11","12","14","14-1","14-3"],"SPIRALED POWER CURVE CONVEYOR":["06","12-1"],"POWER CURVE CONVEYOR":["09","14-2","16-1"],"CONFLUENT CONVEYOR":["10"],"QUEUING CONVEYOR":["16"],"INJECTION CONVEYOR":["17"]},"TF1":{"TRANSFER SORTER TO FINAL SORTER":["TF4"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","09","11","14"],"QUEUING CONVEYOR":["05","06","07","16","17"],"TRANSFER CONVEYOR":["08","10","12","15"],"DECREASING CONVEYOR":["13"],"INDEX CONVEYOR":["18","19"],"INJECTION CONVEYOR":["20"]},"TF2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"POWER CURVE CONVEYOR":["04","09","11","14"],"QUEUING CONVEYOR":["05","06","07","16","17"],"TRANSFER CONVEYOR":["08","10","12","15"],"DECREASING CONVEYOR":["13"],"INDEX CONVEYOR":["18","19"],"INJECTION CONVEYOR":["20"]},"TF4":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"POWER CURVE CONVEYOR":["04","09","11","14","16","20","22","24","26","30","32","34","36","38","40","43"],"QUEUING CONVEYOR":["05","06","07","45","46"],"TRANSFER CONVEYOR":["08","10","12","13","15","17","18","19","21","23","25","27","28","29","31","33","35","37","39","41","44"],"DECREASING CONVEYOR":["42"],"INDEX CONVEYOR":["47","48"],"INJECTION CONVEYOR":["49"]},"TN1":{"TRANSFER SORTER TO HIGH SPEED CONVEYOR":["TN2"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","07","11"],"TRANSFER CONVEYOR":["05","06","08","10"],"SPIRALED POWER CURVE CONVEYOR":["09"],"QUEUING CONVEYOR":["12","13"],"INDEX CONVEYOR":["14"],"INJECTION CONVEYOR":["15"]},"TN2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","06","08","11","13"],"TRANSFER CONVEYOR":["05","07","09","10","12","14","16"],"SPIRALED POWER CURVE CONVEYOR":["15"],"QUEUING CONVEYOR":["17","18"],"INDEX CONVEYOR":["19"],"INJECTION CONVEYOR":["20"]},"TT1":{"BETWEEN TRANSFER SORTERS":["TT2"],"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","27","28"],"TRANSFER CONVEYOR":["06","08","10","12","14","15","16","18","20","22","24","25","26"],"POWER CURVE CONVEYOR":["07","09","11","13","17","19","21","23","29"],"INDEX CONVEYOR":["30","31"],"INJECTION CONVEYOR":["32"]},"TT2":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","21","22"],"TRANSFER CONVEYOR":["06","08","09","10","12","14","15","16","17","18","20"],"POWER CURVE CONVEYOR":["07","11","13","19"],"INDEX CONVEYOR":["23","24"],"INJECTION CONVEYOR":["25"]},"SB1":{"TRANSFER CONVEYOR":["1"]},"SB2":{"TRANSFER CONVEYOR":["1"]},"FS1":{"STAGING RACK":["02"],"MAKE-UP CHUTE":["03"]},"FS2":{"STAGING RACK":["02"],"MAKE-UP CHUTE":["03"]},"FS3":{"STAGING RACK":["02"],"MAKE-UP CHUTE":["03"]},"FS4":{"STAGING RACK":["02"],"MAKE-UP CHUTE":["03"]},"BC1":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4"],"COLLECTING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05","07","09","10","11","13","15","17","19","22","33","35","35-1","37","39","41","43","45","47","48","50","52","54","56","60","61","65","67"],"POWER CURVE CONVEYOR":["06","08","12","14","23","36","38","40","42","44","46","49","51","53","55","66"],"SPIRALED POWER CURVE CONVEYOR":["16","18","20","26","27","28","29","30","31","32","59"],"MERGE CONVEYOR":["21"],"QUEUING CONVEYOR":["24","57","58","62","63","68","69"],"INJECTION CONVEYOR":["25","72"],"CONFLUENT CONVEYOR":["34"],"1ST SCREENING STATION":["64"],"INDEX CONVEYOR":["70","71"]},"BM2":{"TRANSFER CONVEYOR":["01","03","07","07-1","09","11","13","15","17","19","21","23","25","29","31","33","35","37","43","45","47","49"],"POWER CURVE CONVEYOR":["02","04","08","10","12","14","18","20","22","26","30","32","36","44","46","48"],"QUEUING CONVEYOR":["05","38","39","40","41","50","51"],"INJECTION CONVEYOR":["06","16","54"],"MERGE CONVEYOR":["24","34"],"1ST SCREENING STATION":["42"],"INDEX CONVEYOR":["52","53"]},"BR5":{"POWER CURVE CONVEYOR":["01","03","14","16","16-2"],"TRANSFER CONVEYOR":["02","04","07","08","11","13","13-1","15","16-1","17"],"INJECTION CONVEYOR":["05","18"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["10"],"HINGED DIVERTER":["12"],"DIVERTER UNIT":["12-1"],"HINGED DIVERTER CONVEYOR":["12-2","12-3","12-4"]},"BR13":{"POWER CURVE CONVEYOR":["01","03","10"],"TRANSFER CONVEYOR":["02","04","07","08","11","12","14"],"INJECTION CONVEYOR":["05"],"BREAK DOWN CONVEYOR":["06"],"MERGE CONVEYOR":["09"],"SPIRALED POWER CURVE CONVEYOR":["13"],"HINGED DIVERTER":["15"],"DIVERTER UNIT":["15-1"],"HINGED DIVERTER CONVEYOR":["15-2","15-3","15-4"],"QUEUING CONVEYOR":["16","17"]},"BT2":{"TRANSFER CONVEYOR":["01","07","11","13"],"DECREASING CONVEYOR":["02","03","08","09"],"QUEUING CONVEYOR":["04","05","14","15","16","17","19","21","22","23"],"INJECTION CONVEYOR":["06","26"],"POWER CURVE CONVEYOR":["10","12","20"],"MERGE CONVEYOR":["10-1"],"1ST SCREENING STATION":["18"],"INDEX CONVEYOR":["24","25"]},"BT4":{"TRANSFER CONVEYOR":["01","08","15"],"POWER CURVE CONVEYOR":["02","09","12","14","22"],"DECREASING CONVEYOR":["03","04","10","11"],"QUEUING CONVEYOR":["05","06","16","17","18","19","21","23","24","25","26"],"INJECTION CONVEYOR":["07","29"],"MERGE CONVEYOR":["13"],"1ST SCREENING STATION":["20"],"INDEX CONVEYOR":["27","28"]},"BT5":{"TRANSFER CONVEYOR":["01","09","14"],"POWER CURVE CONVEYOR":["02","10","13","15","21"],"DECREASING CONVEYOR":["03","04","11","12"],"QUEUING CONVEYOR":["06","07","16","17","18","19","22","23","24"],"INJECTION CONVEYOR":["08","27"],"MERGE CONVEYOR":["13-1"],"1ST SCREENING STATION":["20"],"INDEX CONVEYOR":["25","26"]},"CC2":{"WEIGH CONVEYOR":["01-1","01-2","01-3","01-4"],"LABEL CONVEYOR":["02-1","02-2","02-3","02-4"],"DISPATCH CONVEYOR":["03-1","03-2","03-3","03-4"],"COLLECTING CONVEYOR":["04"],"TRANSFER CONVEYOR":["05","07","08-1","08-3","08-5","08-6","08-8","09","09-1","10","10-1","12","14","16","19","21","23","25","27","29","31","32","34","36","38","40","44","49","51"],"POWER CURVE CONVEYOR":["06","08","08-2","08-4","08-7","08-9","11","13","15","17","20","22","24","26","28","30","33","35","37","39","50"],"CONFLUENT CONVEYOR":["18"],"QUEUING CONVEYOR":["41","42","45","46","47","52","53"],"SPIRALED POWER CURVE CONVEYOR":["43"],"1ST SCREENING STATION":["48"],"INDEX CONVEYOR":["54","55"],"INJECTION CONVEYOR":["56"]},"MN7":{"TRANSFER CONVEYOR":["01","03","05"],"POWER CURVE CONVEYOR":["02","04","06"],"QUEUING CONVEYOR":["07","07-1"],"INJECTION CONVEYOR":["08"]},"MN8":{"TRANSFER CONVEYOR":["01","01-1"],"POWER CURVE CONVEYOR":["02"],"QUEUING CONVEYOR":["03","04"],"INJECTION CONVEYOR":["05"]},"SC3B":{"TRANSFER CONVEYOR":["01","02","04","05","09","10","12","14","20","24","26","27","28","29","30","31","32","34"],"INCREASING CONVEYOR":["03"],"INDEX CONVEYOR":["06","17","18","37","38"],"QUEUING CONVEYOR":["07","15","16","35","36"],"HINGED DIVERTER":["08"],"DIVERTER UNIT":["08-1"],"HINGED DIVERTER CONVEYOR":["08-2","08-3","08-4"],"DECREASING CONVEYOR":["11","22"],"POWER CURVE CONVEYOR":["13","21","23","25","33"],"INJECTION CONVEYOR":["19","39"]},"SX3":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","04"],"POWER CURVE CONVEYOR":["03","09","14"],"DECREASING CONVEYOR":["05"],"QUEUING CONVEYOR":["06","07","08","10","13"],"3RD SCREENING STATION":["12"],"INDEX CONVEYOR":["15","16"],"INJECTION CONVEYOR":["17"]},"TF3":{"TAKE AWAY CONVEYOR":["01"],"CONFLUENT CONVEYOR":["02","03"],"QUEUING CONVEYOR":["04","05","38","39"],"POWER CURVE CONVEYOR":["06","08","11","13","15","17","21","23","27","29","31","33","36"],"TRANSFER CONVEYOR":["07","09","10","12","14","16","18","19","20","22","24","25","26","28","30","32","34","37"],"DECREASING CONVEYOR":["35"],"INDEX CONVEYOR":["40","41"],"INJECTION CONVEYOR":["42"]}};
   const EQUIP_DB = {};
   for(const line in COMPRESSED_DB){
@@ -341,74 +279,367 @@
       COMPRESSED_DB[line][desc].forEach(no=>{EQUIP_DB[line][no]=desc;});
     }
   }
-  const CONF_PASS = {'Anisah':'134510','Azlan':'111306','Eylia':'131091','Fairus':'123092','Fariz':'134828','Hafizah':'134449','Khairoulnizam':'110143','Samsulnazri':'111289','Zahidah':'131530','Zulkiple':'133513'};
-  const CONF_NAMES = Object.keys(CONF_PASS).sort();
-  const TECH_NAMES = Array.from(new Set([
-    "Shahrulnizam", "A'zzuddin", "Soo Yun Loy", "Halim", "Hazaidi", "Fazli",
-    "Hakimi", "Muzafar", "Adam", "Adnan", "Ikhwan", "Saifuddin", "Afiq",
-    "Rezlan", "Wazli", "Rashlan", "Shaharil", "Syafiq", "Asyraf", "Shippy",
-    "Emirul", "Azmi", "Shahrul", "Syahmi", "Fazreen", "Iltizam", "Nuur",
-    "Eaw Guan Huat", "Teong Meng Kow", "Omar", "Aziman", "Farid", "Ammar",
-    "Khairulazman", "Taufik", "Zahari", "Aminullah", "Harith", "Saiful",
-    "Firkhan", "Hanif", "Razif", "Zaini", "Ruhaizan", "Sani", "Khairil",
-    "Rafi", "Ifsan", "Irfan", "Zarizee", "Rahim", "Nizam", "Yassin",
-    "Luqman", "Iman", "Chang Chak Foo", "Tai Mun Kon", "Daud", "Hashim",
-    "Shafri"
-  ])).sort((a, b) => a.localeCompare(b));
-  const TO_NAMES = Array.from(new Set([
-    "Amirul", "Azammudin", "Hazim", "Zarizal", "Ainuddin", "Azman",
-    "Zahiruddin", "Jafri", "Norizan", "Rashidi", "Azraf", "Asree",
-    "Zaki", "Johari", "Sharipunnahar", "Zubir", "Shamsul", "Fauzi"
-  ])).sort((a, b) => a.localeCompare(b));
-  const CATS = { opError:'Op.Error', stoppage:'Stoppage', damage:'Damage', noise:'Noise etc.', othersType1:'Others' };
-  const CATS2 = { mech:'Mechanical', elec:'Electrical', it:'I.T.', operation:'Operation', othersType2:'Others' };
-  const URGENCY = { veryCritical:'Very Critical', within24hrs:'Within 24hrs', within2months:'Within 2 months', within1week:'Within 1 week' };
-  const ACTION_CAT = { reset:'Reset', adjustment:'Adjustment', replace:'Replace', temporary:'Temporary', othersAction:'Others' };
-  const RESULT_CAT = { testedOK:'Tested OK', modified:'Modified', pending:'Pending', temporary2:'Temporary', rectified:'Rectified', forceRun:'Force Run', kiv:'KIV' };
-  const URGENCY_MS = { veryCritical: 4*3600000, within24hrs: 24*3600000, within1week: 7*86400000, within2months: 60*86400000 };
-  const GROUP_OPTIONS = ['Shift A', 'Shift B', 'Shift C', 'Shift D', 'OH', 'Vendor'];
-  const INSPECTION_METHODS = ['Touch', 'Visual', 'Hear', 'Smell'];
-  const TASKS_PERFORMED = ['Clean', 'Lubricate', 'Adjust/Tighten', 'Part Replacement', 'ACM Issued'];
 
-  function showModal(title, msg, type = 'alert', errorMode = false) {
-    return new Promise(resolve => {
+  const TECH_NAMES = ["Shahrulnizam", "Hafiz", "Zulkifli", "Farid", "Faizal", "Firdaus", "Syafiq", "Aiman", "Hakim", "Rizal"];
+  const TO_NAMES = ["Amirul", "Khairul", "Nizam", "Ridzuan", "Azhar", "Roslan"];
+  const CONF_NAMES = ["Azlan", "Hisham", "Razak", "Kamal"];
+  const CONF_PASS = { "Azlan": "123456", "Hisham": "123456", "Razak": "123456", "Kamal": "123456" };
+
+  const CATS = { breakdown: "Breakdown", corrective: "Corrective", preventive: "Preventive" };
+  const CATS2 = { mech: "Mechanical", elec: "Electrical", it: "I.T.", operation: "Operation", othersType2: "Others" };
+  const URGENCY = { veryCritical: "Very Critical", within24hrs: "Within 24 Hours", within1week: "Within 1 Week", within2months: "Within 2 Months" };
+  const URGENCY_MS = { veryCritical: 14400000, within24hrs: 86400000, within1week: 604800000, within2months: 5184000000 };
+  const INSPECTION_METHODS = ["Touch", "Visual", "Hear", "Smell"];
+  const TASKS_PERFORMED = ["Clean", "Lubricate", "Adjust/Tighten", "Part Replacement", "ACM Issued"];
+  const GROUP_OPTIONS = ["Shift A", "Shift B", "Shift C", "Shift D", "Day Shift", "Vendor"];
+  const RESULT_CAT = { testedOK: "Tested OK", modified: "Modified", pending: "Pending", temporary2: "Temporary", rectified: "Rectified", forceRun: "Force Run", kiv: "KIV" };
+
+  function parseMultiList(val) {
+    if (!val) return [];
+    if (Array.isArray(val)) return val.map(x => String(x).trim()).filter(Boolean);
+    return String(val).split(',').map(x => x.trim()).filter(Boolean);
+  }
+
+  const OfflineDB = {
+    dbPromise: null,
+    open() {
+      if (this.dbPromise) return this.dbPromise;
+      this.dbPromise = new Promise((resolve) => {
+        try {
+          if (typeof indexedDB === 'undefined') return resolve(null);
+          const req = indexedDB.open('bhs_ppm_offline_vault', 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('records')) db.createObjectStore('records', { keyPath: 'createdAt' });
+            if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath: 'key' });
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => resolve(null);
+        } catch (err) {
+          resolve(null);
+        }
+      });
+      return this.dbPromise;
+    },
+    async getAllRecords() {
+      const db = await this.open();
+      if (!db) return [];
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction('records', 'readonly');
+          const req = tx.objectStore('records').getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => resolve([]);
+        } catch (e) { resolve([]); }
+      });
+    },
+    async saveAllRecords(records) {
+      const db = await this.open();
+      if (!db) return;
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction('records', 'readwrite');
+          const store = tx.objectStore('records');
+          store.clear();
+          (records || []).forEach(r => store.put(r));
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => resolve(false);
+        } catch (e) { resolve(false); }
+      });
+    },
+    async getMeta(key) {
+      const db = await this.open();
+      if (!db) return null;
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction('meta', 'readonly');
+          const req = tx.objectStore('meta').get(key);
+          req.onsuccess = () => resolve(req.result ? req.result.value : null);
+          req.onerror = () => resolve(null);
+        } catch (e) { resolve(null); }
+      });
+    },
+    async setMeta(key, value) {
+      const db = await this.open();
+      if (!db) return;
+      return new Promise((resolve) => {
+        try {
+          const tx = db.transaction('meta', 'readwrite');
+          tx.objectStore('meta').put({ key, value });
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => resolve(false);
+        } catch (e) { resolve(false); }
+      });
+    }
+  };
+
+  function showModal(title, message, mode = 'alert', isError = false) {
+    return new Promise((resolve) => {
       let overlay = document.getElementById('acm-modal-overlay');
-      if(!overlay){
+      if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'acm-modal-overlay';
-        overlay.innerHTML = `<div id="acm-modal-box"><div id="acm-modal-title"></div><div id="acm-modal-msg"></div><input type="password" id="acm-modal-input" placeholder="Enter password..." autocomplete="new-password"/><div id="acm-modal-actions"></div></div>`;
+        overlay.innerHTML = `<div id="acm-modal-box"><div id="acm-modal-title"></div><div id="acm-modal-msg"></div><input type="password" id="acm-modal-input" autocomplete="new-password"/><div id="acm-modal-actions"></div></div>`;
       }
-      if(overlay.parentNode !== ROOT) ROOT.appendChild(overlay);
-      const titleEl = overlay.querySelector('#acm-modal-title'), msgEl = overlay.querySelector('#acm-modal-msg'), inputEl = overlay.querySelector('#acm-modal-input'), actionsEl = overlay.querySelector('#acm-modal-actions');
-      titleEl.textContent = title;
-      inputEl.style.display = type === 'prompt' ? 'block' : 'none';
-      inputEl.value = '';
-      actionsEl.innerHTML = '';
+      if (overlay.parentNode !== ROOT) ROOT.appendChild(overlay);
+      const titleEl = overlay.querySelector('#acm-modal-title');
+      const msgEl = overlay.querySelector('#acm-modal-msg');
+      const inputEl = overlay.querySelector('#acm-modal-input');
+      const actionsEl = overlay.querySelector('#acm-modal-actions');
 
-      const isRichOfflineModal = type === 'offline-entry' || type === 'offline-submit' || type === 'offline-synced';
-      if (isRichOfflineModal) {
+      titleEl.textContent = title;
+      titleEl.style.color = isError ? 'var(--crit)' : 'var(--ink)';
+      if (String(mode).startsWith('offline-')) {
         msgEl.style.whiteSpace = 'normal';
-        msgEl.innerHTML = msg;
+        msgEl.innerHTML = message;
       } else {
         msgEl.style.whiteSpace = 'pre-wrap';
-        msgEl.textContent = msg;
+        msgEl.textContent = message;
       }
 
-      function close() { overlay.classList.remove('active'); }
-      const createBtn = (cls, text, cb) => { const b = document.createElement('button'); b.className = cls; b.textContent = text; b.onclick = () => { close(); cb(); }; return b; };
-      if(type === 'alert') actionsEl.appendChild(createBtn(errorMode ? 'btn btn-danger' : 'btn btn-primary', 'OK', () => resolve(true)));
-      else if(type === 'offline-entry') actionsEl.appendChild(createBtn('btn btn-primary', 'Continue Offline Entry', () => resolve(true)));
-      else if(type === 'offline-submit') actionsEl.appendChild(createBtn('btn btn-primary', 'OK, View Memo', () => resolve(true)));
-      else if(type === 'offline-synced') actionsEl.appendChild(createBtn('btn btn-primary', 'OK', () => resolve(true)));
-      else if(type === 'confirm'){ actionsEl.appendChild(createBtn('btn btn-ghost', 'Cancel', () => resolve(false))); actionsEl.appendChild(createBtn('btn btn-solid-danger', 'Delete', () => resolve(true))); }
-      else if(type === 'prompt'){
-        actionsEl.appendChild(createBtn('btn btn-ghost', 'Cancel', () => resolve(null)));
-        const handleSub = () => { close(); resolve(inputEl.value); };
-        const ob = createBtn('btn btn-primary', 'Confirm', handleSub); actionsEl.appendChild(ob);
-        inputEl.onkeydown = e => { if(e.key === 'Enter') handleSub(); };
+      inputEl.value = '';
+      inputEl.style.display = mode === 'prompt' ? 'block' : 'none';
+      actionsEl.innerHTML = '';
+
+      const close = (val) => {
+        overlay.classList.remove('active');
+        resolve(val);
+      };
+
+      if (mode === 'confirm' || mode === 'unsaved') {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn btn-ghost';
+        cancelBtn.textContent = mode === 'unsaved' ? 'Keep Editing' : 'Cancel';
+        cancelBtn.onclick = () => close(false);
+
+        const okBtn = document.createElement('button');
+        okBtn.className = mode === 'unsaved' ? 'btn btn-solid-danger' : 'btn btn-primary';
+        okBtn.textContent = mode === 'unsaved' ? 'Discard Data' : 'Confirm';
+        okBtn.onclick = () => close(true);
+
+        actionsEl.appendChild(cancelBtn);
+        actionsEl.appendChild(okBtn);
+      } else if (mode === 'prompt') {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn btn-ghost';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => close(null);
+
+        const okBtn = document.createElement('button');
+        okBtn.className = 'btn btn-primary';
+        okBtn.textContent = 'Verify';
+        okBtn.onclick = () => close(inputEl.value);
+
+        inputEl.onkeydown = (e) => { if (e.key === 'Enter') close(inputEl.value); };
+        actionsEl.appendChild(cancelBtn);
+        actionsEl.appendChild(okBtn);
+      } else {
+        const okBtn = document.createElement('button');
+        okBtn.className = 'btn btn-primary';
+        okBtn.textContent = 'OK';
+        okBtn.onclick = () => close(true);
+        actionsEl.appendChild(okBtn);
       }
-      else if(type === 'unsaved'){ actionsEl.appendChild(createBtn('btn btn-primary', 'Cancel & Keep Editing', () => resolve(false))); actionsEl.appendChild(createBtn('btn btn-solid-danger', 'Discard Data', () => resolve(true))); }
-      void overlay.offsetWidth; overlay.classList.add('active'); if(type === 'prompt') setTimeout(() => inputEl.focus(), 50);
+
+      void overlay.offsetWidth;
+      overlay.classList.add('active');
+      if (mode === 'prompt') setTimeout(() => inputEl.focus(), 50);
+    });
+  }
+
+  function blankUnit(equipNo = '', conveyorItem = '') {
+    return {
+      equipNo: equipNo,
+      conveyorItem: conveyorItem,
+      cat2: {},
+      beforeImage: '',
+      beforeImageDate: '',
+      beforeImageTime: '',
+      cleaningImage: '',
+      cleaningImageDate: '',
+      cleaningImageTime: '',
+      showCleaningBox: false,
+      afterImage: '',
+      afterImageDate: '',
+      afterImageTime: '',
+      inspectionMethod: '',
+      taskPerformed: '',
+      reasonDetail: '',
+      resultCat: '',
+      paramSpeed: '',
+      paramTemp: '',
+      paramCurrent: '',
+      paramVoltage: '',
+      resultDetail: ''
+    };
+  }
+
+  function blankRecord() {
+    return { createdAt: Date.now(), isDraft: true, syncPending: false, status: '', notificationNo: '', workOrderNo: '', maintenanceType: '', reportNo: '', happeningDate: '', timeOfHappening:'', dd:'', mm:'', yy:'', issuedBy:'', issuedGroup:'', checkedBy:'', title:'', conveyorItem:'', lineEquipment:'', equipNo:'', units: [ blankUnit() ], activeUnitIdx: 0, cat1: {}, cat2: {}, urgency:'', beforeImage:'', beforeImageDate:'', beforeImageTime:'', cleaningImage:'', cleaningImageDate:'', cleaningImageTime:'', showCleaningBox:false, afterImage:'', afterImageDate:'', afterImageTime:'', inspectionMethod:'', taskPerformed:'', reasonDetail:'', monitoring: [ {d1:'',b1:'',r1:'',d2:'',b2:'',r2:''} ], spStock:'', spStockQty:'', spStockCritical:'', spCheckedBy:'', spQty:'', spLocation:'', spCheckBy:'', spRequestDate:'', spDeliveryDate:'', spLocation2:'', requestOfAction:'', actionDate: '', actDoneBy:'', actGroup:'', actStartTime:'', actEndTime:'', actDd:'', actMm:'', actYy:'', actionCat:'', actionDetail:'', history: [ {date:'',remark:''}, {date:'',remark:''}, {date:'',remark:''} ], resultCat:'', paramSpeed:'', paramTemp:'', paramCurrent:'', paramVoltage:'', resultDetail:'', parts: Array.from({length:9}, () => ({ item:'', spec:'', part:'', qty:'', dismantle:'', sap:'' })), flags: { createNotification:false, createWorkOrder:false, releaseWorkOrder:false, gmps:false, timeConfirmation:false, teco:false, businessCompletion:false }, doneByName:'', checkByName:'', confirmedByName:'' };
+  }
+
+  function normalizeRecordUnits(r) {
+    if (!r) return [ blankUnit() ];
+    if (!Array.isArray(r.units) || r.units.length === 0) {
+      r.units = [{
+        equipNo: r.equipNo || '',
+        conveyorItem: r.conveyorItem || '',
+        cat2: r.cat2 ? JSON.parse(JSON.stringify(r.cat2)) : {},
+        beforeImage: r.beforeImage || '',
+        beforeImageDate: r.beforeImageDate || '',
+        beforeImageTime: r.beforeImageTime || '',
+        cleaningImage: r.cleaningImage || '',
+        cleaningImageDate: r.cleaningImageDate || '',
+        cleaningImageTime: r.cleaningImageTime || '',
+        showCleaningBox: Boolean(r.showCleaningBox || r.cleaningImage),
+        afterImage: r.afterImage || '',
+        afterImageDate: r.afterImageDate || '',
+        afterImageTime: r.afterImageTime || '',
+        inspectionMethod: r.inspectionMethod || '',
+        taskPerformed: r.taskPerformed || '',
+        reasonDetail: r.reasonDetail || '',
+        resultCat: r.resultCat || '',
+        paramSpeed: r.paramSpeed || '',
+        paramTemp: r.paramTemp || '',
+        paramCurrent: r.paramCurrent || '',
+        paramVoltage: r.paramVoltage || '',
+        resultDetail: r.resultDetail || ''
+      }];
+    } else {
+      r.units = r.units.map(u => Object.assign(blankUnit(), u || {}, {
+        cat2: (u && u.cat2 && typeof u.cat2 === 'object') ? u.cat2 : {}
+      }));
+    }
+    if (typeof r.activeUnitIdx !== 'number' || r.activeUnitIdx < 0 || r.activeUnitIdx >= r.units.length) {
+      r.activeUnitIdx = 0;
+    }
+    return r.units;
+  }
+
+  function syncParentFromUnits(r) {
+    const units = normalizeRecordUnits(r);
+    const first = units[0];
+    const eqList = units.map(u => (u.equipNo || '').trim()).filter(Boolean);
+    const convList = Array.from(new Set(units.map(u => (u.conveyorItem || '').trim()).filter(Boolean)));
+    const unionCat2 = {};
+    const inspSet = new Set();
+    const taskSet = new Set();
+
+    units.forEach(u => {
+      if (u.cat2) {
+        Object.keys(CATS2).forEach(k => { if (u.cat2[k]) unionCat2[k] = true; });
+      }
+      if (checkReq(u.inspectionMethod)) inspSet.add(u.inspectionMethod.trim());
+      parseMultiList(u.taskPerformed).forEach(t => taskSet.add(t));
+    });
+
+    r.equipNo = eqList.join(', ');
+    r.conveyorItem = convList.join(', ');
+    r.cat2 = unionCat2;
+    r.inspectionMethod = Array.from(inspSet).join(', ');
+    r.taskPerformed = Array.from(taskSet).join(', ');
+
+    r.beforeImage = first.beforeImage || '';
+    r.beforeImageDate = first.beforeImageDate || '';
+    r.beforeImageTime = first.beforeImageTime || '';
+    r.cleaningImage = first.cleaningImage || '';
+    r.cleaningImageDate = first.cleaningImageDate || '';
+    r.cleaningImageTime = first.cleaningImageTime || '';
+    r.showCleaningBox = Boolean(first.showCleaningBox || first.cleaningImage);
+    r.afterImage = first.afterImage || '';
+    r.afterImageDate = first.afterImageDate || '';
+    r.afterImageTime = first.afterImageTime || '';
+    r.reasonDetail = first.reasonDetail || '';
+    r.resultCat = first.resultCat || '';
+    r.paramSpeed = first.paramSpeed || '';
+    r.paramTemp = first.paramTemp || '';
+    r.paramCurrent = first.paramCurrent || '';
+    r.paramVoltage = first.paramVoltage || '';
+    r.resultDetail = first.resultDetail || '';
+  }
+
+  function isUnitComplete(u) {
+    if (!u) return false;
+    const hasEq = checkReq(u.equipNo) && checkReq(u.conveyorItem);
+    const hasCat = Boolean(u.cat2 && Object.keys(CATS2).some(k => u.cat2[k]));
+    const hasBefore = checkReq(u.beforeImage);
+    const hasInsp = checkReq(u.inspectionMethod);
+    const hasTask = parseMultiList(u.taskPerformed).length > 0;
+    const hasDetail = (u.reasonDetail || '').trim().split(/\s+/).filter(w => w.length > 0).length >= 2;
+    const hasRes = checkReq(u.resultCat);
+    return hasEq && hasCat && hasBefore && hasInsp && hasTask && hasDetail && hasRes;
+  }
+
+  function showQuickAddRangeModal(r) {
+    return new Promise(resolve => {
+      let overlay = document.getElementById('acm-modal-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'acm-modal-overlay';
+        overlay.innerHTML = `<div id="acm-modal-box"><div id="acm-modal-title"></div><div id="acm-modal-msg"></div><input type="password" id="acm-modal-input" autocomplete="new-password"/><div id="acm-modal-actions"></div></div>`;
+      }
+      if (overlay.parentNode !== ROOT) ROOT.appendChild(overlay);
+      const titleEl = overlay.querySelector('#acm-modal-title');
+      const msgEl = overlay.querySelector('#acm-modal-msg');
+      const inputEl = overlay.querySelector('#acm-modal-input');
+      const actionsEl = overlay.querySelector('#acm-modal-actions');
+
+      titleEl.textContent = `Quick Add Equipment No. (${r.lineEquipment || 'Selected Line'})`;
+      inputEl.style.display = 'none';
+      msgEl.style.whiteSpace = 'normal';
+
+      const lineNos = (r.lineEquipment && EQUIP_DB[r.lineEquipment]) ? Object.keys(EQUIP_DB[r.lineEquipment]).sort() : [];
+      const existingSet = new Set(normalizeRecordUnits(r).map(u => (u.equipNo || '').trim()));
+
+      msgEl.innerHTML = `
+        <div style="font-size:.78rem;color:var(--ink-light);margin-bottom:10px">
+          Generate multiple equipment numbers under <b>BHS/PPM ${esc(r.reportNo || '')}</b> in one step:
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <label class="f">Start No. (e.g. 01)<input type="text" id="qa-start-no" placeholder="01" value="01"/></label>
+          <label class="f">End No. (e.g. 05)<input type="text" id="qa-end-no" placeholder="05" value="05"/></label>
+        </div>
+        ${lineNos.length ? `
+          <div style="font-size:.72rem;font-weight:700;color:var(--text-sec);margin-bottom:4px">Or tick specific Equipment No. from ${esc(r.lineEquipment)}:</div>
+          <div style="max-height:130px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--input-bg);display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+            ${lineNos.map(n => `<label class="chk" style="font-size:.72rem"><input type="checkbox" class="qa-chk-no" value="${esc(n)}" ${existingSet.has(n)?'checked disabled':''}/> <span>${esc(n)}</span></label>`).join('')}
+          </div>
+        ` : ''}
+      `;
+
+      actionsEl.innerHTML = '';
+      const close = () => overlay.classList.remove('active');
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-ghost';
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.onclick = () => { close(); resolve(null); };
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn btn-primary';
+      addBtn.textContent = 'Add Units';
+      addBtn.onclick = () => {
+        const picked = new Set();
+        msgEl.querySelectorAll('.qa-chk-no:checked:not(:disabled)').forEach(cb => picked.add(cb.value.trim()));
+        const sRaw = (msgEl.querySelector('#qa-start-no')?.value || '').trim();
+        const eRaw = (msgEl.querySelector('#qa-end-no')?.value || '').trim();
+        if (sRaw && eRaw) {
+          const sNum = parseInt(sRaw, 10);
+          const eNum = parseInt(eRaw, 10);
+          if (!isNaN(sNum) && !isNaN(eNum) && eNum >= sNum && (eNum - sNum) <= 50) {
+            const padLen = Math.max(sRaw.length, eRaw.length, 2);
+            for (let i = sNum; i <= eNum; i++) {
+              picked.add(String(i).padStart(padLen, '0'));
+            }
+          }
+        }
+        close();
+        resolve(Array.from(picked));
+      };
+
+      actionsEl.appendChild(cancelBtn);
+      actionsEl.appendChild(addBtn);
+      void overlay.offsetWidth;
+      overlay.classList.add('active');
     });
   }
 
@@ -431,10 +662,6 @@
       </div>
     `;
     return showModal("Offline Entry Notification", html, "offline-entry");
-  }
-
-  function blankRecord() {
-    return { createdAt: Date.now(), isDraft: true, syncPending: false, status: '', notificationNo: '', workOrderNo: '', maintenanceType: '', reportNo: '', happeningDate: '', timeOfHappening:'', dd:'', mm:'', yy:'', issuedBy:'', issuedGroup:'', checkedBy:'', title:'', conveyorItem:'', lineEquipment:'', equipNo:'', cat1: {}, cat2: {}, urgency:'', beforeImage:'', beforeImageDate:'', beforeImageTime:'', cleaningImage:'', cleaningImageDate:'', cleaningImageTime:'', showCleaningBox:false, afterImage:'', afterImageDate:'', afterImageTime:'', inspectionMethod:'', taskPerformed:'', reasonDetail:'', monitoring: [ {d1:'',b1:'',r1:'',d2:'',b2:'',r2:''} ], spStock:'', spStockQty:'', spStockCritical:'', spCheckedBy:'', spQty:'', spLocation:'', spCheckBy:'', spRequestDate:'', spDeliveryDate:'', spLocation2:'', requestOfAction:'', actionDate: '', actDoneBy:'', actGroup:'', actStartTime:'', actEndTime:'', actDd:'', actMm:'', actYy:'', actionCat:'', actionDetail:'', history: [ {date:'',remark:''}, {date:'',remark:''}, {date:'',remark:''} ], resultCat:'', paramSpeed:'', paramTemp:'', paramCurrent:'', paramVoltage:'', resultDetail:'', parts: Array.from({length:9}, () => ({ item:'', spec:'', part:'', qty:'', dismantle:'', sap:'' })), flags: { createNotification:false, createWorkOrder:false, releaseWorkOrder:false, gmps:false, timeConfirmation:false, teco:false, businessCompletion:false }, doneByName:'', checkByName:'', confirmedByName:'' };
   }
 
   let state = {
@@ -555,7 +782,6 @@
     let syncedDeletesCount = 0;
 
     try {
-      // 1. Push any queued deletions first
       for (const delItem of pendingDeletes) {
         await postPayloadWithTimeout({ action: 'delete', createdAt: delItem.createdAt }, 12000);
         state.deleteQueue = state.deleteQueue.filter(x => String(x.createdAt) !== String(delItem.createdAt));
@@ -563,7 +789,6 @@
         syncedDeletesCount++;
       }
 
-      // 2. Push all pending offline records (including Base64 images for Google Drive upload)
       for (const rec of pendingRecords) {
         const payload = { ...rec, syncPending: false };
         await postPayloadWithTimeout(payload, 25000);
@@ -575,7 +800,6 @@
         await saveRecords();
       }
 
-      // 3. Verify from Google Sheets & replace local Base64 images with Drive URLs
       setTimeout(() => {
         fetchCloudRecords();
       }, 1500);
@@ -604,7 +828,6 @@
   }
 
   async function loadRecords() {
-    // 1. Load offline records & delete queue immediately from IndexedDB (or localStorage fallback)
     try {
       const idbRecords = await OfflineDB.getAllRecords();
       if (Array.isArray(idbRecords) && idbRecords.length > 0) {
@@ -633,7 +856,6 @@
       state.records = [];
     }
 
-    // Remove any records that were deleted locally while offline
     if (state.deleteQueue.length > 0) {
       const delSet = new Set(state.deleteQueue.map(d => String(d.createdAt)));
       state.records = state.records.filter(r => !delSet.has(String(r.createdAt)));
@@ -645,7 +867,6 @@
     state.loaded = true;
     render();
 
-    // 2. Define JSONP callback to merge cloud records and confirm offline syncs
     window.syncGoogleSheets = function(googleData) {
       if (!Array.isArray(googleData)) return;
       state.isOnline = true;
@@ -667,21 +888,24 @@
 
       const drafts = state.records.filter(r => r.isDraft);
       const cloudMap = new Map(validData.map(g => [String(g.createdAt), g]));
-
-      // Preserve any local offline records that haven't appeared in Google Sheets yet
       const localPendingOrOffline = state.records.filter(r => !r.isDraft && !cloudMap.has(String(r.createdAt)));
 
-      // If an offline record was just confirmed in Google Sheets, keep local Base64 image only if Drive URL isn't populated yet
       validData = validData.map(cloudRec => {
         const localMatch = state.records.find(r => String(r.createdAt) === String(cloudRec.createdAt));
         if (localMatch) {
           if (!cloudRec.beforeImage && localMatch.beforeImage) cloudRec.beforeImage = localMatch.beforeImage;
           if (!cloudRec.cleaningImage && localMatch.cleaningImage) cloudRec.cleaningImage = localMatch.cleaningImage;
           if (!cloudRec.afterImage && localMatch.afterImage) cloudRec.afterImage = localMatch.afterImage;
+          if ((!Array.isArray(cloudRec.units) || cloudRec.units.length === 0) && Array.isArray(localMatch.units)) {
+            cloudRec.units = localMatch.units;
+          }
         }
+        normalizeRecordUnits(cloudRec);
+        syncParentFromUnits(cloudRec);
         return cloudRec;
       });
 
+      state.records.forEach(rec => { normalizeRecordUnits(rec); syncParentFromUnits(rec); });
       state.records = [...drafts, ...localPendingOrOffline, ...validData].sort((a,b) => b.createdAt - a.createdAt);
       saveRecords();
       state.loaded = true;
@@ -689,7 +913,6 @@
       const validOrActive = state.records.filter(r => !r.isDraft || String(r.createdAt) === String(state.activeId));
       if (validOrActive.length > 0 && !state.activeId) state.activeId = validOrActive[0].createdAt;
 
-      // Avoid interrupting the user if they are currently typing inside Memo Details
       if (state.tab === 'input' && state.isDirty) {
         updateNetworkBadge();
       } else {
@@ -697,7 +920,6 @@
       }
     };
 
-    // 3. If online, sync any queued offline items and pull latest cloud records
     if (navigator.onLine) {
       await syncOfflineQueue(false, false);
       fetchCloudRecords();
@@ -715,7 +937,6 @@
         try {
           localStorage.setItem(STORE_KEY, serialized);
         } catch (quotaErr) {
-          // Strip heavy Base64 data URLs from localStorage mirror only; IndexedDB retains full offline images
           const slim = state.records.map(rec => ({
             ...rec,
             beforeImage: String(rec.beforeImage || '').startsWith('http') ? rec.beforeImage : '',
@@ -759,23 +980,37 @@
   }
 
   function getStatus(r) {
-    const hasInspection = checkReq(r.inspectionMethod);
-    const hasTask = checkReq(r.taskPerformed);
-    const resultComplete = checkReq(r.resultCat);
+    const units = normalizeRecordUnits(r);
+    const allUnitsHaveCore = units.every(u =>
+      checkReq(u.inspectionMethod) &&
+      parseMultiList(u.taskPerformed).length > 0 &&
+      checkReq(u.resultCat)
+    );
+    const anyUnitProgress = units.some(u =>
+      parseMultiList(u.taskPerformed).length > 0 ||
+      checkReq(u.resultCat) ||
+      checkReq(u.afterImage)
+    );
     const doneValid = (r.doneByName || '').trim().length >= 3;
     const checkValid = (r.checkByName || '').trim().length >= 3;
     const confirmValid = checkReq(r.confirmedByName);
-    if (hasInspection && hasTask && resultComplete && doneValid && checkValid && confirmValid) return 'done';
-    return (hasTask || (doneValid && checkValid) || confirmValid || r.resultCat || r.afterImage) ? 'progress' : 'open';
+    if (allUnitsHaveCore && doneValid && checkValid && confirmValid) return 'done';
+    return (anyUnitProgress || (doneValid && checkValid) || confirmValid) ? 'progress' : 'open';
   }
 
   function getStatusLabel(r, st) {
     if (st === 'done') return 'Completed';
     if (st === 'progress') {
+      const units = normalizeRecordUnits(r);
+      const allUnitsHaveCore = units.every(u =>
+        checkReq(u.inspectionMethod) &&
+        parseMultiList(u.taskPerformed).length > 0 &&
+        checkReq(u.resultCat)
+      );
       const doneValid = (r.doneByName || '').trim().length >= 3;
       const checkValid = (r.checkByName || '').trim().length >= 3;
       const confirmValid = checkReq(r.confirmedByName);
-      if (doneValid && checkValid && !confirmValid) {
+      if (allUnitsHaveCore && doneValid && checkValid && !confirmValid) {
         return 'In progress - Confirmed By (pending)';
       }
       return 'In progress';
@@ -786,8 +1021,28 @@
   let timelineChart = null, categoryChart = null, urgencyChart = null;
   function ensureChartJs(cb) {
     if (window.Chart && window.html2canvas) return cb();
-    if (document.getElementById('chartjs-script')) { let attempts=0, check=setInterval(()=>{ if(window.Chart && window.html2canvas){ clearInterval(check);cb(); } else if(++attempts>30){ clearInterval(check);cb(); } }, 100); return; }
-    const s = document.createElement('script'); s.id = 'chartjs-script'; s.src = 'https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js'; document.head.appendChild(s);
+    if (!window.Chart && !document.getElementById('chartjs-script')) {
+      const s = document.createElement('script');
+      s.id = 'chartjs-script';
+      s.src = 'https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js';
+      document.head.appendChild(s);
+    }
+    if (!window.html2canvas && !document.getElementById('html2canvas-script')) {
+      const h = document.createElement('script');
+      h.id = 'html2canvas-script';
+      h.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+      document.head.appendChild(h);
+    }
+    let attempts = 0;
+    const check = setInterval(() => {
+      if (window.Chart && window.html2canvas) {
+        clearInterval(check);
+        cb();
+      } else if (++attempts > 40) {
+        clearInterval(check);
+        cb();
+      }
+    }, 100);
   }
 
   function getFilteredDashboardRecords() {
@@ -797,13 +1052,14 @@
     const lineQ = (document.getElementById('dash-line')?.value || '').toLowerCase(), convQ = (document.getElementById('dash-conveyor')?.value || '').toLowerCase();
     const startTs = sDate ? getTs(sDate) : 0, endTs = eDate ? (getTs(eDate) + 86400000) : Infinity;
     return state.records.filter(r => !r.isDraft).filter(r => {
+      const units = normalizeRecordUnits(r);
       const t = getTs(r.happeningDate) || getOldTs(r.dd, r.mm, r.yy);
       if ((sDate || eDate) && (!t || t < startTs || t >= endTs)) return false;
-      if (selInsp.length && !selInsp.includes(r.inspectionMethod || '')) return false;
+      if (selInsp.length && !units.some(u => selInsp.includes(u.inspectionMethod || ''))) return false;
       if (selStat.length && !selStat.includes(getStatus(r))) return false;
-      if (selCat.length && !selCat.some(c => (r.cat1 && r.cat1[c]) || (r.cat2 && r.cat2[c]))) return false;
-      if (lineQ && !((r.lineEquipment||'') + '-' + (r.equipNo||'')).toLowerCase().includes(lineQ)) return false;
-      if (convQ && !(r.conveyorItem || '').toLowerCase().includes(convQ)) return false;
+      if (selCat.length && !selCat.some(c => (r.cat1 && r.cat1[c]) || units.some(u => u.cat2 && u.cat2[c]))) return false;
+      if (lineQ && !units.some(u => ((r.lineEquipment||'') + '-' + (u.equipNo||'')).toLowerCase().includes(lineQ))) return false;
+      if (convQ && !units.some(u => (u.conveyorItem || '').toLowerCase().includes(convQ))) return false;
       return true;
     });
   }
@@ -815,13 +1071,18 @@
     Object.keys(CATS2).forEach(k => catCounts[CATS2[k]] = 0);
     INSPECTION_METHODS.forEach(m => inspCounts[m] = 0);
     activeRecs.forEach(r => {
-      if(r.cat2) Object.keys(CATS2).forEach(k => { if(r.cat2[k]) catCounts[CATS2[k]]++; });
-      const im = (r.inspectionMethod || '').trim();
-      if(im) inspCounts[im] = (inspCounts[im] || 0) + 1;
+      const units = normalizeRecordUnits(r);
+      units.forEach(u => {
+        if(u.cat2) Object.keys(CATS2).forEach(k => { if(u.cat2[k]) catCounts[CATS2[k]]++; });
+        const im = (u.inspectionMethod || '').trim();
+        if(im) inspCounts[im] = (inspCounts[im] || 0) + 1;
+      });
     });
     completed.forEach(r => {
+      const units = normalizeRecordUnits(r);
+      const lastAfter = units.slice().reverse().find(u => u.afterImageDate);
       const t0 = getExactTs(r.happeningDate, r.dd, r.mm, r.yy, r.timeOfHappening);
-      const t1 = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actEndTime) || parseRefDateTime(r.afterImageDate, r.afterImageTime);
+      const t1 = getExactTs(r.actionDate, r.actDd, r.actMm, r.actYy, r.actEndTime) || (lastAfter ? parseRefDateTime(lastAfter.afterImageDate, lastAfter.afterImageTime) : null);
       if(t0 && t1 && t1 >= t0) resTimes.push((t1 - t0) / 86400000); 
       if(t0 && t1 && URGENCY_MS[r.urgency]) { ratedTotal++; if((t1 - t0) <= URGENCY_MS[r.urgency]) onTime++; }
     });
@@ -946,11 +1207,24 @@
     if (gridEl) gridEl.innerHTML = kpiCards.map(c => `<div class="kpi-card" ${c.tooltip ? `data-tooltip="${c.tooltip}"` : ''}><div class="bar" style="background:${c.c}"></div><div class="kpi-label">${c.l}</div><div class="kpi-value">${c.v}</div><div class="kpi-sub">${c.s}</div>${c.p}</div>`).join('');
 
     const rows = filtered.slice().sort((a,b)=>b.createdAt-a.createdAt).map(r => {
+      const units = normalizeRecordUnits(r);
       const st = getStatus(r), stLabel = getStatusLabel(r, st);
-      let typeList = [];
-      if(r.cat2) Object.keys(CATS2).forEach(k => { if(r.cat2[k]) typeList.push(CATS2[k]); });
+      let typeSet = new Set();
+      let inspSet = new Set();
+      let taskSet = new Set();
+      units.forEach(u => {
+        if(u.cat2) Object.keys(CATS2).forEach(k => { if(u.cat2[k]) typeSet.add(CATS2[k]); });
+        if(checkReq(u.inspectionMethod)) inspSet.add(u.inspectionMethod.trim());
+        parseMultiList(u.taskPerformed).forEach(t => taskSet.add(t));
+      });
+      const typeList = Array.from(typeSet);
+      const inspList = Array.from(inspSet);
+      const taskList = Array.from(taskSet);
+      const eqDisplay = units.map(u => u.equipNo || '—').join(', ');
+      const convDisplay = Array.from(new Set(units.map(u => u.conveyorItem).filter(Boolean))).join(', ') || '—';
+      const multiBadge = units.length > 1 ? ` <span class="unit-count-pill" style="font-size:.6rem;padding:1px 6px">${units.length} units</span>` : '';
       const syncTag = r.syncPending ? `<span class="chip-sync" title="Saved locally on device; will push to Google Sheets when online">Pending Sync</span>` : '';
-      return `<tr><td><button class="link-btn mono-font" data-act="open" data-id="${r.createdAt}" style="text-decoration:underline;padding:0;text-align:left;font-weight:700">${r.reportNo||'—'}</button></td><td class="mono-font">${fmtDate(r)}</td><td>${r.title||'<span style="color:var(--line-dark)">Untitled</span>'}</td><td>${r.lineEquipment||'—'}</td><td>${r.equipNo||'—'}</td><td>${r.conveyorItem||'—'}</td><td>${typeList.length?typeList.join(', '):'—'}</td><td>${r.inspectionMethod||'—'}</td><td>${r.taskPerformed||'—'}</td><td><span class="status-chip ${st==='done'?'chip-done':st==='progress'?'chip-progress':'chip-open'}">${stLabel}</span>${syncTag}</td></tr>`;
+      return `<tr><td><button class="link-btn mono-font" data-act="open" data-id="${r.createdAt}" style="text-decoration:underline;padding:0;text-align:left;font-weight:700">${r.reportNo||'—'}</button></td><td class="mono-font">${fmtDate(r)}</td><td>${r.title||'<span style="color:var(--line-dark)">Untitled</span>'}</td><td>${r.lineEquipment||'—'}</td><td>${esc(eqDisplay)}${multiBadge}</td><td>${esc(convDisplay)}</td><td>${typeList.length?typeList.join(', '):'—'}</td><td>${inspList.length?esc(inspList.join(', ')):'—'}</td><td>${taskList.length?esc(taskList.join(', ')):'—'}</td><td><span class="status-chip ${st==='done'?'chip-done':st==='progress'?'chip-progress':'chip-open'}">${stLabel}</span>${syncTag}</td></tr>`;
     }).join('');
     
     const tContainer = document.getElementById('dash-table-container');
@@ -1051,7 +1325,9 @@
       
       Object.entries(CATS2).forEach(([k, name]) => {
           let count = 0;
-          filtered.forEach(r => { if(r.cat2 && r.cat2[k]) count++; });
+          filtered.forEach(r => {
+            normalizeRecordUnits(r).forEach(u => { if(u.cat2 && u.cat2[k]) count++; });
+          });
           if(selCatNames.length === 0 || selCatNames.includes(name)) catCountsArr.push({name: name, count: count});
       });
       
@@ -1242,7 +1518,6 @@
     });
 
     setupDropdownFilters('dd-insp-wrapper', 'All'); setupDropdownFilters('dd-status-wrapper', 'All'); setupDropdownFilters('dd-cat-wrapper', 'All');
-    document.addEventListener('click', () => document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open')));
     ['dash-start', 'dash-end', 'dash-line', 'dash-conveyor'].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener(id.includes('line')||id.includes('conveyor')?'input':'change', updateDashboardUI); });
     
     document.getElementById('dash-reset-btn').addEventListener('click', () => {
@@ -1260,7 +1535,8 @@
       filteredForExport.forEach(r => {
         const st = getStatus(r), stLabel = getStatusLabel(r, st);
         let typeList = []; if(r.cat2) Object.keys(CATS2).forEach(k => { if(r.cat2[k]) typeList.push(CATS2[k]); });
-        csvRows.push([ `"${r.reportNo||''}"`, `"${fmtDate(r)}"`, `"${(r.title||'').replace(/"/g,'""')}"`, `"${r.lineEquipment||''}"`, `"${r.equipNo||''}"`, `"${(r.conveyorItem||'').replace(/"/g,'""')}"`, `"${typeList.join(', ')}"`, `"${r.inspectionMethod||''}"`, `"${r.taskPerformed||''}"`, `"${stLabel}"` ]);
+        const taskList = parseMultiList(r.taskPerformed);
+        csvRows.push([ `"${r.reportNo||''}"`, `"${fmtDate(r)}"`, `"${(r.title||'').replace(/"/g,'""')}"`, `"${r.lineEquipment||''}"`, `"${r.equipNo||''}"`, `"${(r.conveyorItem||'').replace(/"/g,'""')}"`, `"${typeList.join(', ')}"`, `"${r.inspectionMethod||''}"`, `"${taskList.join(', ').replace(/"/g,'""')}"`, `"${stLabel}"` ]);
       });
       const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob(["\uFEFF" + csvRows.map(e=>e.join(",")).join("\n")], {type:'text/csv;charset=utf-8;'})); link.download = "PPM_Records.csv"; document.body.appendChild(link); link.click(); document.body.removeChild(link);
     });
@@ -1547,7 +1823,6 @@
           ctx.fillRect(0, 0, w, h);
           ctx.drawImage(img, 0, 0, w, h);
 
-          // Burn Date, Time & Location watermarks onto the captured photo
           const wmDate = watermark.date || '';
           const wmTime = watermark.time || '';
           const wmLoc = watermark.location || 'Not Specified';
@@ -1642,18 +1917,29 @@
   function radio(nm, lbl, val, chk, path) { return `<label class="rad"><input type="radio" name="${nm}" data-path="${path}" value="${val}" ${chk?'checked':''}/> ${lbl}</label>`; }
   function field(lbl, path, val, typ='text', ext='') { return `<label class="f">${lbl}${typ==='textarea'?`<textarea data-path="${path}" ${ext}>${val||''}</textarea>`:`<input type="${typ}" data-path="${path}" value="${val||''}" ${ext}/>`}</label>`; }
   function selectField(lbl, path, val, opts) { const list = (val && !opts.includes(val)) ? [val, ...opts] : opts; return `<label class="f">${lbl}<select data-path="${path}"><option value=""></option>${list.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select></label>`; }
+  function multiSelectField(lbl, path, val, opts, wrapperId) {
+    const selected = parseMultiList(val);
+    const allOpts = Array.from(new Set([...opts, ...selected]));
+    const displayText = selected.length ? selected.join(', ') : 'Select task(s)...';
+    return `<label class="f">${lbl}<div class="dd-wrapper form-dd" id="${wrapperId}" data-multi-path="${path}"><button type="button" class="dd-btn ${selected.length ? '' : 'placeholder'}" data-multi-btn="${path}" title="${esc(displayText)}">${esc(displayText)}</button><div class="dd-menu">${allOpts.map(o => `<label class="chk"><input type="checkbox" value="${esc(o)}" ${selected.includes(o)?'checked':''}/> <span>${esc(o)}</span></label>`).join('')}</div></div></label>`;
+  }
   function groupField(lbl, tKey, bVal, vVal) { return `<label class="f">${lbl}<div style="display:flex;gap:6px"><select style="flex:1;min-width:0" data-calc-group="${tKey}" data-part="base"><option value=""></option>${GROUP_OPTIONS.map(o=>`<option value="${o}" ${bVal===o?'selected':''}>${o}</option>`).join('')}</select>${bVal==='Vendor'?`<input type="text" style="flex:1;min-width:0" placeholder="Vendor Name..." data-calc-group="${tKey}" data-part="vendor" value="${vVal}"/>`:''}</div></label>`; }
   function searchableSelectField(lbl, path, val, opts, lid) { return `<label class="f">${lbl}<input type="text" data-path="${path}" value="${val||''}" list="${lid}" autocomplete="off" placeholder="Type or select..."/><datalist id="${lid}">${opts.map(o=>`<option value="${o}"></option>`).join('')}</datalist></label>`; }
   function ensureRows(arr, len, tplFn) { arr = arr||[]; while(arr.length < len) arr.push(tplFn()); return arr; }
 
   function updateHighlights(container, r) {
     if (!state.showErrors) return;
+    const units = normalizeRecordUnits(r);
+    const activeIdx = r.activeUnitIdx || 0;
+    const u = units[activeIdx] || units[0];
     container.querySelectorAll('.err-highlight, .err-sec').forEach(el => el.classList.remove('err-highlight', 'err-sec'));
-    ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'conveyorItem', 'lineEquipment', 'equipNo', 'inspectionMethod', 'taskPerformed'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
-    if(!r.beforeImage) container.querySelector('[data-ref-card="before"]')?.classList.add('err-highlight');
-    if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) container.querySelector('[data-path="reasonDetail"]')?.classList.add('err-highlight');
+    ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'lineEquipment'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
+    ['equipNo', 'conveyorItem', 'inspectionMethod'].forEach(k => { if(!checkReq(u[k])) container.querySelector(`[data-unit-path="${k}"]`)?.classList.add('err-highlight'); });
+    if(parseMultiList(u.taskPerformed).length === 0) container.querySelector('[data-multi-btn="taskPerformed"]')?.classList.add('err-highlight');
+    if(!u.beforeImage) container.querySelector('[data-ref-card="before"]')?.classList.add('err-highlight');
+    if((u.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) container.querySelector('[data-unit-path="reasonDetail"]')?.classList.add('err-highlight');
     let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) container.querySelectorAll('[data-calc-group="issuedGroup"]').forEach(el=>el.classList.add('err-highlight'));
-    if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) container.querySelector('#sec-category')?.classList.add('err-sec');
+    if(!(u.cat2 && Object.keys(CATS2).some(k=>u.cat2[k]))) container.querySelector('#sec-category')?.classList.add('err-sec');
   }
 
   function getActive() { return state.activeId ? (state.records.find(r => String(r.createdAt) === String(state.activeId)) || null) : null; }
@@ -1661,36 +1947,169 @@
   function renderInput(container) {
     let r = getActive();
     if (!r) { r = blankRecord(); r.reportNo = getNextReportNo(); state.records.unshift(r); state.activeId = r.createdAt; state.isDirty = false; }
+    const units = normalizeRecordUnits(r);
+    syncParentFromUnits(r);
     if (!state.isDirty) state.cleanActiveRecord = JSON.parse(JSON.stringify(r));
     r.monitoring = ensureRows(r.monitoring, 2, () => ({d1:'',b1:'',r1:'',d2:'',b2:'',r2:''}));
     r.history = ensureRows(r.history, 3, () => ({date:'',remark:''}));
     r.parts = ensureRows(r.parts, 9, () => ({item:'',spec:'',part:'',qty:'',dismantle:'',sap:''}));
+
+    const activeIdx = r.activeUnitIdx || 0;
+    const u = units[activeIdx] || units[0];
+
+    const unitCheckbox = (lbl, chk, uPath) => `<label class="chk"><input type="checkbox" data-unit-path="${uPath}" ${chk?'checked':''}/> ${lbl}</label>`;
+    const unitRadio = (nm, lbl, val, chk, uPath) => `<label class="rad"><input type="radio" name="${nm}" data-unit-path="${uPath}" value="${val}" ${chk?'checked':''}/> ${lbl}</label>`;
+    const unitField = (lbl, uPath, val, typ='text', ext='') => `<label class="f">${lbl}${typ==='textarea'?`<textarea data-unit-path="${uPath}" ${ext}>${val||''}</textarea>`:`<input type="${typ}" data-unit-path="${uPath}" value="${val||''}" ${ext}/>`}</label>`;
+    const unitSelectField = (lbl, uPath, val, opts) => { const list = (val && !opts.includes(val)) ? [val, ...opts] : opts; return `<label class="f">${lbl}<select data-unit-path="${uPath}"><option value=""></option>${list.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select></label>`; };
+    const unitSearchableField = (lbl, uPath, val, opts, lid) => `<label class="f">${lbl}<input type="text" data-unit-path="${uPath}" value="${val||''}" list="${lid}" autocomplete="off" placeholder="Type or select..."/><datalist id="${lid}">${opts.map(o=>`<option value="${o}"></option>`).join('')}</datalist></label>`;
 
     const options = state.records.slice().sort((a,b)=>b.createdAt-a.createdAt).map(x => `<option value="${x.createdAt}" ${String(x.createdAt)===String(r.createdAt)?'selected':''}>${x.isDraft?'[Draft] ':(x.syncPending?'[Pending Sync] ':'')}BHS/PPM ${x.reportNo||'N/A'}</option>`).join('');
     let igBase = r.issuedGroup||'', igVendor = ''; if(igBase.toUpperCase().startsWith('VENDOR')){ igBase = 'Vendor'; igVendor = (r.issuedGroup||'').substring(6).replace(/^:\s*/,'').trim(); }
     const currentLine = r.lineEquipment || '', noOptions = (currentLine && EQUIP_DB[currentLine]) ? Object.keys(EQUIP_DB[currentLine]).sort() : [];
     if(currentLine) noOptions.push('OTHERS');
     const autoReadonlyAttr = 'readonly style="background:var(--line);cursor:not-allowed"';
-    const cleaningVisible = Boolean(r.showCleaningBox || r.cleaningImage);
+    const hasAutoConv = Boolean(currentLine && u.equipNo && EQUIP_DB[currentLine] && EQUIP_DB[currentLine][u.equipNo]);
+    const convAttr = hasAutoConv ? autoReadonlyAttr : 'placeholder="Enter or auto-filled Conveyor/Item..."';
+    const cleaningVisible = Boolean(u.showCleaningBox || u.cleaningImage);
 
-    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text','readonly style="background:var(--line);cursor:not-allowed"')}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g3" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${selectField('Issued By','issuedBy',r.issuedBy,TECH_NAMES)}${groupField('Group','issuedGroup',igBase,igVendor)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text',autoReadonlyAttr)}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category</div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="ref-sec-header"><div class="sec-title">Reference Image</div><button type="button" class="ref-cleaning-toggle-btn ${cleaningVisible?'active':''}" id="acm-toggle-cleaning-btn">${cleaningVisible ? '✓ Cleaning Photo Box Shown' : '✚ Add Cleaning Photo (Optional)'}</button></div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',r.beforeImage,r.beforeImageDate,r.beforeImageTime)}${renderRefImageCard('after','After','badge-after',r.afterImage,r.afterImageDate,r.afterImageTime)}${cleaningVisible ? renderRefImageCard('cleaning','Cleaning','badge-cleaning',r.cleaningImage,r.cleaningImageDate,r.cleaningImageTime,!r.cleaningImage) : ''}</div></div><div class="sec"><div class="sec-title">Remarks</div><div class="grid g2" style="margin-bottom:10px">${selectField('Inspection Method','inspectionMethod',r.inspectionMethod,INSPECTION_METHODS)}${selectField('Task Performed','taskPerformed',r.taskPerformed,TASKS_PERFORMED)}</div>${field('Describe the details','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${selectField('Done By (TECH)','doneByName',r.doneByName,TECH_NAMES)}${selectField('Check By (TO)','checkByName',r.checkByName,TO_NAMES)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div><div class="form-toolbar" style="justify-content:flex-end;margin-top:14px;margin-bottom:0"><div class="btn-row"><button class="btn btn-primary" id="acm-submit-btn-bottom" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn-bottom">View Memo ➜</button></div></div></div>`;
+    const unitPillsHtml = units.map((item, idx) => {
+      const isAct = idx === activeIdx;
+      const isDone = isUnitComplete(item);
+      const icon = isDone ? '✓' : (isAct ? '●' : '○');
+      const noLabel = (item.equipNo || '').trim() ? `No. ${esc(item.equipNo)}` : `Unit ${idx + 1}`;
+      const subLabel = item.conveyorItem ? `<span class="unit-pill-sub">• ${esc(item.conveyorItem)}</span>` : '';
+      return `<button type="button" class="unit-pill ${isAct?'active':''} ${isDone?'complete':''}" data-unit-select="${idx}">${icon} <span>${noLabel}</span>${subLabel}</button>`;
+    }).join('');
+
+    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text','readonly style="background:var(--line);cursor:not-allowed"')}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g3" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${selectField('Issued By','issuedBy',r.issuedBy,TECH_NAMES)}${groupField('Group','issuedGroup',igBase,igVendor)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}</div><div class="unit-bar-wrap"><div class="unit-bar-top"><div class="unit-bar-title">Equipment No. List <span class="unit-count-pill">${units.length} Unit${units.length>1?'s':''}</span></div><div class="unit-actions"><button type="button" class="unit-act-btn primary" id="acm-add-unit-btn">✚ Add No.</button><button type="button" class="unit-act-btn primary" id="acm-quick-range-btn">⚡ Quick Add Range</button>${units.length>1 && activeIdx>0 ? `<button type="button" class="unit-act-btn" id="acm-copy-prev-unit-btn" title="Copy Category, Remarks & Result from previous unit">📋 Copy from Prev</button>` : ''}${units.length>1 ? `<button type="button" class="unit-act-btn danger" id="acm-remove-unit-btn">✕ Remove Unit</button>` : ''}</div></div><div class="unit-tabs-row">${unitPillsHtml}</div><div class="unit-active-card"><div class="unit-active-banner"><span>Editing Unit ${activeIdx + 1} of ${units.length}: ${esc(r.lineEquipment || 'Line')} - ${esc(u.equipNo || 'New No.')}</span><span style="font-size:.68rem;color:var(--text-sec);font-weight:600">Each unit records its own Category, Reference Image, Remarks &amp; Result</span></div><div class="grid g2">${unitSearchableField('No.','equipNo',u.equipNo,noOptions,'no-list')}${unitField('Conveyor/Item','conveyorItem',u.conveyorItem,'text',convAttr)}</div></div></div></div><div class="sec" id="sec-category"><div class="sec-title">Category <span style="font-size:.68rem;color:var(--text-sec);font-weight:600;text-transform:none">(Unit ${activeIdx + 1}${u.equipNo ? ' • No. ' + esc(u.equipNo) : ''})</span></div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>unitCheckbox(l,(u.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="ref-sec-header"><div class="sec-title">Reference Image <span style="font-size:.68rem;color:var(--text-sec);font-weight:600;text-transform:none">(Unit ${activeIdx + 1}${u.equipNo ? ' • No. ' + esc(u.equipNo) : ''})</span></div><button type="button" class="ref-cleaning-toggle-btn ${cleaningVisible?'active':''}" id="acm-toggle-cleaning-btn">${cleaningVisible ? '✓ Cleaning Photo Box Shown' : '✚ Add Cleaning Photo (Optional)'}</button></div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',u.beforeImage,u.beforeImageDate,u.beforeImageTime)}${renderRefImageCard('after','After','badge-after',u.afterImage,u.afterImageDate,u.afterImageTime)}${cleaningVisible ? renderRefImageCard('cleaning','Cleaning','badge-cleaning',u.cleaningImage,u.cleaningImageDate,u.cleaningImageTime,!u.cleaningImage) : ''}</div></div><div class="sec"><div class="sec-title">Remarks <span style="font-size:.68rem;color:var(--text-sec);font-weight:600;text-transform:none">(Unit ${activeIdx + 1}${u.equipNo ? ' • No. ' + esc(u.equipNo) : ''})</span></div><div class="grid g2" style="margin-bottom:10px">${unitSelectField('Inspection Method','inspectionMethod',u.inspectionMethod,INSPECTION_METHODS)}${multiSelectField('Task Performed','taskPerformed',u.taskPerformed,TASKS_PERFORMED,'dd-task-performed')}</div>${unitField('Describe the details','reasonDetail',u.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Result <span style="font-size:.68rem;color:var(--text-sec);font-weight:600;text-transform:none">(Unit ${activeIdx + 1}${u.equipNo ? ' • No. ' + esc(u.equipNo) : ''})</span></div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>unitRadio('resultCat',l,k,u.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${unitField('Speed (m/min)','paramSpeed',u.paramSpeed)}${unitField('Temp (°C)','paramTemp',u.paramTemp)}${unitField('Current (A)','paramCurrent',u.paramCurrent)}${unitField('Voltage (V)','paramVoltage',u.paramVoltage)}</div><div style="margin-top:10px">${unitField('Detail / Status','resultDetail',u.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${selectField('Done By (TECH)','doneByName',r.doneByName,TECH_NAMES)}${selectField('Check By (TO)','checkByName',r.checkByName,TO_NAMES)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div><div class="form-toolbar" style="justify-content:flex-end;margin-top:14px;margin-bottom:0"><div class="btn-row"><button class="btn btn-primary" id="acm-submit-btn-bottom" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn-bottom">View Memo ➜</button></div></div></div>`;
 
     updateHighlights(container, r);
     const wrapAction = async () => { if(state.isDirty){ const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved"); if(!discard) return false; revertActiveRecord(); } return true; };
 
+    container.querySelectorAll('[data-unit-select]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        r.activeUnitIdx = parseInt(btn.getAttribute('data-unit-select'), 10) || 0;
+        renderInput(container);
+      });
+    });
+
+    container.querySelector('#acm-add-unit-btn')?.addEventListener('click', () => {
+      state.isDirty = true;
+      let nextNo = '';
+      const lastNo = (units[units.length - 1]?.equipNo || '').trim();
+      const num = parseInt(lastNo, 10);
+      if (!isNaN(num)) {
+        nextNo = String(num + 1).padStart(Math.max(lastNo.length, 2), '0');
+      }
+      const autoConv = (r.lineEquipment && nextNo && EQUIP_DB[r.lineEquipment] && EQUIP_DB[r.lineEquipment][nextNo]) || '';
+      units.push(blankUnit(nextNo, autoConv));
+      r.activeUnitIdx = units.length - 1;
+      syncParentFromUnits(r);
+      saveRecords();
+      renderInput(container);
+    });
+
+    container.querySelector('#acm-quick-range-btn')?.addEventListener('click', async () => {
+      const newNos = await showQuickAddRangeModal(r);
+      if (!newNos || newNos.length === 0) return;
+      state.isDirty = true;
+      const existingNos = new Set(units.map(x => (x.equipNo || '').trim()));
+      let addedCount = 0;
+      newNos.forEach(noStr => {
+        if (existingNos.has(noStr)) return;
+        const autoConv = (r.lineEquipment && EQUIP_DB[r.lineEquipment] && EQUIP_DB[r.lineEquipment][noStr]) || '';
+        if (units.length === 1 && !units[0].equipNo && !units[0].beforeImage && !units[0].reasonDetail) {
+          units[0].equipNo = noStr;
+          units[0].conveyorItem = autoConv;
+        } else {
+          units.push(blankUnit(noStr, autoConv));
+        }
+        existingNos.add(noStr);
+        addedCount++;
+      });
+      if (addedCount > 0) {
+        r.activeUnitIdx = units.length - 1;
+        syncParentFromUnits(r);
+        saveRecords();
+        renderInput(container);
+      }
+    });
+
+    container.querySelector('#acm-copy-prev-unit-btn')?.addEventListener('click', () => {
+      if (activeIdx <= 0) return;
+      const prev = units[activeIdx - 1];
+      state.isDirty = true;
+      u.cat2 = prev.cat2 ? JSON.parse(JSON.stringify(prev.cat2)) : {};
+      u.inspectionMethod = prev.inspectionMethod || '';
+      u.taskPerformed = prev.taskPerformed || '';
+      u.reasonDetail = prev.reasonDetail || '';
+      u.resultCat = prev.resultCat || '';
+      u.paramSpeed = prev.paramSpeed || '';
+      u.paramTemp = prev.paramTemp || '';
+      u.paramCurrent = prev.paramCurrent || '';
+      u.paramVoltage = prev.paramVoltage || '';
+      u.resultDetail = prev.resultDetail || '';
+      syncParentFromUnits(r);
+      saveRecords();
+      renderInput(container);
+    });
+
+    container.querySelector('#acm-remove-unit-btn')?.addEventListener('click', async () => {
+      if (units.length <= 1) return;
+      const ok = await showModal("Remove Equipment Unit", `Remove Unit ${activeIdx + 1}${u.equipNo ? ' (No. ' + u.equipNo + ')' : ''} from this report?`, "confirm");
+      if (!ok) return;
+      state.isDirty = true;
+      units.splice(activeIdx, 1);
+      r.activeUnitIdx = Math.max(0, activeIdx - 1);
+      syncParentFromUnits(r);
+      saveRecords();
+      renderInput(container);
+    });
+
+    container.querySelectorAll('[data-multi-path]').forEach(wrapper => {
+      const path = wrapper.getAttribute('data-multi-path');
+      const btn = wrapper.querySelector('.dd-btn');
+      const menu = wrapper.querySelector('.dd-menu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = menu.classList.contains('open');
+        document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open'));
+        if (!isOpen) menu.classList.add('open');
+      });
+      menu.addEventListener('click', (e) => e.stopPropagation());
+      const checkboxes = menu.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+          const vals = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
+          const joined = vals.join(', ');
+          btn.textContent = vals.length ? joined : 'Select task(s)...';
+          btn.title = btn.textContent;
+          btn.classList.toggle('placeholder', vals.length === 0);
+          state.isDirty = true;
+          setByPath(u, path, joined);
+          syncParentFromUnits(r);
+          saveRecords();
+          updateHighlights(container, r);
+        });
+      });
+    });
+
     container.querySelector('#acm-toggle-cleaning-btn')?.addEventListener('click', () => {
-      if (r.cleaningImage) {
-        openImageLightbox('Cleaning Reference Image', r.cleaningImage);
+      if (u.cleaningImage) {
+        openImageLightbox(`Unit ${activeIdx + 1} • Cleaning Reference Image`, u.cleaningImage);
         return;
       }
-      r.showCleaningBox = !r.showCleaningBox;
+      u.showCleaningBox = !u.showCleaningBox;
+      syncParentFromUnits(r);
       saveRecords();
       renderInput(container);
     });
 
     container.querySelector('[data-cam-hide="cleaning"]')?.addEventListener('click', () => {
-      if (!r.cleaningImage) {
-        r.showCleaningBox = false;
+      if (!u.cleaningImage) {
+        u.showCleaningBox = false;
+        syncParentFromUnits(r);
         saveRecords();
         renderInput(container);
       }
@@ -1698,7 +2117,7 @@
 
     const slotTitles = { before: 'Before', cleaning: 'Cleaning', after: 'After' };
     const slotAccents = { before: '#f59e0b', cleaning: '#0284c7', after: '#10b981' };
-    const getSlotImage = (slot) => slot === 'before' ? r.beforeImage : (slot === 'cleaning' ? r.cleaningImage : r.afterImage);
+    const getSlotImage = (slot) => slot === 'before' ? u.beforeImage : (slot === 'cleaning' ? u.cleaningImage : u.afterImage);
 
     ['before', 'cleaning', 'after'].forEach(slot => {
       const fileInp = container.querySelector(`[data-cam-input="${slot}"]`);
@@ -1706,30 +2125,33 @@
       container.querySelector(`[data-cam-trigger="${slot}"]`)?.addEventListener('click', triggerCamera);
       container.querySelector(`[data-ref-stage="${slot}"]`)?.addEventListener('click', () => {
         const currentImg = getSlotImage(slot);
-        if (currentImg) openImageLightbox(`${slotTitles[slot]} Reference Image`, currentImg);
+        if (currentImg) openImageLightbox(`${slotTitles[slot]} Reference Image (No. ${u.equipNo || activeIdx + 1})`, currentImg);
         else triggerCamera();
       });
       container.querySelector(`[data-cam-zoom="${slot}"]`)?.addEventListener('click', () => {
         const currentImg = getSlotImage(slot);
-        if (currentImg) openImageLightbox(`${slotTitles[slot]} Reference Image`, currentImg);
+        if (currentImg) openImageLightbox(`${slotTitles[slot]} Reference Image (No. ${u.equipNo || activeIdx + 1})`, currentImg);
       });
       container.querySelector(`[data-cam-clear="${slot}"]`)?.addEventListener('click', () => {
         state.isDirty = true;
         if (slot === 'before') {
-          r.beforeImage = '';
-          r.beforeImageDate = '';
-          r.beforeImageTime = '';
-          r.happeningDate = '';
-          r.timeOfHappening = '';
+          u.beforeImage = '';
+          u.beforeImageDate = '';
+          u.beforeImageTime = '';
+          if (activeIdx === 0) {
+            r.happeningDate = '';
+            r.timeOfHappening = '';
+          }
         } else if (slot === 'cleaning') {
-          r.cleaningImage = '';
-          r.cleaningImageDate = '';
-          r.cleaningImageTime = '';
+          u.cleaningImage = '';
+          u.cleaningImageDate = '';
+          u.cleaningImageTime = '';
         } else {
-          r.afterImage = '';
-          r.afterImageDate = '';
-          r.afterImageTime = '';
+          u.afterImage = '';
+          u.afterImageDate = '';
+          u.afterImageTime = '';
         }
+        syncParentFromUnits(r);
         saveRecords();
         renderInput(container);
       });
@@ -1752,33 +2174,34 @@
           const formattedDate = `${dd}/${mm}/${yyyy}`;
           const watermarkTime = `${hNoPad}:${min}:${ss}`;
           const inputTime = `${hh}:${min}`;
-          const locationText = [r.lineEquipment, r.equipNo].filter(Boolean).join(' - ') || 'Not Specified';
+          const locationText = [r.lineEquipment, u.equipNo].filter(Boolean).join(' - ') || 'Not Specified';
 
           const optimizedDataUrl = await optimizeCameraImage(file, {
             date: formattedDate,
             time: watermarkTime,
             location: locationText,
-            tag: slotTitles[slot],
+            tag: `${slotTitles[slot]}${u.equipNo ? ' • No.' + u.equipNo : ''}`,
             accentColor: slotAccents[slot]
           }, 1280, 0.78);
 
           state.isDirty = true;
           if (slot === 'before') {
-            r.beforeImage = optimizedDataUrl;
-            r.beforeImageDate = formattedDate;
-            r.beforeImageTime = watermarkTime;
-            r.happeningDate = isoDate;
-            r.timeOfHappening = inputTime;
+            u.beforeImage = optimizedDataUrl;
+            u.beforeImageDate = formattedDate;
+            u.beforeImageTime = watermarkTime;
+            if (!r.happeningDate) r.happeningDate = isoDate;
+            if (!r.timeOfHappening) r.timeOfHappening = inputTime;
           } else if (slot === 'cleaning') {
-            r.cleaningImage = optimizedDataUrl;
-            r.cleaningImageDate = formattedDate;
-            r.cleaningImageTime = watermarkTime;
-            r.showCleaningBox = true;
+            u.cleaningImage = optimizedDataUrl;
+            u.cleaningImageDate = formattedDate;
+            u.cleaningImageTime = watermarkTime;
+            u.showCleaningBox = true;
           } else {
-            r.afterImage = optimizedDataUrl;
-            r.afterImageDate = formattedDate;
-            r.afterImageTime = watermarkTime;
+            u.afterImage = optimizedDataUrl;
+            u.afterImageDate = formattedDate;
+            u.afterImageTime = watermarkTime;
           }
+          syncParentFromUnits(r);
           saveRecords();
           renderInput(container);
         } catch (err) {
@@ -1823,15 +2246,32 @@
     
     container.querySelector('#acm-submit-btn').addEventListener('click', async () => {
       state.showErrors = true; let errs = [];
+      syncParentFromUnits(r);
       if(!checkReq(r.happeningDate) || !checkReq(r.timeOfHappening)) errs.push("[Notification & Work Order] Date & Time of Happening (Capture 'Before' image in Reference Image)");
       if(!checkReq(r.issuedBy)) errs.push("[Notification & Work Order] Issued By");
       let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) errs.push("[Notification & Work Order] Group (Include Vendor Name if applicable)");
       if(!checkReq(r.reportNo)) errs.push("[Notification & Work Order] Report No. (BHS/PPM)");
       if(!checkReq(r.maintenanceType)) errs.push("[Notification & Work Order] Maintenance Type");
-      if(!checkReq(r.title) || !checkReq(r.conveyorItem) || !checkReq(r.lineEquipment) || !checkReq(r.equipNo)) errs.push("[Title & Equipment] All details are required");
-      if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) errs.push("[Category] Select at least one category");
-      if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) errs.push("[Remarks] Please write at least 2 words in Describe the details");
-      updateHighlights(container, r);
+      if(!checkReq(r.title) || !checkReq(r.lineEquipment)) errs.push("[Title & Equipment] Title and Line/Equipment are required");
+
+      let firstBadUnitIdx = -1;
+      units.forEach((unitItem, idx) => {
+        const uLabel = `Unit ${idx + 1}${unitItem.equipNo ? ' (No. ' + unitItem.equipNo + ')' : ''}`;
+        let unitHasErr = false;
+        if(!checkReq(unitItem.equipNo) || !checkReq(unitItem.conveyorItem)) { errs.push(`[${uLabel}] Equipment No. and Conveyor/Item are required`); unitHasErr = true; }
+        if(!(unitItem.cat2 && Object.keys(CATS2).some(k=>unitItem.cat2[k]))) { errs.push(`[${uLabel} • Category] Select at least one category`); unitHasErr = true; }
+        if(!checkReq(unitItem.beforeImage)) { errs.push(`[${uLabel} • Reference Image] Capture 'Before' photo`); unitHasErr = true; }
+        if(!checkReq(unitItem.inspectionMethod) || parseMultiList(unitItem.taskPerformed).length === 0) { errs.push(`[${uLabel} • Remarks] Select Inspection Method and Task Performed`); unitHasErr = true; }
+        if((unitItem.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) { errs.push(`[${uLabel} • Remarks] Write at least 2 words in Describe the details`); unitHasErr = true; }
+        if(unitHasErr && firstBadUnitIdx === -1) firstBadUnitIdx = idx;
+      });
+
+      if(firstBadUnitIdx !== -1 && firstBadUnitIdx !== activeIdx) {
+        r.activeUnitIdx = firstBadUnitIdx;
+        renderInput(container);
+      } else {
+        updateHighlights(container, r);
+      }
 
       if(errs.length) await showModal("Submit Failed", "Please complete the highlighted required data:\n\n- " + errs.join("\n- "), "alert", true);
       else {
@@ -1848,7 +2288,7 @@
         if (!navigator.onLine) {
           state.isOnline = false;
           updateNetworkBadge();
-          const photoCount = (r.beforeImage ? 1 : 0) + (r.cleaningImage ? 1 : 0) + (r.afterImage ? 1 : 0);
+          const photoCount = units.reduce((acc, item) => acc + (item.beforeImage ? 1 : 0) + (item.cleaningImage ? 1 : 0) + (item.afterImage ? 1 : 0), 0);
           const pendingTotal = getPendingCount();
           const offlineSubmitHtml = `
             <div class="modal-offline-banner submit">
@@ -1858,6 +2298,7 @@
             <div>No internet connection is available right now. Your PPM submission and watermarked camera photos have been safely saved on this device.</div>
             <div class="modal-offline-details">
               <div class="modal-offline-row"><span>Report No.:</span><span class="mono-font">BHS/PPM ${esc(r.reportNo || 'N/A')}</span></div>
+              <div class="modal-offline-row"><span>Units Included:</span><span>${units.length} unit(s) (${esc(r.equipNo || '—')})</span></div>
               <div class="modal-offline-row"><span>Status:</span><span>${esc(r.status)} (Pending Sync)</span></div>
               <div class="modal-offline-row"><span>Reference Photos:</span><span>${photoCount} photo(s) stored locally</span></div>
               <div class="modal-offline-row"><span>Total Queued Items:</span><span>${pendingTotal} item(s)</span></div>
@@ -1882,7 +2323,7 @@
           }, 1400);
         } catch (e) {
           console.error(e);
-          const photoCount = (r.beforeImage ? 1 : 0) + (r.cleaningImage ? 1 : 0) + (r.afterImage ? 1 : 0);
+          const photoCount = units.reduce((acc, item) => acc + (item.beforeImage ? 1 : 0) + (item.cleaningImage ? 1 : 0) + (item.afterImage ? 1 : 0), 0);
           const pendingTotal = getPendingCount();
           const weakNetHtml = `
             <div class="modal-offline-banner submit">
@@ -1911,6 +2352,26 @@
       if(el.getAttribute('data-part')==='base') render(); else updateHighlights(container, r);
     }));
 
+    container.querySelectorAll('[data-unit-path]').forEach(el => el.addEventListener((el.type==='checkbox'||el.type==='radio'||el.tagName==='SELECT')?'change':'input', () => {
+      const uPath = el.getAttribute('data-unit-path');
+      const newVal = el.type === 'checkbox' ? el.checked : el.value;
+      state.isDirty = true;
+      setByPath(u, uPath, newVal);
+      if (uPath === 'equipNo') {
+        const autoConv = (r.lineEquipment && u.equipNo) ? (u.equipNo === 'OTHERS' ? 'OTHERS' : ((EQUIP_DB[r.lineEquipment] && EQUIP_DB[r.lineEquipment][u.equipNo]) || u.conveyorItem || '')) : u.conveyorItem;
+        u.conveyorItem = autoConv;
+        const convInp = container.querySelector('[data-unit-path="conveyorItem"]');
+        if (convInp) convInp.value = autoConv;
+      }
+      syncParentFromUnits(r);
+      saveRecords();
+      if (uPath === 'equipNo' || uPath === 'conveyorItem' || uPath === 'resultCat' || uPath === 'inspectionMethod' || uPath.startsWith('cat2.')) {
+        renderInput(container);
+      } else {
+        updateHighlights(container, r);
+      }
+    }));
+
     container.querySelectorAll('[data-path]').forEach(el => el.addEventListener((el.type==='checkbox'||el.type==='radio'||el.tagName==='SELECT')?'change':'input', async () => {
       const path = el.getAttribute('data-path'); let newVal = el.type==='checkbox'?el.checked:el.value;
       if(path === 'confirmedByName' && newVal !== '') {
@@ -1918,8 +2379,17 @@
         if(pwd !== CONF_PASS[newVal]) { await showModal("Error", "Incorrect pin. Signature reversed.", "alert", true); el.value = r.confirmedByName || ''; return; }
       }
       state.isDirty = true; setByPath(r, path, newVal);
-      if(path === 'lineEquipment') { r.equipNo = ''; container.querySelector('[data-path="equipNo"]').value=''; r.conveyorItem = ''; container.querySelector('[data-path="conveyorItem"]').value=''; const nL = container.querySelector('#no-list'); if(nL) { const opts = (r.lineEquipment && EQUIP_DB[r.lineEquipment])?Object.keys(EQUIP_DB[r.lineEquipment]).sort():[]; if(r.lineEquipment) opts.push('OTHERS'); nL.innerHTML = opts.map(o=>`<option value="${o}"></option>`).join(''); } }
-      if(path === 'lineEquipment' || path === 'equipNo') { r.conveyorItem = (r.lineEquipment && r.equipNo) ? (r.equipNo==='OTHERS'?'OTHERS':((EQUIP_DB[r.lineEquipment] && EQUIP_DB[r.lineEquipment][r.equipNo]) || '')) : ''; container.querySelector('[data-path="conveyorItem"]').value = r.conveyorItem; }
+      if(path === 'lineEquipment') {
+        units.forEach(item => {
+          if (r.lineEquipment && item.equipNo && EQUIP_DB[r.lineEquipment] && EQUIP_DB[r.lineEquipment][item.equipNo]) {
+            item.conveyorItem = EQUIP_DB[r.lineEquipment][item.equipNo];
+          }
+        });
+        syncParentFromUnits(r);
+        saveRecords();
+        renderInput(container);
+        return;
+      }
       saveRecords(); updateHighlights(container, r);
     }));
   }
@@ -1998,6 +2468,10 @@
       return;
     }
 
+    const units = normalizeRecordUnits(r);
+    syncParentFromUnits(r);
+    const isMultiUnit = units.length > 1;
+
     const selectableRecs = state.records
       .filter(x => !x.isDraft || String(x.createdAt) === String(r.createdAt))
       .slice()
@@ -2007,38 +2481,267 @@
     const st = getStatus(r);
     const stLabel = getStatusLabel(r, st);
     const stChipCls = st === 'done' ? 'chip-done' : (st === 'progress' ? 'chip-progress' : 'chip-open');
-    const hasCleaningPhoto = Boolean(r.cleaningImage);
+    const u0 = units[0];
+    const hasCleaningPhoto = Boolean(u0.cleaningImage);
+    const taskDisplay = parseMultiList(u0.taskPerformed).join(', ');
 
-    const catItemsHtml = Object.entries(CATS2).map(([k, label]) => {
-      const isChecked = Boolean(r.cat2 && r.cat2[k]);
-      return `<span class="ppm-chk-item ${isChecked ? 'checked' : ''}"><span class="doc-checkbox">${isChecked ? '✓' : '&nbsp;'}</span>${esc(label)}</span>`;
-    }).join('');
-
-    const resItemsHtml = Object.entries(RESULT_CAT).map(([k, label]) => {
-      const isChecked = r.resultCat === k;
-      return `<span class="ppm-chk-item ${isChecked ? 'checked' : ''}"><span class="doc-checkbox">${isChecked ? '✓' : '&nbsp;'}</span>${esc(label)}</span>`;
-    }).join('');
-
-    const buildDocPhotoBox = (slot, title, tagCls, imgSrc, imgDate, imgTime, emptyMsg) => {
+    const buildDocPhotoBox = (slot, title, tagCls, imgSrc, imgDate, imgTime, emptyMsg, zoomTitle) => {
       const ts = [imgDate, imgTime].filter(Boolean).join(' ');
+      const zLabel = zoomTitle || `${title} Reference Image`;
       return `<div class="ppm-photo-box">
         <div class="ppm-photo-head">
-          <span class="ppm-photo-tag ${tagCls}">${title}</span>
+          <span class="ppm-photo-tag ${tagCls}">${esc(title)}</span>
           <span class="ppm-photo-ts">${esc(ts) || '—'}</span>
         </div>
         <div class="ppm-photo-stage">
           ${imgSrc
-            ? `<img src="${esc(imgSrc)}" alt="${esc(title)} Reference Photo" data-doc-zoom="${slot}" title="Click to enlarge ${esc(title)} photo"/>`
+            ? `<img src="${esc(imgSrc)}" alt="${esc(zLabel)}" data-doc-zoom-src="${esc(imgSrc)}" data-doc-zoom-title="${esc(zLabel)}" title="Click to enlarge ${esc(zLabel)}"/>`
             : `<div class="ppm-photo-empty">${esc(emptyMsg)}</div>`}
         </div>
       </div>`;
     };
 
-    const photosHtml = [
-      buildDocPhotoBox('before', 'Before', 'ppm-tag-before', r.beforeImage, r.beforeImageDate, r.beforeImageTime, 'No "Before" photo captured'),
-      buildDocPhotoBox('after', 'After', 'ppm-tag-after', r.afterImage, r.afterImageDate, r.afterImageTime, 'No "After" photo captured yet'),
-      hasCleaningPhoto ? buildDocPhotoBox('cleaning', 'Cleaning', 'ppm-tag-cleaning', r.cleaningImage, r.cleaningImageDate, r.cleaningImageTime, '') : ''
-    ].join('');
+    let bodySectionsHtml = '';
+
+    if (!isMultiUnit) {
+      const catItemsHtml = Object.entries(CATS2).map(([k, label]) => {
+        const isChecked = Boolean(u0.cat2 && u0.cat2[k]);
+        return `<span class="ppm-chk-item ${isChecked ? 'checked' : ''}"><span class="doc-checkbox">${isChecked ? '✓' : '&nbsp;'}</span>${esc(label)}</span>`;
+      }).join('');
+
+      const resItemsHtml = Object.entries(RESULT_CAT).map(([k, label]) => {
+        const isChecked = u0.resultCat === k;
+        return `<span class="ppm-chk-item ${isChecked ? 'checked' : ''}"><span class="doc-checkbox">${isChecked ? '✓' : '&nbsp;'}</span>${esc(label)}</span>`;
+      }).join('');
+
+      const photosHtml = [
+        buildDocPhotoBox('before', 'Before', 'ppm-tag-before', u0.beforeImage, u0.beforeImageDate, u0.beforeImageTime, 'No "Before" photo captured', 'Before Reference Image'),
+        buildDocPhotoBox('after', 'After', 'ppm-tag-after', u0.afterImage, u0.afterImageDate, u0.afterImageTime, 'No "After" photo captured yet', 'After Reference Image'),
+        hasCleaningPhoto ? buildDocPhotoBox('cleaning', 'Cleaning', 'ppm-tag-cleaning', u0.cleaningImage, u0.cleaningImageDate, u0.cleaningImageTime, '', 'Cleaning Reference Image') : ''
+      ].join('');
+
+      bodySectionsHtml = `
+        <!-- SECTION 1: ISSUANCE & EQUIPMENT DETAILS -->
+        <div class="ppm-sec">
+          <div class="ppm-sec-bar"><span><span class="sec-num">01</span>Issuance &amp; Equipment Details</span></div>
+          <table>
+            <tr>
+              <td class="ppm-lbl" style="width:13%">Date</td>
+              <td class="ppm-val mono-font tc" style="width:15%">${esc(displayFullDate(r))}</td>
+              <td class="ppm-lbl" style="width:14%">Time</td>
+              <td class="ppm-val mono-font tc" style="width:13%">${esc(r.timeOfHappening || u0.beforeImageTime) || '—'}</td>
+              <td class="ppm-lbl" style="width:12%">Issued By</td>
+              <td class="ppm-val" style="width:15%">${esc(r.issuedBy) || '—'}</td>
+              <td class="ppm-lbl" style="width:8%">Group</td>
+              <td class="ppm-val" style="width:10%">${esc(r.issuedGroup) || '—'}</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl">Line / Equip.</td>
+              <td class="ppm-val tc">${esc(r.lineEquipment) || '—'}</td>
+              <td class="ppm-lbl">Equip. No.</td>
+              <td class="ppm-val tc">${esc(u0.equipNo) || '—'}</td>
+              <td class="ppm-lbl">Conveyor / Item</td>
+              <td class="ppm-val" colspan="3">${esc(u0.conveyorItem) || '—'}</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl">Work Title</td>
+              <td class="ppm-val" colspan="7" style="font-size:11px;font-weight:700">${esc(r.title) || '—'}</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl">Category</td>
+              <td colspan="7"><div class="ppm-chk-wrap">${catItemsHtml}</div></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- SECTION 2: VISUAL REFERENCE IMAGES -->
+        <div class="ppm-sec">
+          <div class="ppm-sec-bar">
+            <span><span class="sec-num">02</span>Reference Images</span>
+            <span style="font-size:9px;font-weight:600;color:#64748b;text-transform:none">${hasCleaningPhoto ? 'Before • After • Cleaning' : 'Before • After'}</span>
+          </div>
+          <div class="ppm-photo-grid ${hasCleaningPhoto ? 'cols-3' : 'cols-2'}">
+            ${photosHtml}
+          </div>
+        </div>
+
+        <!-- SECTION 3: INSPECTION & REMARKS -->
+        <div class="ppm-sec">
+          <div class="ppm-sec-bar"><span><span class="sec-num">03</span>Inspection &amp; Remarks</span></div>
+          <table>
+            <tr>
+              <td class="ppm-lbl" style="width:18%">Inspection Method</td>
+              <td class="ppm-val" style="width:32%">${esc(u0.inspectionMethod) || '—'}</td>
+              <td class="ppm-lbl" style="width:18%">Task Performed</td>
+              <td class="ppm-val" style="width:32%">${esc(taskDisplay) || '—'}</td>
+            </tr>
+            <tr>
+              <td colspan="4" class="ppm-notes-box" style="padding:6px 8px">
+                <div style="font-size:9.5px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:3px">Remarks / Details:</div>
+                <div>${esc(u0.reasonDetail) || '—'}</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- SECTION 4: RESULT & OPERATING PARAMETERS -->
+        <div class="ppm-sec">
+          <div class="ppm-sec-bar"><span><span class="sec-num">04</span>Result &amp; Operating Parameters</span></div>
+          <table>
+            <tr>
+              <td class="ppm-lbl" style="width:13%">Result</td>
+              <td colspan="5"><div class="ppm-chk-wrap">${resItemsHtml}</div></td>
+            </tr>
+            <tr>
+              <td colspan="2" rowspan="3" class="ppm-notes-box" style="width:60%;padding:6px 8px">
+                <div style="font-size:9.5px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:3px">Detail / Status:</div>
+                <div>${esc(u0.resultDetail) || '—'}</div>
+              </td>
+              <td colspan="4" class="ppm-lbl tc" style="width:40%;background:#f1f5f9">Operating Parameters (If Applicable)</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl tc" style="width:11%;font-size:9px">Speed (m/min)</td>
+              <td class="ppm-val tc mono-font" style="width:9%">${esc(u0.paramSpeed) || '—'}</td>
+              <td class="ppm-lbl tc" style="width:11%;font-size:9px">Temp (°C)</td>
+              <td class="ppm-val tc mono-font" style="width:9%">${esc(u0.paramTemp) || '—'}</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl tc" style="font-size:9px">Current (A)</td>
+              <td class="ppm-val tc mono-font">${esc(u0.paramCurrent) || '—'}</td>
+              <td class="ppm-lbl tc" style="font-size:9px">Voltage (V)</td>
+              <td class="ppm-val tc mono-font">${esc(u0.paramVoltage) || '—'}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- SECTION 5: SIGN-OFF & VERIFICATION -->
+        <div class="ppm-sec" style="margin-bottom:4px">
+          <div class="ppm-sec-bar"><span><span class="sec-num">05</span>Sign-off &amp; Verification</span></div>
+          <div class="ppm-sign-grid">
+            <div class="ppm-sign-cell">
+              <div class="ppm-sign-name">${esc(r.doneByName) || '&nbsp;'}</div>
+              <div class="ppm-sign-line">Done By ( TECH )</div>
+            </div>
+            <div class="ppm-sign-cell">
+              <div class="ppm-sign-name">${esc(r.checkByName) || '&nbsp;'}</div>
+              <div class="ppm-sign-line">Check By ( TO )</div>
+            </div>
+            <div class="ppm-sign-cell">
+              <div class="ppm-sign-name">${esc(r.confirmedByName) || '&nbsp;'}</div>
+              <div class="ppm-sign-line">Confirmed By ( TE / E / SE )</div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      const unitNosSummary = units.map(item => item.equipNo || '—').join(', ');
+      const matrixRowsHtml = units.map((item, idx) => {
+        const cats = Object.entries(CATS2).filter(([k]) => item.cat2 && item.cat2[k]).map(([, lbl]) => lbl).join(', ') || '—';
+        const tasks = parseMultiList(item.taskPerformed).join(', ') || '—';
+        const resLabel = RESULT_CAT[item.resultCat] || '—';
+        const paramsArr = [];
+        if (item.paramSpeed) paramsArr.push(`Spd:${item.paramSpeed}`);
+        if (item.paramTemp) paramsArr.push(`Tmp:${item.paramTemp}`);
+        if (item.paramCurrent) paramsArr.push(`Cur:${item.paramCurrent}`);
+        if (item.paramVoltage) paramsArr.push(`V:${item.paramVoltage}`);
+        const paramsStr = paramsArr.length ? `<div style="font-size:8.2px;color:#475569;margin-top:1px">${esc(paramsArr.join(' | '))}</div>` : '';
+        const resDetStr = item.resultDetail ? `<div style="font-size:8.2px;color:#334155;margin-top:1px">${esc(item.resultDetail)}</div>` : '';
+        return `<tr>
+          <td class="tc mono-font b" style="background:#f8fafc">${esc(item.equipNo || String(idx + 1).padStart(2, '0'))}</td>
+          <td>${esc(item.conveyorItem || '—')}</td>
+          <td>${esc(cats)}</td>
+          <td><div><b>${esc(item.inspectionMethod || '—')}</b></div><div style="color:#334155">${esc(tasks)}</div></td>
+          <td>${esc(item.reasonDetail || '—')}</td>
+          <td><div><b>${esc(resLabel)}</b></div>${paramsStr}${resDetStr}</td>
+        </tr>`;
+      }).join('');
+
+      const multiPhotoBoxes = [];
+      units.forEach((item, idx) => {
+        const uTag = item.equipNo || String(idx + 1).padStart(2, '0');
+        multiPhotoBoxes.push(buildDocPhotoBox('before', `${uTag}: BEFORE`, 'ppm-tag-before', item.beforeImage, item.beforeImageDate, item.beforeImageTime, `No. ${uTag} Before`, `No. ${uTag} • Before Reference Image`));
+        multiPhotoBoxes.push(buildDocPhotoBox('after', `${uTag}: AFTER`, 'ppm-tag-after', item.afterImage, item.afterImageDate, item.afterImageTime, `No. ${uTag} After`, `No. ${uTag} • After Reference Image`));
+        if (item.cleaningImage) {
+          multiPhotoBoxes.push(buildDocPhotoBox('cleaning', `${uTag}: CLEANING`, 'ppm-tag-cleaning', item.cleaningImage, item.cleaningImageDate, item.cleaningImageTime, '', `No. ${uTag} • Cleaning Reference Image`));
+        }
+      });
+
+      const gridModCls = units.length >= 4 ? 'compact-5' : '';
+
+      bodySectionsHtml = `
+        <!-- SECTION 1: ISSUANCE & LINE SUMMARY -->
+        <div class="ppm-sec" style="margin-bottom:7px">
+          <div class="ppm-sec-bar"><span><span class="sec-num">01</span>Issuance &amp; Equipment Line Summary</span><span style="font-size:9px;font-weight:700;color:#1e3a8a">${units.length} Units Covered</span></div>
+          <table>
+            <tr>
+              <td class="ppm-lbl" style="width:11%">Date</td>
+              <td class="ppm-val mono-font tc" style="width:14%">${esc(displayFullDate(r))}</td>
+              <td class="ppm-lbl" style="width:10%">Time</td>
+              <td class="ppm-val mono-font tc" style="width:11%">${esc(r.timeOfHappening || u0.beforeImageTime) || '—'}</td>
+              <td class="ppm-lbl" style="width:12%">Issued By</td>
+              <td class="ppm-val" style="width:18%">${esc(r.issuedBy) || '—'}</td>
+              <td class="ppm-lbl" style="width:9%">Group</td>
+              <td class="ppm-val" style="width:15%">${esc(r.issuedGroup) || '—'}</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl">Line / Equip.</td>
+              <td class="ppm-val tc b">${esc(r.lineEquipment) || '—'}</td>
+              <td class="ppm-lbl">Equip. Nos.</td>
+              <td class="ppm-val mono-font b" colspan="5">${esc(unitNosSummary)}</td>
+            </tr>
+            <tr>
+              <td class="ppm-lbl">Work Title</td>
+              <td class="ppm-val" colspan="7" style="font-weight:700">${esc(r.title) || '—'}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- SECTION 2: CONSOLIDATED UNIT INSPECTION, REMARKS & RESULT MATRIX -->
+        <div class="ppm-sec" style="margin-bottom:7px">
+          <div class="ppm-sec-bar"><span><span class="sec-num">02</span>Unit Inspection, Remarks &amp; Result Matrix</span></div>
+          <table class="ppm-unit-matrix">
+            <thead>
+              <tr>
+                <th class="tc" style="width:6%">No.</th>
+                <th style="width:20%">Conveyor / Item</th>
+                <th style="width:12%">Category</th>
+                <th style="width:18%">Method &amp; Task</th>
+                <th style="width:24%">Remarks / Details</th>
+                <th style="width:20%">Result &amp; Parameters</th>
+              </tr>
+            </thead>
+            <tbody>${matrixRowsHtml}</tbody>
+          </table>
+        </div>
+
+        <!-- SECTION 3: COMPACT REFERENCE IMAGES GRID -->
+        <div class="ppm-sec" style="margin-bottom:7px">
+          <div class="ppm-sec-bar"><span><span class="sec-num">03</span>Reference Images</span><span style="font-size:9px;font-weight:600;color:#64748b;text-transform:none">Click any photo to zoom</span></div>
+          <div class="ppm-multi-photo-grid ${gridModCls}">
+            ${multiPhotoBoxes.join('')}
+          </div>
+        </div>
+
+        <!-- SECTION 4: SIGN-OFF & VERIFICATION -->
+        <div class="ppm-sec" style="margin-bottom:4px">
+          <div class="ppm-sec-bar"><span><span class="sec-num">04</span>Sign-off &amp; Verification</span></div>
+          <div class="ppm-sign-grid">
+            <div class="ppm-sign-cell">
+              <div class="ppm-sign-name">${esc(r.doneByName) || '&nbsp;'}</div>
+              <div class="ppm-sign-line">Done By ( TECH )</div>
+            </div>
+            <div class="ppm-sign-cell">
+              <div class="ppm-sign-name">${esc(r.checkByName) || '&nbsp;'}</div>
+              <div class="ppm-sign-line">Check By ( TO )</div>
+            </div>
+            <div class="ppm-sign-cell">
+              <div class="ppm-sign-name">${esc(r.confirmedByName) || '&nbsp;'}</div>
+              <div class="ppm-sign-line">Confirmed By ( TE / E / SE )</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
     container.innerHTML = `
       <div class="doc-toolbar">
@@ -2064,6 +2767,7 @@
                 <div class="ppm-doc-status-row">
                   <span style="font-size:10px;font-weight:700;color:#475569">Status:</span>
                   <span class="status-chip ${stChipCls}">${esc(stLabel)}</span>
+                  ${isMultiUnit ? `<span class="unit-count-pill" style="font-size:9px">${esc(r.lineEquipment || 'Line')} • ${units.length} Units</span>` : ''}
                   ${r.isDraft ? `<span class="status-chip chip-open" style="border:1px dashed #94a3b8">Draft (Unsubmitted)</span>` : ''}
                   ${!r.isDraft && r.syncPending ? `<span class="chip-sync">Pending Cloud Sync</span>` : ''}
                 </div>
@@ -2090,117 +2794,7 @@
               </div>
             </div>
 
-            <!-- SECTION 1: ISSUANCE & EQUIPMENT DETAILS -->
-            <div class="ppm-sec">
-              <div class="ppm-sec-bar"><span><span class="sec-num">01</span>Issuance &amp; Equipment Details</span></div>
-              <table>
-                <tr>
-                  <td class="ppm-lbl" style="width:13%">Date</td>
-                  <td class="ppm-val mono-font tc" style="width:15%">${esc(displayFullDate(r))}</td>
-                  <td class="ppm-lbl" style="width:14%">Time</td>
-                  <td class="ppm-val mono-font tc" style="width:13%">${esc(r.timeOfHappening || r.beforeImageTime) || '—'}</td>
-                  <td class="ppm-lbl" style="width:12%">Issued By</td>
-                  <td class="ppm-val" style="width:15%">${esc(r.issuedBy) || '—'}</td>
-                  <td class="ppm-lbl" style="width:8%">Group</td>
-                  <td class="ppm-val" style="width:10%">${esc(r.issuedGroup) || '—'}</td>
-                </tr>
-                <tr>
-                  <td class="ppm-lbl">Line / Equip.</td>
-                  <td class="ppm-val tc">${esc(r.lineEquipment) || '—'}</td>
-                  <td class="ppm-lbl">Equip. No.</td>
-                  <td class="ppm-val tc">${esc(r.equipNo) || '—'}</td>
-                  <td class="ppm-lbl">Conveyor / Item</td>
-                  <td class="ppm-val" colspan="3">${esc(r.conveyorItem) || '—'}</td>
-                </tr>
-                <tr>
-                  <td class="ppm-lbl">Work Title</td>
-                  <td class="ppm-val" colspan="7" style="font-size:11px;font-weight:700">${esc(r.title) || '—'}</td>
-                </tr>
-                <tr>
-                  <td class="ppm-lbl">Category</td>
-                  <td colspan="7"><div class="ppm-chk-wrap">${catItemsHtml}</div></td>
-                </tr>
-              </table>
-            </div>
-
-            <!-- SECTION 2: VISUAL REFERENCE IMAGES -->
-            <div class="ppm-sec">
-              <div class="ppm-sec-bar">
-                <span><span class="sec-num">02</span>Reference Images</span>
-                <span style="font-size:9px;font-weight:600;color:#64748b;text-transform:none">${hasCleaningPhoto ? 'Before • After • Cleaning' : 'Before • After'}</span>
-              </div>
-              <div class="ppm-photo-grid ${hasCleaningPhoto ? 'cols-3' : 'cols-2'}">
-                ${photosHtml}
-              </div>
-            </div>
-
-            <!-- SECTION 3: INSPECTION & REMARKS -->
-            <div class="ppm-sec">
-              <div class="ppm-sec-bar"><span><span class="sec-num">03</span>Inspection &amp; Remarks</span></div>
-              <table>
-                <tr>
-                  <td class="ppm-lbl" style="width:18%">Inspection Method</td>
-                  <td class="ppm-val" style="width:32%">${esc(r.inspectionMethod) || '—'}</td>
-                  <td class="ppm-lbl" style="width:18%">Task Performed</td>
-                  <td class="ppm-val" style="width:32%">${esc(r.taskPerformed) || '—'}</td>
-                </tr>
-                <tr>
-                  <td colspan="4" class="ppm-notes-box" style="padding:6px 8px">
-                    <div style="font-size:9.5px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:3px">Remarks / Details:</div>
-                    <div>${esc(r.reasonDetail) || '—'}</div>
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            <!-- SECTION 4: RESULT & OPERATING PARAMETERS -->
-            <div class="ppm-sec">
-              <div class="ppm-sec-bar"><span><span class="sec-num">04</span>Result &amp; Operating Parameters</span></div>
-              <table>
-                <tr>
-                  <td class="ppm-lbl" style="width:13%">Result</td>
-                  <td colspan="5"><div class="ppm-chk-wrap">${resItemsHtml}</div></td>
-                </tr>
-                <tr>
-                  <td colspan="2" rowspan="3" class="ppm-notes-box" style="width:60%;padding:6px 8px">
-                    <div style="font-size:9.5px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:3px">Detail / Status:</div>
-                    <div>${esc(r.resultDetail) || '—'}</div>
-                  </td>
-                  <td colspan="4" class="ppm-lbl tc" style="width:40%;background:#f1f5f9">Operating Parameters (If Applicable)</td>
-                </tr>
-                <tr>
-                  <td class="ppm-lbl tc" style="width:11%;font-size:9px">Speed (m/min)</td>
-                  <td class="ppm-val tc mono-font" style="width:9%">${esc(r.paramSpeed) || '—'}</td>
-                  <td class="ppm-lbl tc" style="width:11%;font-size:9px">Temp (°C)</td>
-                  <td class="ppm-val tc mono-font" style="width:9%">${esc(r.paramTemp) || '—'}</td>
-                </tr>
-                <tr>
-                  <td class="ppm-lbl tc" style="font-size:9px">Current (A)</td>
-                  <td class="ppm-val tc mono-font">${esc(r.paramCurrent) || '—'}</td>
-                  <td class="ppm-lbl tc" style="font-size:9px">Voltage (V)</td>
-                  <td class="ppm-val tc mono-font">${esc(r.paramVoltage) || '—'}</td>
-                </tr>
-              </table>
-            </div>
-
-            <!-- SECTION 5: SIGN-OFF & VERIFICATION -->
-            <div class="ppm-sec" style="margin-bottom:4px">
-              <div class="ppm-sec-bar"><span><span class="sec-num">05</span>Sign-off &amp; Verification</span></div>
-              <div class="ppm-sign-grid">
-                <div class="ppm-sign-cell">
-                  <div class="ppm-sign-name">${esc(r.doneByName) || '&nbsp;'}</div>
-                  <div class="ppm-sign-line">Done By ( TECH )</div>
-                </div>
-                <div class="ppm-sign-cell">
-                  <div class="ppm-sign-name">${esc(r.checkByName) || '&nbsp;'}</div>
-                  <div class="ppm-sign-line">Check By ( TO )</div>
-                </div>
-                <div class="ppm-sign-cell">
-                  <div class="ppm-sign-name">${esc(r.confirmedByName) || '&nbsp;'}</div>
-                  <div class="ppm-sign-line">Confirmed By ( TE / E / SE )</div>
-                </div>
-              </div>
-            </div>
+            ${bodySectionsHtml}
           </div>
 
           <!-- DOCUMENT FOOTER -->
@@ -2211,11 +2805,10 @@
         </div>
       </div>`;
 
-    container.querySelectorAll('[data-doc-zoom]').forEach(imgEl => {
+    container.querySelectorAll('[data-doc-zoom-src]').forEach(imgEl => {
       imgEl.addEventListener('click', () => {
-        const slot = imgEl.getAttribute('data-doc-zoom');
-        const label = slot === 'before' ? 'Before Reference Image' : (slot === 'cleaning' ? 'Cleaning Reference Image' : 'After Reference Image');
-        const src = slot === 'before' ? r.beforeImage : (slot === 'cleaning' ? r.cleaningImage : r.afterImage);
+        const src = imgEl.getAttribute('data-doc-zoom-src');
+        const label = imgEl.getAttribute('data-doc-zoom-title') || 'Reference Image';
         openImageLightbox(label, src);
       });
     });
@@ -2247,7 +2840,6 @@
       let failedCloudPhotos = 0;
 
       try {
-        // Convert Google Drive image URLs into CORS-safe Base64 Data URLs via Code.gs JSONP proxy
         await Promise.all(imgEls.map(async (imgEl, idx) => {
           const src = originalSrcs[idx];
           if (!src || src.startsWith('data:image/')) return;
@@ -2282,7 +2874,6 @@
         console.error(err);
         showModal("Export Notice", "Unable to export JPEG with cloud-hosted photos. Please ensure the latest Code.gs is deployed as a New Version, or use 'Print / Save as PDF'.", "alert");
       } finally {
-        // Restore original image sources
         imgEls.forEach((imgEl, idx) => {
           if (originalSrcs[idx] && imgEl.getAttribute('src') !== originalSrcs[idx]) {
             imgEl.setAttribute('src', originalSrcs[idx]);
@@ -2314,6 +2905,8 @@
     else if (state.tab === 'input') renderInput(content);
     else renderDocument(content);
   }
+
+  document.addEventListener('click', () => document.querySelectorAll('.dd-menu').forEach(m => m.classList.remove('open')));
 
   window.addEventListener('online', () => {
     state.isOnline = true;
