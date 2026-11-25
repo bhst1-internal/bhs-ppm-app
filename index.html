@@ -2181,9 +2181,7 @@
                   <div class="ppm-sign-line">Check By ( TO )</div>
                 </div>
                 <div class="ppm-sign-cell">
-                  <div class="ppm-sign-name">
-                    ${r.confirmedByName ? `${esc(r.confirmedByName)} <span style="font-size:9px;color:#059669;font-weight:800">(PIN ✓)</span>` : '&nbsp;'}
-                  </div>
+                  <div class="ppm-sign-name">${esc(r.confirmedByName) || '&nbsp;'}</div>
                   <div class="ppm-sign-line">Confirmed By ( TE / E / SE )</div>
                 </div>
               </div>
