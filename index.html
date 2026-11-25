@@ -109,52 +109,86 @@
   #acm-root #acm-modal-input:focus{border-color:var(--accent)}
   #acm-root #acm-modal-actions{display:flex;justify-content:flex-end;gap:8px}
   #acm-root .doc-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
-  #acm-root .doc-scroll{overflow-x:auto;overflow-y:auto;background:var(--line);padding:24px 12px;border-radius:12px;max-height:calc(100vh - 140px)}
-  #acm-root .doc-page{width:800px;margin:0 auto;background:var(--paper);padding:26px 30px 30px;font-family:Arial,Helvetica,sans-serif;color:#000;font-size:11.5px;box-shadow:0 2px 14px rgba(0,0,0,.18)}
+  #acm-root .doc-scroll{overflow-x:auto;overflow-y:auto;background:#cbd5e1;padding:24px 14px;border-radius:12px;max-height:calc(100vh - 140px)}
+  #acm-root .doc-page{width:794px;min-height:1085px;margin:0 auto;background:#ffffff;padding:24px 28px 22px;font-family:Arial,Helvetica,sans-serif;color:#0f172a;font-size:11px;box-shadow:0 6px 24px rgba(15,23,42,.18);display:flex;flex-direction:column;justify-content:space-between;border-radius:2px}
   #acm-root .doc-page table{border-collapse:collapse;width:100%;table-layout:fixed}
-  #acm-root .doc-page td,#acm-root .doc-page th{border:1px solid #000;padding:3px 5px;vertical-align:top;font-size:11px}
-  #acm-root .doc-header-title{font-size:17px;font-weight:700;margin:0 0 2px}
-  #acm-root .doc-header-sub{font-size:12px;margin:0 0 10px}
-  #acm-root .doc-memo-title{font-size:13px;font-weight:700;font-style:italic;margin:4px 0 8px}
-  #acm-root .doc-box-x{text-align:center;vertical-align:middle;font-weight:800;height:16px}
-  #acm-root .doc-italic-bold{font-style:italic;font-weight:700}
-  #acm-root .doc-checklist-row{display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:2px}
-  #acm-root .doc-checkbox{display:inline-block;width:11px;height:11px;border:1px solid #000;text-align:center;line-height:10px;font-size:9px;font-weight:800;margin-right:5px}
-  #acm-root .doc-footer-code{text-align:right;font-size:10px;margin-top:8px}
-  #acm-root .ref-img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  @media (max-width:640px){#acm-root .ref-img-grid{grid-template-columns:1fr}}
-  #acm-root .ref-img-card{border:1px solid var(--line);border-radius:12px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,box-shadow .2s}
-  #acm-root .ref-img-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-  #acm-root .ref-img-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
-  #acm-root .ref-img-badge{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px}
-  #acm-root .badge-before{background:#fef3c7;color:#b45309}
-  #acm-root .badge-cleaning{background:#e0f2fe;color:#0369a1}
-  #acm-root .badge-after{background:#d1fae5;color:#047857}
+  #acm-root .doc-page td,#acm-root .doc-page th{border:1px solid #334155;padding:4px 7px;vertical-align:middle;font-size:10.5px;color:#0f172a}
+  #acm-root .ppm-doc-top{display:flex;justify-content:space-between;align-items:stretch;gap:14px;padding-bottom:10px;border-bottom:2px solid #0f172a;margin-bottom:10px}
+  #acm-root .ppm-doc-brand{flex:1;display:flex;flex-direction:column;justify-content:center}
+  #acm-root .doc-header-title{font-size:17px;font-weight:800;letter-spacing:.02em;color:#0f172a;margin:0;text-transform:uppercase}
+  #acm-root .doc-header-sub{font-size:11.5px;font-weight:700;color:#334155;margin:2px 0 6px}
+  #acm-root .doc-memo-title{font-size:12.5px;font-weight:800;font-style:italic;color:#1e3a8a;margin:0 0 6px}
+  #acm-root .ppm-doc-status-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #acm-root .ppm-doc-ctrl{width:272px;flex-shrink:0}
+  #acm-root .ppm-doc-ctrl td{padding:3.5px 7px;font-size:10px}
+  #acm-root .ppm-doc-ctrl .ctrl-lbl{width:44%;background:#f1f5f9;font-weight:700;color:#1e293b}
+  #acm-root .ppm-doc-ctrl .ctrl-val{font-weight:700;text-align:center}
+  #acm-root .ppm-sec{margin-bottom:9px}
+  #acm-root .ppm-sec-bar{background:#f1f5f9;border:1px solid #334155;border-bottom:none;padding:4px 8px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#0f172a;display:flex;align-items:center;justify-content:space-between}
+  #acm-root .ppm-sec-bar span.sec-num{color:#1d4ed8;margin-right:5px}
+  #acm-root .ppm-lbl{background:#f8fafc;font-weight:700;color:#334155;font-size:10px;white-space:nowrap}
+  #acm-root .ppm-val{font-weight:600;color:#0f172a;word-break:break-word}
+  #acm-root .ppm-chk-wrap{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:2px 0}
+  #acm-root .ppm-chk-item{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:#1e293b}
+  #acm-root .ppm-chk-item.checked{font-weight:800;color:#0f172a}
+  #acm-root .doc-checkbox{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border:1.2px solid #0f172a;font-size:9.5px;font-weight:900;line-height:1;background:#fff;color:#0f172a}
+  #acm-root .ppm-chk-item.checked .doc-checkbox{background:#dbeafe;border-color:#1e3a8a;color:#1e3a8a}
+  #acm-root .ppm-photo-grid{display:grid;gap:8px;border:1px solid #334155;padding:7px;background:#ffffff}
+  #acm-root .ppm-photo-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #acm-root .ppm-photo-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #acm-root .ppm-photo-box{border:1px solid #94a3b8;border-radius:4px;overflow:hidden;display:flex;flex-direction:column;background:#f8fafc}
+  #acm-root .ppm-photo-head{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:3px 7px;background:#f1f5f9;border-bottom:1px solid #cbd5e1;font-size:9.5px}
+  #acm-root .ppm-photo-tag{font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;border-radius:999px;font-size:8.5px}
+  #acm-root .ppm-tag-before{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+  #acm-root .ppm-tag-cleaning{background:#e0f2fe;color:#075985;border:1px solid #7dd3fc}
+  #acm-root .ppm-tag-after{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+  #acm-root .ppm-photo-ts{font-size:8.5px;color:#475569;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:nowrap}
+  #acm-root .ppm-photo-stage{height:198px;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden;position:relative}
+  #acm-root .ppm-photo-grid.cols-3 .ppm-photo-stage{height:182px}
+  #acm-root .ppm-photo-stage img{width:100%;height:100%;object-fit:contain;display:block;cursor:zoom-in}
+  #acm-root .ppm-photo-empty{font-size:9.5px;color:#94a3b8;font-style:italic;text-align:center;padding:12px}
+  #acm-root .ppm-notes-box{min-height:58px;white-space:pre-wrap;line-height:1.42;font-size:10.5px;color:#0f172a;vertical-align:top}
+  #acm-root .ppm-sign-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #334155}
+  #acm-root .ppm-sign-cell{padding:8px 10px 6px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:70px;border-right:1px solid #334155;text-align:center}
+  #acm-root .ppm-sign-cell:last-child{border-right:none}
+  #acm-root .ppm-sign-name{font-size:11.5px;font-weight:800;color:#0f172a;min-height:18px;display:flex;align-items:center;gap:4px;margin-bottom:4px}
+  #acm-root .ppm-sign-line{width:92%;border-top:1px solid #0f172a;padding-top:3px;font-size:9.5px;font-weight:700;color:#334155}
+  #acm-root .ppm-doc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:5px;border-top:1px solid #cbd5e1;font-size:9px;color:#475569;margin-top:2px}
+  #acm-root .doc-footer-code{font-size:9.5px;font-weight:700;color:#1e293b;margin:0}
   #acm-root .ref-sec-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   #acm-root .ref-sec-header .sec-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:0}
-  #acm-root .ref-cleaning-toggle-btn{border:1px dashed #7dd3fc;background:#f0f9ff;color:#0369a1;padding:5px 11px;border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
-  #acm-root .ref-cleaning-toggle-btn:hover{background:#e0f2fe;border-color:#38bdf8}
-  #acm-root .ref-cleaning-toggle-btn.active{border-style:solid;background:#e0f2fe;color:#075985}
-  #acm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-  #acm-root .ref-img-stage{position:relative;aspect-ratio:16/10;min-height:185px;display:flex;align-items:center;justify-content:center;background:#f8fafc;cursor:pointer;overflow:hidden}
-  #acm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:8px;width:100%;height:100%;border:2px dashed #cbd5e1;margin:10px;border-radius:10px;transition:all .15s}
-  #acm-root .ref-img-stage:hover .ref-img-empty{border-color:var(--accent);background:#eff6ff}
-  #acm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(37,99,235,.15)}
-  #acm-root .ref-img-empty-title{font-size:.82rem;font-weight:700;color:var(--ink)}
+  #acm-root .ref-cleaning-toggle-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px dashed #38bdf8;background:#f0f9ff;color:#0369a1;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #acm-root .ref-cleaning-toggle-btn:hover{background:#e0f2fe;border-color:#0284c7}
+  #acm-root .ref-cleaning-toggle-btn.active{border-style:solid;border-color:#0284c7;background:#e0f2fe;color:#075985}
+  #acm-root .ref-img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  @media (max-width:720px){#acm-root .ref-img-grid{grid-template-columns:1fr}}
+  #acm-root .ref-img-card{border:1px solid var(--line);border-radius:10px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  #acm-root .ref-img-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+  #acm-root .ref-img-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
+  #acm-root .ref-img-badge{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center}
+  #acm-root .badge-before{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
+  #acm-root .badge-cleaning{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
+  #acm-root .badge-after{background:#d1fae5;color:#047857;border:1px solid #a7f3d0}
+  #acm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  #acm-root .ref-img-stage{position:relative;height:210px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  #acm-root .ref-img-preview{width:100%;height:100%;object-fit:contain;display:block;background:#0f172a}
+  #acm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;color:var(--text-sec);transition:transform .15s}
+  #acm-root .ref-img-stage:hover .ref-img-empty{transform:translateY(-2px)}
+  #acm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px;box-shadow:0 2px 6px rgba(37,99,235,.15)}
+  #acm-root .ref-img-empty-title{font-size:.8rem;font-weight:700;color:var(--ink)}
   #acm-root .ref-img-empty-sub{font-size:.7rem;color:var(--text-sec)}
-  #acm-root .ref-img-preview{width:100%;height:100%;object-fit:cover;display:block}
-  #acm-root .ref-img-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:var(--paper);border-top:1px solid var(--line)}
-  #acm-root .ref-img-btn{flex:1;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);padding:6px 8px;border-radius:7px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+  #acm-root .ref-img-footer{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--paper);border-top:1px solid var(--line)}
+  #acm-root .ref-img-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 10px;border-radius:7px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);font-size:.73rem;font-weight:700;cursor:pointer;transition:all .15s}
   #acm-root .ref-img-btn:hover{background:var(--line);color:var(--ink)}
-  #acm-root .ref-img-btn.cam{background:#eff6ff;border-color:#bfdbfe;color:var(--accent)}
-  #acm-root .ref-img-btn.cam:hover{background:#dbeafe}
-  #acm-root .ref-img-btn.del{background:#fef2f2;border-color:#fecaca;color:var(--crit)}
+  #acm-root .ref-img-btn.cam{background:var(--accent);border-color:var(--accent);color:#fff}
+  #acm-root .ref-img-btn.cam:hover{background:var(--accent-2);border-color:var(--accent-2)}
+  #acm-root .ref-img-btn.del{color:var(--crit);background:#fef2f2;border-color:#fecaca}
   #acm-root .ref-img-btn.del:hover{background:#fee2e2}
-  #acm-root #acm-lightbox-overlay{position:fixed;inset:0;background:rgba(15,23,42,.88);z-index:100000;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
-  #acm-root #acm-lightbox-overlay.active{display:flex}
-  #acm-root #acm-lightbox-card{background:var(--paper);border-radius:14px;max-width:860px;width:100%;overflow:hidden;box-shadow:0 20px 45px rgba(0,0,0,.4)}
-  #acm-root #acm-lightbox-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:800;font-size:.9rem}
-  #acm-root #acm-lightbox-body{background:#0f172a;display:flex;align-items:center;justify-content:center;max-height:78vh;overflow:auto}
+  #acm-root #acm-lightbox-overlay{position:fixed;inset:0;background:rgba(15,23,42,.82);z-index:99998;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .2s ease;backdrop-filter:blur(3px)}
+  #acm-root #acm-lightbox-overlay.active{opacity:1;pointer-events:auto}
+  #acm-root #acm-lightbox-card{background:var(--paper);border-radius:12px;max-width:92vw;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,.35)}
+  #acm-root #acm-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:.875rem;color:var(--ink)}
+  #acm-root #acm-lightbox-body{background:#0f172a;display:flex;align-items:center;justify-content:center;overflow:auto;padding:8px}
   #acm-root #acm-lightbox-body img{max-width:100%;max-height:78vh;object-fit:contain;display:block}
   #acm-root .net-status-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   #acm-root .net-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;border:1px solid transparent}
@@ -183,13 +217,15 @@
   @keyframes ppmPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.85)}}
   .tc{text-align:center} .vm{vertical-align:middle} .b{font-weight:700} 
   @media print{
-    @page{size:A4 portrait;margin:10mm 10mm 0 10mm}
+    @page{size:A4 portrait;margin:8mm 9mm}
     body,html{margin:0;padding:0;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #acm-root{background:#fff!important}
     #acm-root .topbar,#acm-root .doc-toolbar,#acm-modal-overlay,#acm-lightbox-overlay{display:none!important}
     #acm-root .wrap{padding:0!important;margin:0!important;max-width:none!important}
-    #acm-root .doc-scroll{padding:0!important;background:transparent!important;overflow:visible!important;max-height:none!important}
-    #acm-root .doc-page{box-shadow:none!important;margin:0!important;padding:0!important;page-break-after:avoid}
-    #acm-root .doc-footer-code{position:fixed!important;bottom:5mm!important;right:10mm!important}
+    #acm-root .doc-scroll{padding:0!important;background:transparent!important;overflow:visible!important;max-height:none!important;border-radius:0!important}
+    #acm-root .doc-page{width:100%!important;min-height:0!important;box-shadow:none!important;margin:0!important;padding:0!important;page-break-after:avoid;page-break-inside:avoid}
+    #acm-root .ppm-photo-stage{height:185px!important}
+    #acm-root .ppm-photo-grid.cols-3 .ppm-photo-stage{height:170px!important}
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
@@ -1927,28 +1963,286 @@
 
   function setByPath(obj, path, value) { const parts = path.split('.'); let cur = obj; for (let i = 0; i < parts.length - 1; i++) { cur = cur[isFinite(parts[i]) ? Number(parts[i]) : parts[i]]; } cur[parts[parts.length - 1]] = value; }
 
-  function esc(v) { return (v === undefined || v === null) ? '' : String(v); }
+  function esc(v) { return (v === undefined || v === null) ? '' : String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function mark(c) { return c ? 'X' : '&nbsp;'; }
   function displayDate(iso) { return (!iso || !iso.includes('-')) ? iso : `${iso.split('-')[2]}/${iso.split('-')[1]}/${iso.split('-')[0].slice(-2)}`; }
+  function displayFullDate(r) {
+    if (r.happeningDate && String(r.happeningDate).includes('-')) {
+      const p = String(r.happeningDate).substring(0, 10).split('-');
+      if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+    }
+    if (r.beforeImageDate) return r.beforeImageDate;
+    if (r.dd || r.mm || r.yy) return `${(r.dd||'--').padStart(2,'0')}/${(r.mm||'--').padStart(2,'0')}/${r.yy||'--'}`;
+    return '—';
+  }
 
   function renderDocument(container) {
-    const r = getActive(); if(!r) { container.innerHTML = `<div class="table-panel"><div class="empty-state">No record selected. Go to <b>Memo Details</b> to create one.</div></div>`; return; }
-    const LW = 470, RW = 258, options = state.records.filter(r=>!r.isDraft).slice().sort((a,b)=>b.createdAt-a.createdAt).map(x => `<option value="${x.createdAt}" ${String(x.createdAt)===String(r.createdAt)?'selected':''}>BHS/PPM ${x.reportNo||'N/A'}</option>`).join('');
-    let h_dd = r.dd||'', h_mm = r.mm||'', h_yy = r.yy||''; if(r.happeningDate){ const p=r.happeningDate.split('-'); if(p.length===3){h_yy=p[0].slice(-2);h_mm=p[1];h_dd=p[2]} }
-    let a_dd = r.actDd||'', a_mm = r.actMm||'', a_yy = r.actYy||''; if(r.actionDate){ const p=r.actionDate.split('-'); if(p.length===3){a_yy=p[0].slice(-2);a_mm=p[1];a_dd=p[2]} }
+    const r = getActive();
+    if (!r) {
+      container.innerHTML = `<div class="table-panel"><div class="empty-state">No record selected. Go to <b>Memo Details</b> to create one.</div></div>`;
+      return;
+    }
 
-    const partsRows = Array.from({length: 9}, (_, i) => (r.parts&&r.parts[i])?r.parts[i]:{item:'',spec:'',part:'',qty:'',dismantle:'',sap:''}).map((p, i) => `<tr><td style="border-top:none;border-bottom:${i===8?'1px solid #000':'none'}"></td><td class="tc vm">${i+1}</td><td class="tc vm">${esc(p.item)}</td><td class="tc vm">${esc(p.spec)}</td><td class="tc vm">${esc(p.part)} ${esc(p.qty)}</td><td class="tc vm">${esc(p.dismantle)}</td><td class="tc vm">${esc(p.sap)}</td></tr>`).join('');
-    const monRows = (r.monitoring||[]).map(m => `<tr style="height:21px"><td class="tc vm" style="font-size:8px">${esc(displayDate(m.d1))}</td><td class="tc vm" style="font-size:8px">${esc(m.b1)}</td><td class="tc vm" style="font-size:8px">${esc(m.r1)}</td><td class="tc vm" style="font-size:8px">${esc(displayDate(m.d2))}</td><td class="tc vm" style="font-size:8px">${esc(m.b2)}</td><td class="tc vm" style="font-size:8px">${esc(m.r2)}</td></tr>`).join('');
-    const historyLines = (r.history||[]).map((h, i) => `<div style="display:flex;gap:6px;font-size:11px;margin:9px 0 0 4px"><span>${i+1})</span><span style="min-width:64px">${esc(displayDate(h.date))}</span><span>${esc(h.remark)}</span></div>`).join('');
+    const selectableRecs = state.records
+      .filter(x => !x.isDraft || String(x.createdAt) === String(r.createdAt))
+      .slice()
+      .sort((a, b) => b.createdAt - a.createdAt);
+    const options = selectableRecs.map(x => `<option value="${x.createdAt}" ${String(x.createdAt) === String(r.createdAt) ? 'selected' : ''}>${x.isDraft ? '[Draft] ' : (x.syncPending ? '[Pending Sync] ' : '')}BHS/PPM ${esc(x.reportNo || 'N/A')}</option>`).join('');
 
-    container.innerHTML = `<div class="doc-toolbar"><div class="rec-select"><span class="b">Viewing:</span><select class="recpick" id="acm-doc-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-edit-btn">← Edit this record</button><button class="btn btn-primary" id="acm-print-btn">Print / Save as PDF</button></div></div><div class="doc-scroll"><div class="doc-page" id="acm-doc-page"><div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px"><div style="width:${LW}px"><div class="doc-header-title">K. L. International Airport</div><div class="doc-header-sub">- Baggage Handling System -</div><div class="doc-memo-title" style="margin-bottom:2px"><b><i>BHS Maintenance : Planned Preventative Maintenance (PPM)</i></b></div></div><div style="width:${RW}px;margin-bottom:2px"><table style="margin-bottom:0;border-collapse:collapse;width:100%"><tr><td class="doc-italic-bold" style="width:54%">Notification No.</td><td class="tc vm">${esc(r.notificationNo)}</td></tr><tr><td class="doc-italic-bold">Work Order No.</td><td class="tc vm">${esc(r.workOrderNo)}</td></tr><tr><td class="doc-italic-bold">Maintenance Type</td><td class="tc vm">${esc(r.maintenanceType)}</td></tr></table></div></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="display:flex;gap:8px;width:${LW}px"><table style="flex:1"><tr><td style="width:28%">&nbsp;</td><td style="width:24%" class="tc">DD</td><td style="width:24%" class="tc">MM</td><td style="width:24%" class="tc">YY</td></tr><tr><td class="doc-label-cell">Date</td><td class="tc vm">${esc(h_dd)}</td><td class="tc vm">${esc(h_mm)}</td><td class="tc vm">${esc(h_yy)}</td></tr><tr><td class="doc-label-cell">Report No.</td><td colspan="3">BHS/PPM ${esc(r.reportNo)}</td></tr></table><table style="width:80px"><tr><td style="font-weight:700;text-align:center;height:32px;vertical-align:top">Time of<br/>Happening</td></tr><tr><td class="tc vm" style="height:24px">${esc(r.timeOfHappening)||'&nbsp;'}</td></tr></table></div><table style="width:${RW}px"><tr><td style="width:46%">&nbsp;</td><td style="width:34%" class="b tc">By</td><td style="width:20%" class="b tc">Group</td></tr><tr><td class="doc-label-cell">Issued</td><td class="tc vm">${esc(r.issuedBy)}</td><td rowspan="2" class="tc vm">${esc(r.issuedGroup)}</td></tr><tr><td class="doc-label-cell">Checked (TA/ST)</td><td class="tc vm">${esc(r.checkedBy)}</td></tr></table></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="display:flex;width:${LW}px"><div style="width:56px;padding-top:12px;font-size:13px"><b><i>Title</i></b></div><table style="flex:1"><tr><td style="height:36px">${esc(r.title)||'&nbsp;'}</td></tr></table></div><table style="width:${RW}px"><tr><td style="width:38%" class="b">Conveyor/Item</td><td style="width:38%" class="b">Line/Equipment</td><td style="width:24%" class="b">No.</td></tr><tr><td class="tc vm" style="height:22px">${esc(r.conveyorItem)}</td><td class="tc vm">${esc(r.lineEquipment)}</td><td class="tc vm">${esc(r.equipNo)}</td></tr></table></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><table style="width:${LW}px"><tr><td rowspan="4" style="width:18%" class="b">Category and Type of Error</td><td style="width:16.4%" class="tc">Op.Error</td><td style="width:16.4%" class="tc">Stoppage</td><td style="width:16.4%" class="tc">Damage</td><td style="width:16.4%" class="tc">Noise etc.</td><td style="width:16.4%" class="tc">Others</td></tr><tr><td class="doc-box-x">${mark((r.cat1||{}).opError)}</td><td class="doc-box-x">${mark((r.cat1||{}).stoppage)}</td><td class="doc-box-x">${mark((r.cat1||{}).damage)}</td><td class="doc-box-x">${mark((r.cat1||{}).noise)}</td><td class="doc-box-x">${mark((r.cat1||{}).othersType1)}</td></tr><tr><td class="tc">Mech.</td><td class="tc">Elec.</td><td class="tc">IT.</td><td class="tc">Operation</td><td class="tc">Others</td></tr><tr><td class="doc-box-x">${mark((r.cat2||{}).mech)}</td><td class="doc-box-x">${mark((r.cat2||{}).elec)}</td><td class="doc-box-x">${mark((r.cat2||{}).it)}</td><td class="doc-box-x">${mark((r.cat2||{}).operation)}</td><td class="doc-box-x">${mark((r.cat2||{}).othersType2)}</td></tr></table><table style="width:calc(100% - 478px)"><tr><td colspan="4" class="b">Degree of Urgency</td></tr><tr><td style="width:38%">Very Critical</td><td style="width:12%" class="doc-box-x">${mark(r.urgency==='veryCritical')}</td><td style="width:38%">Within 2 mths</td><td style="width:12%" class="doc-box-x">${mark(r.urgency==='within2months')}</td></tr><tr><td>Within 24hrs</td><td class="doc-box-x">${mark(r.urgency==='within24hrs')}</td><td>Within 1 week</td><td class="doc-box-x">${mark(r.urgency==='within1week')}</td></tr></table></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><table style="width:${LW}px"><tr><td style="height:74px;vertical-align:top"><b>Reason/detail:</b><div style="margin-top:4px;font-weight:400">${esc(r.reasonDetail)}</div></td></tr></table><table style="width:calc(100% - 478px);height:74px"><tr><td colspan="6" style="font-weight:700;text-align:center;height:16px">Monitoring status (Progress)</td></tr><tr style="height:16px"><td style="font-size:8px;text-align:center;width:18%">Insp.date</td><td style="font-size:8px;text-align:center;width:15%">By</td><td style="font-size:8px;text-align:center;width:17%">Result</td><td style="font-size:8px;text-align:center;width:18%">Insp.date</td><td style="font-size:8px;text-align:center;width:15%">By</td><td style="font-size:8px;text-align:center;width:17%">Result</td></tr>${monRows}</table></div><table style="margin-bottom:4px;table-layout:auto"><tr><td rowspan="3" style="width:8%;font-weight:700;text-align:center">SPARE<br/>PART<br/>STATUS</td><td colspan="10" class="b">Standard Parts Specification No;</td></tr><tr><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Stock:</td><td>${esc(r.spStock)}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Stock Qty</td><td>${esc(r.spStockQty)}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Stock: Critical</td><td>${esc(r.spStockCritical)}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Checked by</td><td>${esc(r.spCheckedBy)}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Qty</td><td>${esc(r.spQty)}</td></tr><tr><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Location</td><td>${esc(r.spLocation)}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Check by</td><td>${esc(r.spCheckBy)}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Request date</td><td>${esc(displayDate(r.spRequestDate))}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Delivery date</td><td>${esc(displayDate(r.spDeliveryDate))}</td><td style="font-weight:700;white-space:nowrap;padding:3px 4px;width:1%">Location</td><td>${esc(r.spLocation2)}</td></tr></table><div style="font-weight:700;font-size:11px;margin:2px 0 8px">Request of action: <span style="font-weight:400">${esc(r.requestOfAction)}</span></div><div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px"><table style="width:230px"><tr><td style="width:34%;font-size:13px;border-top:none;border-left:none"><b><i>Action</i></b></td><td style="width:22%" class="tc">DD</td><td style="width:22%" class="tc">MM</td><td style="width:22%" class="tc">YY</td></tr><tr><td class="doc-label-cell">Date</td><td class="tc vm">${esc(a_dd)}</td><td class="tc vm">${esc(a_mm)}</td><td class="tc vm">${esc(a_yy)}</td></tr></table><table style="flex:1"><tr><td colspan="3" style="width:44%" class="b tc">Done By</td><td style="width:18%" class="b tc">Group</td><td style="width:19%" class="b tc">Start time</td><td style="width:19%" class="b tc">End time</td></tr><tr><td colspan="3" class="tc vm" style="height:24px">${esc(r.actDoneBy)}</td><td class="tc vm">${esc(r.actGroup)}</td><td class="tc vm">${esc(r.actStartTime)}</td><td class="tc vm">${esc(r.actEndTime)}</td></tr></table></div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="width:${LW}px"><table><tr><td rowspan="2" style="width:16%;white-space:nowrap">Category<br/>Entry "1"</td><td style="width:16.8%" class="tc">Reset</td><td style="width:16.8%" class="tc">Adjustment</td><td style="width:16.8%" class="tc">Replace</td><td style="width:16.8%" class="tc">Temporary</td><td style="width:16.8%" class="tc">Others</td></tr><tr><td class="doc-box-x">${mark(r.actionCat==='reset')}</td><td class="doc-box-x">${mark(r.actionCat==='adjustment')}</td><td class="doc-box-x">${mark(r.actionCat==='replace')}</td><td class="doc-box-x">${mark(r.actionCat==='temporary')}</td><td class="doc-box-x">${mark(r.actionCat==='othersAction')}</td></tr></table><table style="margin-top:-1px"><tr><td style="height:72px;vertical-align:top"><b>Detail</b><div style="font-weight:400;margin-top:3px">${esc(r.actionDetail)}</div></td></tr></table></div><div style="width:${RW}px"><div style="font-weight:700;font-size:11px">History (Last 3 changing date):</div><div style="display:flex;gap:56px;margin:8px 0 0 20px;font-size:11px"><span style="text-decoration:underline">Date</span><span style="text-decoration:underline">Remark</span></div>${historyLines}</div></div><div style="font-size:13px;margin-bottom:2px"><b><i>Result</i></b></div><table style="margin-bottom:0;border-bottom:none"><tr><td rowspan="2" style="width:8%;white-space:nowrap">Category<br/>Entry "/"</td><td style="width:8.5%;white-space:nowrap" class="tc">Tested OK</td><td style="width:8.5%;white-space:nowrap" class="tc">Modified</td><td style="width:8.5%;white-space:nowrap" class="tc">Pending</td><td style="width:9%;white-space:nowrap" class="tc">Temporary</td><td style="width:8.5%;white-space:nowrap" class="tc">Rectified</td><td style="width:9%;white-space:nowrap" class="tc">Force Run</td><td style="width:6%;white-space:nowrap" class="tc">KIV</td><td colspan="4" style="width:34%;font-weight:700" class="tc">Parameter data (If any)</td></tr><tr><td class="doc-box-x">${mark(r.resultCat==='testedOK')}</td><td class="doc-box-x">${mark(r.resultCat==='modified')}</td><td class="doc-box-x">${mark(r.resultCat==='pending')}</td><td class="doc-box-x">${mark(r.resultCat==='temporary2')}</td><td class="doc-box-x">${mark(r.resultCat==='rectified')}</td><td class="doc-box-x">${mark(r.resultCat==='forceRun')}</td><td class="doc-box-x">${mark(r.resultCat==='kiv')}</td><td class="tc" style="font-size:9.5px;width:8.5%">Speed<br/>(m/min)</td><td class="tc" style="font-size:9.5px;width:8.5%">Temp<br/>(°C)</td><td class="tc" style="font-size:9.5px;width:8.5%">Current<br/>(A)</td><td class="tc" style="font-size:9.5px;width:8.5%">Voltage<br/>(V)</td></tr><tr><td colspan="8" style="font-weight:700;border-bottom:none">Detail/Status</td><td class="tc vm" style="border-bottom:none">${esc(r.paramSpeed)}</td><td class="tc vm" style="border-bottom:none">${esc(r.paramTemp)}</td><td class="tc vm" style="border-bottom:none">${esc(r.paramCurrent)}</td><td class="tc vm" style="border-bottom:none">${esc(r.paramVoltage)}</td></tr><tr><td colspan="8" style="height:10px;vertical-align:top;font-weight:400;border-top:none">${esc(r.resultDetail)}</td><td style="border-top:none">&nbsp;</td><td style="border-top:none">&nbsp;</td><td style="border-top:none">&nbsp;</td><td style="border-top:none">&nbsp;</td></tr></table><table style="margin-bottom:8px;margin-top:-1px"><tr><td class="doc-italic-bold tc vm" style="width:8%">Parts<br/>Records</td><td style="width:6%" class="b tc vm">No.</td><td style="width:26%" class="b tc vm">Item/Equipment name</td><td style="width:22%" class="b tc vm">Specification</td><td style="width:14%" class="b tc vm">Part Qty</td><td style="width:12%" class="b tc vm">Dismantle part status</td><td style="width:12%;color:#7a1f1f" class="b tc vm">SAP No / Others</td></tr>${partsRows}</table><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:9.5px;font-style:italic;font-weight:700;margin:0 0 12px">**Please make sure all necessary item including date, time and name written in the specified column</div><div style="display:flex;gap:36px"><div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).createNotification)}</span>Create Notification</div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).createWorkOrder)}</span>Create Work Order</div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).releaseWorkOrder)}</span>Release Work Order</div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).gmps)}</span>GMPS</div></div><div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).timeConfirmation)}</span>Time Confirmation</div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).teco)}</span>TECO</div><div class="doc-checklist-row"><span class="doc-checkbox">${mark((r.flags||{}).businessCompletion)}</span>Business Completion</div></div></div></div><div style="width:280px;margin-top:4px;position:relative"><div style="display:flex;margin-bottom:10px"><div style="width:85px;font-size:11px;font-weight:700;text-align:right;padding-right:6px;padding-top:14px">Done By:</div><div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="font-size:11px;font-weight:700;height:14px;margin-bottom:1px">${esc(r.doneByName)}</div><div style="border-top:1px solid #000;width:100%;text-align:center;font-size:10.5px;padding-top:2px">( TECH )</div></div></div><div style="display:flex;margin-bottom:10px"><div style="width:85px;font-size:11px;font-weight:700;text-align:right;padding-right:6px;padding-top:14px">Check By:</div><div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="font-size:11px;font-weight:700;height:14px;margin-bottom:1px">${esc(r.checkByName)}</div><div style="border-top:1px solid #000;width:100%;text-align:center;font-size:10.5px;padding-top:2px">( TO / SP )</div></div></div><div style="display:flex;margin-bottom:14px"><div style="width:85px;font-size:11px;font-weight:700;text-align:right;padding-right:6px;padding-top:14px">Confirmed By:</div><div style="flex:1;display:flex;flex-direction:column;align-items:center"><div style="font-size:11px;font-weight:700;height:14px;margin-bottom:1px">${esc(r.confirmedByName)}</div><div style="border-top:1px solid #000;width:100%;text-align:center;font-size:10.5px;padding-top:2px">( TE / E / SE )</div></div></div><div class="doc-footer-code" style="position:absolute;bottom:-15px;right:0;margin:0">BHS/MP03/ACM/Dec03/Rev.01</div></div></div></div></div>`;
+    const st = getStatus(r);
+    const stLabel = getStatusLabel(r, st);
+    const stChipCls = st === 'done' ? 'chip-done' : (st === 'progress' ? 'chip-progress' : 'chip-open');
+    const hasCleaningPhoto = Boolean(r.cleaningImage);
+
+    const catItemsHtml = Object.entries(CATS2).map(([k, label]) => {
+      const isChecked = Boolean(r.cat2 && r.cat2[k]);
+      return `<span class="ppm-chk-item ${isChecked ? 'checked' : ''}"><span class="doc-checkbox">${isChecked ? '✓' : '&nbsp;'}</span>${esc(label)}</span>`;
+    }).join('');
+
+    const resItemsHtml = Object.entries(RESULT_CAT).map(([k, label]) => {
+      const isChecked = r.resultCat === k;
+      return `<span class="ppm-chk-item ${isChecked ? 'checked' : ''}"><span class="doc-checkbox">${isChecked ? '✓' : '&nbsp;'}</span>${esc(label)}</span>`;
+    }).join('');
+
+    const buildDocPhotoBox = (slot, title, tagCls, imgSrc, imgDate, imgTime, emptyMsg) => {
+      const ts = [imgDate, imgTime].filter(Boolean).join(' ');
+      return `<div class="ppm-photo-box">
+        <div class="ppm-photo-head">
+          <span class="ppm-photo-tag ${tagCls}">${title}</span>
+          <span class="ppm-photo-ts">${esc(ts) || '—'}</span>
+        </div>
+        <div class="ppm-photo-stage">
+          ${imgSrc
+            ? `<img src="${esc(imgSrc)}" alt="${esc(title)} Reference Photo" data-doc-zoom="${slot}" title="Click to enlarge ${esc(title)} photo"/>`
+            : `<div class="ppm-photo-empty">${esc(emptyMsg)}</div>`}
+        </div>
+      </div>`;
+    };
+
+    const photosHtml = [
+      buildDocPhotoBox('before', 'Before', 'ppm-tag-before', r.beforeImage, r.beforeImageDate, r.beforeImageTime, 'No "Before" photo captured'),
+      hasCleaningPhoto ? buildDocPhotoBox('cleaning', 'Cleaning', 'ppm-tag-cleaning', r.cleaningImage, r.cleaningImageDate, r.cleaningImageTime, '') : '',
+      buildDocPhotoBox('after', 'After', 'ppm-tag-after', r.afterImage, r.afterImageDate, r.afterImageTime, 'No "After" photo captured yet')
+    ].join('');
+
+    container.innerHTML = `
+      <div class="doc-toolbar">
+        <div class="rec-select">
+          <span class="b">Viewing:</span>
+          <select class="recpick" id="acm-doc-recpick">${options}</select>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="acm-edit-btn">← Edit this record</button>
+          <button class="btn btn-ghost" id="acm-doc-jpeg-btn">Save as JPEG</button>
+          <button class="btn btn-primary" id="acm-print-btn">Print / Save as PDF</button>
+        </div>
+      </div>
+      <div class="doc-scroll">
+        <div class="doc-page" id="acm-doc-page">
+          <div>
+            <!-- HEADER & CONTROL BOX -->
+            <div class="ppm-doc-top">
+              <div class="ppm-doc-brand">
+                <div class="doc-header-title">K. L. International Airport</div>
+                <div class="doc-header-sub">- Baggage Handling System (Terminal 1) -</div>
+                <div class="doc-memo-title">BHS Maintenance : Planned Preventative Maintenance (PPM)</div>
+                <div class="ppm-doc-status-row">
+                  <span style="font-size:10px;font-weight:700;color:#475569">Status:</span>
+                  <span class="status-chip ${stChipCls}">${esc(stLabel)}</span>
+                  ${r.isDraft ? `<span class="status-chip chip-open" style="border:1px dashed #94a3b8">Draft (Unsubmitted)</span>` : ''}
+                  ${!r.isDraft && r.syncPending ? `<span class="chip-sync">Pending Cloud Sync</span>` : ''}
+                </div>
+              </div>
+              <div class="ppm-doc-ctrl">
+                <table>
+                  <tr>
+                    <td class="ctrl-lbl">Report No.</td>
+                    <td class="ctrl-val mono-font" style="color:#1e3a8a;font-size:11px">BHS/PPM ${esc(r.reportNo || '—')}</td>
+                  </tr>
+                  <tr>
+                    <td class="ctrl-lbl">Notification No.</td>
+                    <td class="ctrl-val mono-font">${esc(r.notificationNo) || '—'}</td>
+                  </tr>
+                  <tr>
+                    <td class="ctrl-lbl">Work Order No.</td>
+                    <td class="ctrl-val mono-font">${esc(r.workOrderNo) || '—'}</td>
+                  </tr>
+                  <tr>
+                    <td class="ctrl-lbl">Maintenance Type</td>
+                    <td class="ctrl-val">${esc(r.maintenanceType) || '—'}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- SECTION 1: ISSUANCE & EQUIPMENT DETAILS -->
+            <div class="ppm-sec">
+              <div class="ppm-sec-bar"><span><span class="sec-num">01</span>Issuance &amp; Equipment Details</span></div>
+              <table>
+                <tr>
+                  <td class="ppm-lbl" style="width:13%">Date</td>
+                  <td class="ppm-val mono-font tc" style="width:15%">${esc(displayFullDate(r))}</td>
+                  <td class="ppm-lbl" style="width:14%">Time</td>
+                  <td class="ppm-val mono-font tc" style="width:13%">${esc(r.timeOfHappening || r.beforeImageTime) || '—'}</td>
+                  <td class="ppm-lbl" style="width:12%">Issued By</td>
+                  <td class="ppm-val" style="width:15%">${esc(r.issuedBy) || '—'}</td>
+                  <td class="ppm-lbl" style="width:8%">Group</td>
+                  <td class="ppm-val" style="width:10%">${esc(r.issuedGroup) || '—'}</td>
+                </tr>
+                <tr>
+                  <td class="ppm-lbl">Line / Equip.</td>
+                  <td class="ppm-val tc">${esc(r.lineEquipment) || '—'}</td>
+                  <td class="ppm-lbl">Equip. No.</td>
+                  <td class="ppm-val tc">${esc(r.equipNo) || '—'}</td>
+                  <td class="ppm-lbl">Conveyor / Item</td>
+                  <td class="ppm-val" colspan="3">${esc(r.conveyorItem) || '—'}</td>
+                </tr>
+                <tr>
+                  <td class="ppm-lbl">Work Title</td>
+                  <td class="ppm-val" colspan="7" style="font-size:11px;font-weight:700">${esc(r.title) || '—'}</td>
+                </tr>
+                <tr>
+                  <td class="ppm-lbl">Category</td>
+                  <td colspan="7"><div class="ppm-chk-wrap">${catItemsHtml}</div></td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- SECTION 2: VISUAL REFERENCE IMAGES -->
+            <div class="ppm-sec">
+              <div class="ppm-sec-bar">
+                <span><span class="sec-num">02</span>Reference Images (Watermarked Evidence)</span>
+                <span style="font-size:9px;font-weight:600;color:#64748b;text-transform:none">${hasCleaningPhoto ? 'Before • Cleaning • After' : 'Before • After'}</span>
+              </div>
+              <div class="ppm-photo-grid ${hasCleaningPhoto ? 'cols-3' : 'cols-2'}">
+                ${photosHtml}
+              </div>
+            </div>
+
+            <!-- SECTION 3: INSPECTION & REMARKS -->
+            <div class="ppm-sec">
+              <div class="ppm-sec-bar"><span><span class="sec-num">03</span>Inspection &amp; Remarks</span></div>
+              <table>
+                <tr>
+                  <td class="ppm-lbl" style="width:18%">Inspection Method</td>
+                  <td class="ppm-val" style="width:32%">${esc(r.inspectionMethod) || '—'}</td>
+                  <td class="ppm-lbl" style="width:18%">Task Performed</td>
+                  <td class="ppm-val" style="width:32%">${esc(r.taskPerformed) || '—'}</td>
+                </tr>
+                <tr>
+                  <td colspan="4" class="ppm-notes-box" style="padding:6px 8px">
+                    <div style="font-size:9.5px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:3px">Remarks / Details:</div>
+                    <div>${esc(r.reasonDetail) || '—'}</div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- SECTION 4: RESULT & OPERATING PARAMETERS -->
+            <div class="ppm-sec">
+              <div class="ppm-sec-bar"><span><span class="sec-num">04</span>Result &amp; Operating Parameters</span></div>
+              <table>
+                <tr>
+                  <td class="ppm-lbl" style="width:13%">Result</td>
+                  <td colspan="5"><div class="ppm-chk-wrap">${resItemsHtml}</div></td>
+                </tr>
+                <tr>
+                  <td colspan="2" rowspan="3" class="ppm-notes-box" style="width:60%;padding:6px 8px">
+                    <div style="font-size:9.5px;font-weight:800;color:#475569;text-transform:uppercase;margin-bottom:3px">Detail / Status:</div>
+                    <div>${esc(r.resultDetail) || '—'}</div>
+                  </td>
+                  <td colspan="4" class="ppm-lbl tc" style="width:40%;background:#f1f5f9">Operating Parameters (If Applicable)</td>
+                </tr>
+                <tr>
+                  <td class="ppm-lbl tc" style="width:11%;font-size:9px">Speed (m/min)</td>
+                  <td class="ppm-val tc mono-font" style="width:9%">${esc(r.paramSpeed) || '—'}</td>
+                  <td class="ppm-lbl tc" style="width:11%;font-size:9px">Temp (°C)</td>
+                  <td class="ppm-val tc mono-font" style="width:9%">${esc(r.paramTemp) || '—'}</td>
+                </tr>
+                <tr>
+                  <td class="ppm-lbl tc" style="font-size:9px">Current (A)</td>
+                  <td class="ppm-val tc mono-font">${esc(r.paramCurrent) || '—'}</td>
+                  <td class="ppm-lbl tc" style="font-size:9px">Voltage (V)</td>
+                  <td class="ppm-val tc mono-font">${esc(r.paramVoltage) || '—'}</td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- SECTION 5: SIGN-OFF & VERIFICATION -->
+            <div class="ppm-sec" style="margin-bottom:4px">
+              <div class="ppm-sec-bar"><span><span class="sec-num">05</span>Sign-off &amp; Verification</span></div>
+              <div class="ppm-sign-grid">
+                <div class="ppm-sign-cell">
+                  <div class="ppm-sign-name">${esc(r.doneByName) || '&nbsp;'}</div>
+                  <div class="ppm-sign-line">Done By ( TECH )</div>
+                </div>
+                <div class="ppm-sign-cell">
+                  <div class="ppm-sign-name">${esc(r.checkByName) || '&nbsp;'}</div>
+                  <div class="ppm-sign-line">Check By ( TO )</div>
+                </div>
+                <div class="ppm-sign-cell">
+                  <div class="ppm-sign-name">
+                    ${r.confirmedByName ? `${esc(r.confirmedByName)} <span style="font-size:9px;color:#059669;font-weight:800">(PIN ✓)</span>` : '&nbsp;'}
+                  </div>
+                  <div class="ppm-sign-line">Confirmed By ( TE / E / SE )</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOCUMENT FOOTER -->
+          <div class="ppm-doc-foot">
+            <span>**Please ensure all required fields, operating parameters, and watermarked reference photos are verified.</span>
+            <span class="doc-footer-code mono-font">BHS/MP03/PPM/Rev.01</span>
+          </div>
+        </div>
+      </div>`;
+
+    container.querySelectorAll('[data-doc-zoom]').forEach(imgEl => {
+      imgEl.addEventListener('click', () => {
+        const slot = imgEl.getAttribute('data-doc-zoom');
+        const label = slot === 'before' ? 'Before Reference Image' : (slot === 'cleaning' ? 'Cleaning Reference Image' : 'After Reference Image');
+        const src = slot === 'before' ? r.beforeImage : (slot === 'cleaning' ? r.cleaningImage : r.afterImage);
+        openImageLightbox(label, src);
+      });
+    });
 
     container.querySelector('#acm-doc-recpick').addEventListener('change', async (e) => {
-      if(state.isDirty){ const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved"); if(!discard){ e.target.value = state.activeId; return; } revertActiveRecord(); }
-      state.activeId = String(e.target.value); render();
+      if (state.isDirty) {
+        const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved");
+        if (!discard) { e.target.value = state.activeId; return; }
+        revertActiveRecord();
+      }
+      state.activeId = String(e.target.value);
+      render();
     });
     container.querySelector('#acm-edit-btn').addEventListener('click', () => { state.tab = 'input'; render(); });
     container.querySelector('#acm-print-btn').addEventListener('click', () => window.print());
+    container.querySelector('#acm-doc-jpeg-btn').addEventListener('click', () => {
+      if (typeof html2canvas === 'undefined') {
+        showModal("Notice", "Export library is still loading. Please try again in a moment.");
+        return;
+      }
+      const pageEl = document.getElementById('acm-doc-page');
+      const jpegBtn = container.querySelector('#acm-doc-jpeg-btn');
+      const origTxt = jpegBtn.textContent;
+      jpegBtn.textContent = 'Exporting...';
+      jpegBtn.disabled = true;
+      html2canvas(pageEl, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' }).then(canvas => {
+        jpegBtn.textContent = origTxt;
+        jpegBtn.disabled = false;
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.download = `BHS_PPM_${(r.reportNo || 'Draft').replace(/[^a-zA-Z0-9_-]/g, '_')}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }).catch(() => {
+        jpegBtn.textContent = origTxt;
+        jpegBtn.disabled = false;
+        showModal("Export Notice", "Cloud-hosted photos restrict direct JPEG canvas export in some browsers. Please use 'Print / Save as PDF' instead.", "alert");
+      });
+    });
   }
 
   function render() {
