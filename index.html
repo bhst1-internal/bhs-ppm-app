@@ -709,12 +709,14 @@
   }
 
   function getStatus(r) {
+    const hasInspection = checkReq(r.inspectionMethod);
+    const hasTask = checkReq(r.taskPerformed);
     const resultComplete = checkReq(r.resultCat);
     const doneValid = (r.doneByName || '').trim().length >= 3;
     const checkValid = (r.checkByName || '').trim().length >= 3;
     const confirmValid = checkReq(r.confirmedByName);
-    if (resultComplete && doneValid && checkValid && confirmValid) return 'done';
-    return ((doneValid && checkValid) || confirmValid || r.resultCat || r.afterImage) ? 'progress' : 'open';
+    if (hasInspection && hasTask && resultComplete && doneValid && checkValid && confirmValid) return 'done';
+    return (hasTask || (doneValid && checkValid) || confirmValid || r.resultCat || r.afterImage) ? 'progress' : 'open';
   }
 
   function getStatusLabel(r, st) {
@@ -1631,7 +1633,7 @@
   function updateHighlights(container, r) {
     if (!state.showErrors) return;
     container.querySelectorAll('.err-highlight, .err-sec').forEach(el => el.classList.remove('err-highlight', 'err-sec'));
-    ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'conveyorItem', 'lineEquipment', 'equipNo'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
+    ['happeningDate', 'issuedBy', 'reportNo', 'maintenanceType', 'timeOfHappening', 'title', 'conveyorItem', 'lineEquipment', 'equipNo', 'inspectionMethod', 'taskPerformed'].forEach(k => { if(!checkReq(r[k])) container.querySelector(`[data-path="${k}"]`)?.classList.add('err-highlight'); });
     if(!r.beforeImage) container.querySelector('[data-ref-card="before"]')?.classList.add('err-highlight');
     if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) container.querySelector('[data-path="reasonDetail"]')?.classList.add('err-highlight');
     let igBase = r.issuedGroup || ''; if(!igBase || (igBase.toUpperCase().startsWith('VENDOR') && igBase.trim().toUpperCase()==='VENDOR')) container.querySelectorAll('[data-calc-group="issuedGroup"]').forEach(el=>el.classList.add('err-highlight'));
@@ -1779,6 +1781,8 @@
       if(!checkReq(r.maintenanceType)) errs.push("[Notification & Work Order] Maintenance Type");
       if(!checkReq(r.title) || !checkReq(r.conveyorItem) || !checkReq(r.lineEquipment) || !checkReq(r.equipNo)) errs.push("[Title & Equipment] All details are required");
       if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) errs.push("[Category] Select at least one category");
+      if(!checkReq(r.inspectionMethod)) errs.push("[Remarks] Inspection Method");
+      if(!checkReq(r.taskPerformed)) errs.push("[Remarks] Task Performed");
       if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) errs.push("[Remarks] Please write at least 2 words in Describe the details");
       updateHighlights(container, r);
 
