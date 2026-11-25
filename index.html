@@ -319,6 +319,8 @@
   const RESULT_CAT = { testedOK:'Tested OK', modified:'Modified', pending:'Pending', temporary2:'Temporary', rectified:'Rectified', forceRun:'Force Run', kiv:'KIV' };
   const URGENCY_MS = { veryCritical: 4*3600000, within24hrs: 24*3600000, within1week: 7*86400000, within2months: 60*86400000 };
   const GROUP_OPTIONS = ['Shift A', 'Shift B', 'Shift C', 'Shift D', 'OH', 'Vendor'];
+  const INSPECTION_METHODS = ['Touch', 'Visual', 'Hear', 'Smell'];
+  const TASKS_PERFORMED = ['Clean', 'Lubricate', 'Adjust/Tighten', 'Part Replacement', 'ACM Issued'];
 
   function showModal(title, msg, type = 'alert', errorMode = false) {
     return new Promise(resolve => {
@@ -384,7 +386,7 @@
   }
 
   function blankRecord() {
-    return { createdAt: Date.now(), isDraft: true, syncPending: false, status: '', notificationNo: '', workOrderNo: '', maintenanceType: '', reportNo: '', happeningDate: '', timeOfHappening:'', dd:'', mm:'', yy:'', issuedBy:'', issuedGroup:'', checkedBy:'', title:'', conveyorItem:'', lineEquipment:'', equipNo:'', cat1: {}, cat2: {}, urgency:'', beforeImage:'', beforeImageDate:'', beforeImageTime:'', afterImage:'', afterImageDate:'', afterImageTime:'', reasonDetail:'', monitoring: [ {d1:'',b1:'',r1:'',d2:'',b2:'',r2:''} ], spStock:'', spStockQty:'', spStockCritical:'', spCheckedBy:'', spQty:'', spLocation:'', spCheckBy:'', spRequestDate:'', spDeliveryDate:'', spLocation2:'', requestOfAction:'', actionDate: '', actDoneBy:'', actGroup:'', actStartTime:'', actEndTime:'', actDd:'', actMm:'', actYy:'', actionCat:'', actionDetail:'', history: [ {date:'',remark:''}, {date:'',remark:''}, {date:'',remark:''} ], resultCat:'', paramSpeed:'', paramTemp:'', paramCurrent:'', paramVoltage:'', resultDetail:'', parts: Array.from({length:9}, () => ({ item:'', spec:'', part:'', qty:'', dismantle:'', sap:'' })), flags: { createNotification:false, createWorkOrder:false, releaseWorkOrder:false, gmps:false, timeConfirmation:false, teco:false, businessCompletion:false }, doneByName:'', checkByName:'', confirmedByName:'' };
+    return { createdAt: Date.now(), isDraft: true, syncPending: false, status: '', notificationNo: '', workOrderNo: '', maintenanceType: '', reportNo: '', happeningDate: '', timeOfHappening:'', dd:'', mm:'', yy:'', issuedBy:'', issuedGroup:'', checkedBy:'', title:'', conveyorItem:'', lineEquipment:'', equipNo:'', cat1: {}, cat2: {}, urgency:'', beforeImage:'', beforeImageDate:'', beforeImageTime:'', afterImage:'', afterImageDate:'', afterImageTime:'', inspectionMethod:'', taskPerformed:'', reasonDetail:'', monitoring: [ {d1:'',b1:'',r1:'',d2:'',b2:'',r2:''} ], spStock:'', spStockQty:'', spStockCritical:'', spCheckedBy:'', spQty:'', spLocation:'', spCheckBy:'', spRequestDate:'', spDeliveryDate:'', spLocation2:'', requestOfAction:'', actionDate: '', actDoneBy:'', actGroup:'', actStartTime:'', actEndTime:'', actDd:'', actMm:'', actYy:'', actionCat:'', actionDetail:'', history: [ {date:'',remark:''}, {date:'',remark:''}, {date:'',remark:''} ], resultCat:'', paramSpeed:'', paramTemp:'', paramCurrent:'', paramVoltage:'', resultDetail:'', parts: Array.from({length:9}, () => ({ item:'', spec:'', part:'', qty:'', dismantle:'', sap:'' })), flags: { createNotification:false, createWorkOrder:false, releaseWorkOrder:false, gmps:false, timeConfirmation:false, teco:false, businessCompletion:false }, doneByName:'', checkByName:'', confirmedByName:'' };
   }
 
   let state = {
@@ -1652,7 +1654,7 @@
     if(currentLine) noOptions.push('OTHERS');
     const autoReadonlyAttr = 'readonly style="background:var(--line);cursor:not-allowed"';
 
-    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text',autoReadonlyAttr)}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g3" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${selectField('Issued By','issuedBy',r.issuedBy,TECH_NAMES)}${groupField('Group','issuedGroup',igBase,igVendor)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text',autoReadonlyAttr)}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category</div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="sec-title">Reference Image</div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',r.beforeImage,r.beforeImageDate,r.beforeImageTime)}${renderRefImageCard('after','After','badge-after',r.afterImage,r.afterImageDate,r.afterImageTime)}</div></div><div class="sec"><div class="sec-title">Reason / Detail</div>${field('Describe the reason and detail of the fault','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${selectField('Done By (TECH)','doneByName',r.doneByName,TECH_NAMES)}${selectField('Check By (TO)','checkByName',r.checkByName,TO_NAMES)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div></div>`;
+    container.innerHTML = `<div class="form-shell"><div class="form-toolbar"><div class="rec-select"><span style="font-weight:700">Report No.:</span><select class="recpick" id="acm-recpick">${options}</select></div><div class="btn-row"><button class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button><button class="btn btn-danger" id="acm-del-btn">Delete ✘</button><button class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button><button class="btn btn-primary" id="acm-view-btn">View Memo ➜</button></div></div><div class="sec"><div class="sec-title">Notification &amp; Work Order</div><div class="grid g5">${field('Notification No.','notificationNo',r.notificationNo)}${field('Work Order No.','workOrderNo',r.workOrderNo)}${selectField('Maintenance Type','maintenanceType',r.maintenanceType,['Breakdown','Corrective','Preventive'])}${field('Report No. (BHS/PPM)','reportNo',r.reportNo,'text',autoReadonlyAttr)}${field('Time of Happening','timeOfHappening',r.timeOfHappening,'time',autoReadonlyAttr)}</div><div class="grid g3" style="margin-top:10px">${field('Date','happeningDate',r.happeningDate,'date',autoReadonlyAttr)}${selectField('Issued By','issuedBy',r.issuedBy,TECH_NAMES)}${groupField('Group','issuedGroup',igBase,igVendor)}</div></div><div class="sec"><div class="sec-title">Title &amp; Equipment</div><div class="grid g2">${field('Title','title',r.title)}${field('Conveyor/Item','conveyorItem',r.conveyorItem,'text',autoReadonlyAttr)}</div><div class="grid g2" style="margin-top:10px">${searchableSelectField('Line/Equipment','lineEquipment',r.lineEquipment,Object.keys(EQUIP_DB).sort(),'line-list')}${searchableSelectField('No.','equipNo',r.equipNo,noOptions,'no-list')}</div></div><div class="sec" id="sec-category"><div class="sec-title">Category</div><div class="check-row">${Object.entries(CATS2).map(([k,l])=>checkbox(l,(r.cat2||{})[k],'cat2.'+k)).join('')}</div></div><div class="sec" id="sec-ref-images"><div class="sec-title">Reference Image</div><div class="ref-img-grid">${renderRefImageCard('before','Before','badge-before',r.beforeImage,r.beforeImageDate,r.beforeImageTime)}${renderRefImageCard('after','After','badge-after',r.afterImage,r.afterImageDate,r.afterImageTime)}</div></div><div class="sec"><div class="sec-title">Remarks</div><div class="grid g2" style="margin-bottom:10px">${selectField('Inspection Method','inspectionMethod',r.inspectionMethod,INSPECTION_METHODS)}${selectField('Task Performed','taskPerformed',r.taskPerformed,TASKS_PERFORMED)}</div>${field('Describe the details','reasonDetail',r.reasonDetail,'textarea')}</div><div class="sec"><div class="sec-title">Result</div><div class="radio-row">${Object.entries(RESULT_CAT).map(([k,l])=>radio('resultCat',l,k,r.resultCat===k,'resultCat')).join('')}</div><div class="grid g4" style="margin-top:10px">${field('Speed (m/min)','paramSpeed',r.paramSpeed)}${field('Temp (°C)','paramTemp',r.paramTemp)}${field('Current (A)','paramCurrent',r.paramCurrent)}${field('Voltage (V)','paramVoltage',r.paramVoltage)}</div><div style="margin-top:10px">${field('Detail / Status','resultDetail',r.resultDetail,'textarea')}</div></div><div class="sec"><div class="sec-title">Sign-off</div><div class="grid g3">${selectField('Done By (TECH)','doneByName',r.doneByName,TECH_NAMES)}${selectField('Check By (TO)','checkByName',r.checkByName,TO_NAMES)}${selectField('Confirmed By (TE/E/SE)','confirmedByName',r.confirmedByName,CONF_NAMES)}</div></div></div>`;
 
     updateHighlights(container, r);
     const wrapAction = async () => { if(state.isDirty){ const discard = await showModal("Unsaved Changes Detected", "You have entered or modified data that has not been submitted yet.\n\nPlease click \"Submit ✔\" to record your data, or click \"Discard Data\" to abandon your recent changes.", "unsaved"); if(!discard) return false; revertActiveRecord(); } return true; };
@@ -1696,17 +1698,20 @@
           const yyyy = capturedAt.getFullYear();
           const mm = String(capturedAt.getMonth() + 1).padStart(2, '0');
           const dd = String(capturedAt.getDate()).padStart(2, '0');
-          const hh = String(capturedAt.getHours()).padStart(2, '0');
+          const hNoPad = String(capturedAt.getHours());
+          const hh = hNoPad.padStart(2, '0');
           const min = String(capturedAt.getMinutes()).padStart(2, '0');
+          const ss = String(capturedAt.getSeconds()).padStart(2, '0');
 
           const isoDate = `${yyyy}-${mm}-${dd}`;
           const formattedDate = `${dd}/${mm}/${yyyy}`;
-          const formattedTime = `${hh}:${min}`;
+          const watermarkTime = `${hNoPad}:${min}:${ss}`;
+          const inputTime = `${hh}:${min}`;
           const locationText = [r.lineEquipment, r.equipNo].filter(Boolean).join(' - ') || 'Not Specified';
 
           const optimizedDataUrl = await optimizeCameraImage(file, {
             date: formattedDate,
-            time: formattedTime,
+            time: watermarkTime,
             location: locationText,
             tag: slot === 'before' ? 'Before' : 'After',
             accentColor: slot === 'before' ? '#f59e0b' : '#10b981'
@@ -1716,13 +1721,13 @@
           if (slot === 'before') {
             r.beforeImage = optimizedDataUrl;
             r.beforeImageDate = formattedDate;
-            r.beforeImageTime = formattedTime;
+            r.beforeImageTime = watermarkTime;
             r.happeningDate = isoDate;
-            r.timeOfHappening = formattedTime;
+            r.timeOfHappening = inputTime;
           } else {
             r.afterImage = optimizedDataUrl;
             r.afterImageDate = formattedDate;
-            r.afterImageTime = formattedTime;
+            r.afterImageTime = watermarkTime;
           }
           saveRecords();
           renderInput(container);
@@ -1774,7 +1779,7 @@
       if(!checkReq(r.maintenanceType)) errs.push("[Notification & Work Order] Maintenance Type");
       if(!checkReq(r.title) || !checkReq(r.conveyorItem) || !checkReq(r.lineEquipment) || !checkReq(r.equipNo)) errs.push("[Title & Equipment] All details are required");
       if(!(r.cat2 && Object.keys(CATS2).some(k=>r.cat2[k]))) errs.push("[Category] Select at least one category");
-      if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) errs.push("[Reason / Detail] Please write at least 2 words");
+      if((r.reasonDetail||'').trim().split(/\s+/).filter(w=>w.length>0).length < 2) errs.push("[Remarks] Please write at least 2 words in Describe the details");
       updateHighlights(container, r);
 
       if(errs.length) await showModal("Submit Failed", "Please complete the highlighted required data:\n\n- " + errs.join("\n- "), "alert", true);
