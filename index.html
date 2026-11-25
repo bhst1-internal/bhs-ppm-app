@@ -145,7 +145,7 @@
   #acm-root .ppm-photo-ts{font-size:8.5px;color:#475569;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:nowrap}
   #acm-root .ppm-photo-stage{height:198px;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden;position:relative}
   #acm-root .ppm-photo-grid.cols-3 .ppm-photo-stage{height:182px}
-  #acm-root .ppm-photo-stage img{width:100%;height:100%;object-fit:contain;display:block;cursor:zoom-in}
+  #acm-root .ppm-photo-stage img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;cursor:zoom-in}
   #acm-root .ppm-photo-empty{font-size:9.5px;color:#94a3b8;font-style:italic;text-align:center;padding:12px}
   #acm-root .ppm-notes-box{min-height:58px;white-space:pre-wrap;line-height:1.42;font-size:10.5px;color:#0f172a;vertical-align:top}
   #acm-root .ppm-sign-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #334155}
@@ -1939,6 +1939,58 @@
     return '—';
   }
 
+  const DRIVE_IMG_CACHE = {};
+  function extractDriveFileId(url) {
+    if (!url || typeof url !== 'string') return '';
+    const m1 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (m1) return m1[1];
+    const m2 = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    return m2 ? m2[1] : '';
+  }
+
+  function fetchDriveImageAsDataUrl(url) {
+    return new Promise((resolve) => {
+      if (!url) return resolve('');
+      if (String(url).startsWith('data:image/')) return resolve(url);
+      const fileId = extractDriveFileId(url);
+      if (!fileId || !navigator.onLine) return resolve('');
+      if (DRIVE_IMG_CACHE[fileId]) return resolve(DRIVE_IMG_CACHE[fileId]);
+
+      const cbName = 'ppmImgCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      const script = document.createElement('script');
+      const timer = setTimeout(() => { cleanup(); resolve(''); }, 15000);
+
+      function cleanup() {
+        clearTimeout(timer);
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[cbName] = function(res) {
+        cleanup();
+        if (res && res.ok && res.dataUrl) {
+          DRIVE_IMG_CACHE[fileId] = res.dataUrl;
+          resolve(res.dataUrl);
+        } else {
+          resolve('');
+        }
+      };
+
+      script.onerror = function() { cleanup(); resolve(''); };
+      script.src = `${WEB_APP_URL}?action=image&id=${encodeURIComponent(fileId)}&callback=${cbName}&t=${Date.now()}`;
+      document.body.appendChild(script);
+    });
+  }
+
+  function waitForImageReady(imgEl) {
+    return new Promise((resolve) => {
+      if (imgEl.complete && imgEl.naturalWidth > 0) return resolve();
+      const done = () => { imgEl.removeEventListener('load', done); imgEl.removeEventListener('error', done); resolve(); };
+      imgEl.addEventListener('load', done);
+      imgEl.addEventListener('error', done);
+    });
+  }
+
   function renderDocument(container) {
     const r = getActive();
     if (!r) {
@@ -2179,7 +2231,7 @@
     });
     container.querySelector('#acm-edit-btn').addEventListener('click', () => { state.tab = 'input'; render(); });
     container.querySelector('#acm-print-btn').addEventListener('click', () => window.print());
-    container.querySelector('#acm-doc-jpeg-btn').addEventListener('click', () => {
+    container.querySelector('#acm-doc-jpeg-btn').addEventListener('click', async () => {
       if (typeof html2canvas === 'undefined') {
         showModal("Notice", "Export library is still loading. Please try again in a moment.");
         return;
@@ -2187,22 +2239,58 @@
       const pageEl = document.getElementById('acm-doc-page');
       const jpegBtn = container.querySelector('#acm-doc-jpeg-btn');
       const origTxt = jpegBtn.textContent;
-      jpegBtn.textContent = 'Exporting...';
+      jpegBtn.textContent = 'Preparing photos...';
       jpegBtn.disabled = true;
-      html2canvas(pageEl, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' }).then(canvas => {
-        jpegBtn.textContent = origTxt;
-        jpegBtn.disabled = false;
+
+      const imgEls = Array.from(pageEl.querySelectorAll('.ppm-photo-stage img'));
+      const originalSrcs = imgEls.map(img => img.getAttribute('src') || '');
+      let failedCloudPhotos = 0;
+
+      try {
+        // Convert Google Drive image URLs into CORS-safe Base64 Data URLs via Code.gs JSONP proxy
+        await Promise.all(imgEls.map(async (imgEl, idx) => {
+          const src = originalSrcs[idx];
+          if (!src || src.startsWith('data:image/')) return;
+          const dataUrl = await fetchDriveImageAsDataUrl(src);
+          if (dataUrl) {
+            imgEl.setAttribute('src', dataUrl);
+            await waitForImageReady(imgEl);
+          } else {
+            failedCloudPhotos++;
+          }
+        }));
+
+        jpegBtn.textContent = 'Exporting...';
+        const canvas = await html2canvas(pageEl, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: '#ffffff'
+        });
+
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/jpeg', 0.95);
         link.download = `BHS_PPM_${(r.reportNo || 'Draft').replace(/[^a-zA-Z0-9_-]/g, '_')}.jpg`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      }).catch(() => {
+
+        if (failedCloudPhotos > 0) {
+          showModal("Export Notice", "JPEG saved, but one or more cloud photos could not be fetched. Please make sure you have deployed the latest version of Code.gs in Google Apps Script.", "alert");
+        }
+      } catch (err) {
+        console.error(err);
+        showModal("Export Notice", "Unable to export JPEG with cloud-hosted photos. Please ensure the latest Code.gs is deployed as a New Version, or use 'Print / Save as PDF'.", "alert");
+      } finally {
+        // Restore original image sources
+        imgEls.forEach((imgEl, idx) => {
+          if (originalSrcs[idx] && imgEl.getAttribute('src') !== originalSrcs[idx]) {
+            imgEl.setAttribute('src', originalSrcs[idx]);
+          }
+        });
         jpegBtn.textContent = origTxt;
         jpegBtn.disabled = false;
-        showModal("Export Notice", "Cloud-hosted photos restrict direct JPEG canvas export in some browsers. Please use 'Print / Save as PDF' instead.", "alert");
-      });
+      }
     });
   }
 
