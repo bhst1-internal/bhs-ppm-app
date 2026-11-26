@@ -10,275 +10,275 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BHS Maintenance : Planned Preventative Maintenance (PPM)</title>
 <style>
-  #acm-root,#acm-root *{box-sizing:border-box}
-  #acm-root{--ink:#1f2937;--ink-light:#374151;--paper:#ffffff;--line:#e5e7eb;--line-dark:#9ca3af;--accent:#2563eb;--accent-2:#1d4ed8;--bg:#f3f4f6;--input-bg:#f9fafb;--text-sec:#6b7280;--ok:#059669;--warn:#d97706;--crit:#dc2626;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg);padding:0;min-height:100vh;font-size:.875rem;line-height:1.4;position:relative}
-  body{margin:0;background:#f3f4f6}
-  .mono-font,#acm-root input[type=date],#acm-root input[type=time],#acm-root .kpi-value,#acm-root .doc-footer-code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-  #acm-root .wrap{max-width:1180px;margin:0 auto;padding:18px 18px 60px}
-  #acm-root .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-  #acm-root .brand{display:flex;flex-direction:column;gap:2px}
-  #acm-root .brand .k{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-sec);font-weight:700}
-  #acm-root .brand .t{font-size:1.125rem;font-weight:800;color:var(--ink)}
-  #acm-root .tabs{display:flex;gap:6px;background:var(--line);padding:4px;border-radius:10px}
-  #acm-root .tab-btn{border:none;background:transparent;padding:8px 14px;border-radius:8px;font-size:.875rem;font-weight:600;color:var(--text-sec);cursor:pointer;transition:all .15s}
-  #acm-root .tab-btn.active{background:var(--paper);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  #acm-root .tab-btn:hover:not(.active){color:var(--ink)}
+  #ppm-root,#ppm-root *{box-sizing:border-box}
+  #ppm-root{--ink:#1f2937;--ink-light:#374151;--paper:#ffffff;--line:#e5e7eb;--line-dark:#9ca3af;--accent:#2563eb;--accent-2:#1d4ed8;--bg:#f3f4f6;--input-bg:#f9fafb;--text-sec:#6b7280;--ok:#059669;--warn:#d97706;--crit:#dc2626;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg);padding:0;min-height:100vh;font-size:.875rem;line-height:1.4;position:relative}
+  html,body{margin:0;background:#f3f4f6;overscroll-behavior-y:contain}
+  .mono-font,#ppm-root input[type=date],#ppm-root input[type=time],#ppm-root .kpi-value,#ppm-root .doc-footer-code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  #ppm-root .wrap{max-width:1180px;margin:0 auto;padding:18px 18px 60px}
+  #ppm-root .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  #ppm-root .brand{display:flex;flex-direction:column;gap:2px}
+  #ppm-root .brand .k{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-sec);font-weight:700}
+  #ppm-root .brand .t{font-size:1.125rem;font-weight:800;color:var(--ink)}
+  #ppm-root .tabs{display:flex;gap:6px;background:var(--line);padding:4px;border-radius:10px}
+  #ppm-root .tab-btn{border:none;background:transparent;padding:8px 14px;border-radius:8px;font-size:.875rem;font-weight:600;color:var(--text-sec);cursor:pointer;transition:all .15s}
+  #ppm-root .tab-btn.active{background:var(--paper);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  #ppm-root .tab-btn:hover:not(.active){color:var(--ink)}
 
   /* Network & Auto-Refresh Indicator */
-  #acm-root .net-status-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  #acm-root .net-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;border:1px solid transparent}
-  #acm-root .net-dot{width:8px;height:8px;border-radius:999px;display:inline-block}
-  #acm-root .net-online{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
-  #acm-root .net-online .net-dot{background:#10b981}
-  #acm-root .net-offline{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
-  #acm-root .net-offline .net-dot{background:#ef4444}
-  #acm-root .net-syncing{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-  #acm-root .net-syncing .net-dot{background:#2563eb;animation:ppmPulse 1s infinite}
-  #acm-root .sync-now-btn{border:1px solid #f59e0b;background:#fffbeb;color:#b45309;padding:4px 10px;border-radius:999px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}
-  #acm-root .sync-now-btn:hover{background:#fef3c7}
-  #acm-root .refresh-indicator{display:none;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #93c5fd;color:#1d4ed8;box-shadow:0 2px 8px rgba(37,99,235,.18);pointer-events:none;user-select:none}
-  #acm-root .refresh-indicator.visible{display:inline-flex;animation:ppmFadeIn .2s ease}
-  #acm-root .refresh-spin{display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;line-height:1;animation:ppmSpin .85s linear infinite}
+  #ppm-root .net-status-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  #ppm-root .net-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;font-size:.72rem;font-weight:700;border:1px solid transparent}
+  #ppm-root .net-dot{width:8px;height:8px;border-radius:999px;display:inline-block}
+  #ppm-root .net-online{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+  #ppm-root .net-online .net-dot{background:#10b981}
+  #ppm-root .net-offline{background:#fef2f2;color:#b91c1c;border-color:#fecaca}
+  #ppm-root .net-offline .net-dot{background:#ef4444}
+  #ppm-root .net-syncing{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+  #ppm-root .net-syncing .net-dot{background:#2563eb;animation:ppmPulse 1s infinite}
+  #ppm-root .sync-now-btn{border:1px solid #f59e0b;background:#fffbeb;color:#b45309;padding:4px 10px;border-radius:999px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+  #ppm-root .sync-now-btn:hover{background:#fef3c7}
+  #ppm-root .refresh-indicator{display:none;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%);border:1px solid #93c5fd;color:#1d4ed8;box-shadow:0 2px 8px rgba(37,99,235,.18);pointer-events:none;user-select:none}
+  #ppm-root .refresh-indicator.visible{display:inline-flex;animation:ppmFadeIn .2s ease}
+  #ppm-root .refresh-spin{display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;line-height:1;animation:ppmSpin .85s linear infinite}
   @keyframes ppmSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
   @keyframes ppmFadeIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
   @keyframes ppmPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.85)}}
 
   /* KPI & Charts */
-  #acm-root .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
-  @media (max-width:980px){#acm-root .kpi-grid{grid-template-columns:repeat(2,1fr)}}
-  #acm-root .kpi-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:visible}
-  #acm-root .kpi-card .bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:12px 0 0 12px}
-  #acm-root .kpi-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-sec);font-weight:700}
-  #acm-root .kpi-value{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1;margin-top:2px}
-  #acm-root .kpi-sub{font-size:.75rem;color:var(--text-sec)}
-  #acm-root .kpi-pill{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:999px;width:fit-content;margin-top:2px}
-  #acm-root .pill-ok{background:#d1fae5;color:var(--ok)}
-  #acm-root .pill-warn{background:#fef3c7;color:var(--warn)}
-  #acm-root .pill-crit{background:#fee2e2;color:var(--crit)}
+  #ppm-root .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+  @media (max-width:980px){#ppm-root .kpi-grid{grid-template-columns:repeat(2,1fr)}}
+  #ppm-root .kpi-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:visible}
+  #ppm-root .kpi-card .bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:12px 0 0 12px}
+  #ppm-root .kpi-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-sec);font-weight:700}
+  #ppm-root .kpi-value{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1;margin-top:2px}
+  #ppm-root .kpi-sub{font-size:.75rem;color:var(--text-sec)}
+  #ppm-root .kpi-pill{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:999px;width:fit-content;margin-top:2px}
+  #ppm-root .pill-ok{background:#d1fae5;color:var(--ok)}
+  #ppm-root .pill-warn{background:#fef3c7;color:var(--warn)}
+  #ppm-root .pill-crit{background:#fee2e2;color:var(--crit)}
 
-  #acm-root .charts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
-  @media (max-width:980px){#acm-root .charts-grid{grid-template-columns:minmax(0,1fr)}}
-  #acm-root .panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;overflow:hidden}
-  #acm-root .panel h3{margin:0 0 10px;font-size:.875rem;font-weight:800;color:var(--ink)}
-  #acm-root .panel .hint{font-size:.75rem;color:var(--line-dark);margin-bottom:8px}
-  #acm-root .export-chart-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg);transition:all .15s}
-  #acm-root .export-chart-btn:hover{background:var(--line);color:var(--ink)}
+  #ppm-root .charts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+  @media (max-width:980px){#ppm-root .charts-grid{grid-template-columns:minmax(0,1fr)}}
+  #ppm-root .panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;overflow:hidden}
+  #ppm-root .panel h3{margin:0 0 10px;font-size:.875rem;font-weight:800;color:var(--ink)}
+  #ppm-root .panel .hint{font-size:.75rem;color:var(--line-dark);margin-bottom:8px}
+  #ppm-root .export-chart-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg);transition:all .15s}
+  #ppm-root .export-chart-btn:hover{background:var(--line);color:var(--ink)}
 
   /* Dropdowns (Multi-select & Searchable) */
-  #acm-root .dd-wrapper{position:relative;width:100%}
-  #acm-root .dd-btn{width:100%;text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--input-bg);font-size:.75rem;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;min-height:32px}
-  #acm-root .dd-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #acm-root .dd-btn::after{content:"▼";font-size:.55rem;margin-left:6px;color:var(--line-dark);flex-shrink:0}
-  #acm-root .dd-menu{display:none;position:absolute;top:100%;left:0;width:100%;max-height:220px;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:7px;z-index:200;padding:8px;box-shadow:0 6px 16px rgba(0,0,0,.14);margin-top:4px}
-  #acm-root .dd-menu.open{display:flex;flex-direction:column;gap:6px}
-  #acm-root .dd-search{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-size:.75rem;background:var(--input-bg);margin-bottom:2px}
-  #acm-root .dd-selected-tags{font-size:.68rem;color:var(--text-sec);margin-top:3px;line-height:1.35}
+  #ppm-root .dd-wrapper{position:relative;width:100%}
+  #ppm-root .dd-btn{width:100%;text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--input-bg);font-size:.75rem;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;min-height:32px}
+  #ppm-root .dd-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #ppm-root .dd-btn::after{content:"▼";font-size:.55rem;margin-left:6px;color:var(--line-dark);flex-shrink:0}
+  #ppm-root .dd-menu{display:none;position:absolute;top:100%;left:0;width:100%;max-height:220px;overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:7px;z-index:200;padding:8px;box-shadow:0 6px 16px rgba(0,0,0,.14);margin-top:4px}
+  #ppm-root .dd-menu.open{display:flex;flex-direction:column;gap:6px}
+  #ppm-root .dd-search{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-size:.75rem;background:var(--input-bg);margin-bottom:2px}
+  #ppm-root .dd-selected-tags{font-size:.68rem;color:var(--text-sec);margin-top:3px;line-height:1.35}
 
   /* Table & Grouped Multi-Row PPM Records */
-  #acm-root .table-panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-  #acm-root .table-scroll{width:100%;overflow-x:auto}
-  #acm-root table.list{width:100%;border-collapse:collapse;min-width:860px}
-  #acm-root table.list th{text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-sec);background-color:var(--input-bg);padding:7px 8px;border-bottom:2px solid var(--line);white-space:nowrap}
-  #acm-root table.list td{font-size:.72rem;color:var(--ink-light);padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
-  #acm-root table.list tr.grp-first td{border-top:1px solid #cbd5e1}
-  #acm-root table.list tr.grp-sub td{border-top:1px dashed #e5e7eb;background:#fcfdff}
-  #acm-root table.list td.grp-anchor{border-left:3px solid var(--accent);background:#ffffff;vertical-align:top;padding-top:9px}
-  #acm-root table.list td.grp-merged{background:#ffffff;vertical-align:top;padding-top:9px}
-  #acm-root table.list tr:hover td:not(.grp-anchor):not(.grp-merged){background:#f8fafc}
-  #acm-root .unit-count-sub{font-size:.62rem;color:var(--text-sec);font-weight:600;margin-top:2px}
-  #acm-root .no-plain-txt{font-weight:800;color:var(--ink)}
+  #ppm-root .table-panel{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  #ppm-root .table-scroll{width:100%;overflow-x:auto}
+  #ppm-root table.list{width:100%;border-collapse:collapse;min-width:860px}
+  #ppm-root table.list th{text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-sec);background-color:var(--input-bg);padding:7px 8px;border-bottom:2px solid var(--line);white-space:nowrap}
+  #ppm-root table.list td{font-size:.72rem;color:var(--ink-light);padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  #ppm-root table.list tr.grp-first td{border-top:1px solid #cbd5e1}
+  #ppm-root table.list tr.grp-sub td{border-top:1px dashed #e5e7eb;background:#fcfdff}
+  #ppm-root table.list td.grp-anchor{border-left:3px solid var(--accent);background:#ffffff;vertical-align:top;padding-top:9px}
+  #ppm-root table.list td.grp-merged{background:#ffffff;vertical-align:top;padding-top:9px}
+  #ppm-root table.list tr:hover td:not(.grp-anchor):not(.grp-merged){background:#f8fafc}
+  #ppm-root .unit-count-sub{font-size:.62rem;color:var(--text-sec);font-weight:600;margin-top:2px}
+  #ppm-root .no-plain-txt{font-weight:800;color:var(--ink)}
 
   /* Pagination Footer */
-  #acm-root .table-pager{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:12px;margin-top:8px;border-top:1px solid var(--line);font-size:.75rem;color:var(--text-sec)}
-  #acm-root .table-pager-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #ppm-root .table-pager{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:12px;margin-top:8px;border-top:1px solid var(--line);font-size:.75rem;color:var(--text-sec)}
+  #ppm-root .table-pager-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 
   /* Status Chips & Pending Items Hover Tooltip */
-  #acm-root .status-chip{font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-  #acm-root .chip-open{background:#e5e7eb;color:var(--text-sec)}
-  #acm-root .chip-progress{background:#fef3c7;color:var(--warn)}
-  #acm-root .chip-done{background:#d1fae5;color:var(--ok)}
-  #acm-root .chip-sync{background:#dbeafe;color:#1d4ed8;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:999px;display:inline-block;margin-left:4px}
-  #acm-root .status-tip-wrap{position:relative;display:inline-flex;align-items:center;cursor:help;outline:none}
-  #acm-root .status-tip-box{display:none;position:absolute;bottom:calc(100% + 8px);right:0;width:265px;background:#111827;color:#f8fafc;border-radius:8px;padding:10px 12px;font-size:.72rem;line-height:1.45;box-shadow:0 10px 25px rgba(0,0,0,.28);z-index:500;text-align:left;white-space:normal;pointer-events:none}
-  #acm-root .status-tip-wrap.tip-down .status-tip-box{bottom:auto;top:calc(100% + 8px);right:auto;left:0}
-  #acm-root .status-tip-wrap:hover .status-tip-box,#acm-root .status-tip-wrap:focus .status-tip-box,#acm-root .status-tip-wrap:focus-within .status-tip-box{display:block}
-  #acm-root .status-tip-title{font-weight:800;color:#fbbf24;text-transform:uppercase;letter-spacing:.04em;font-size:.66rem;margin-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:4px}
-  #acm-root .status-tip-list{margin:0;padding-left:15px}
-  #acm-root .status-tip-list li{margin-bottom:3px}
+  #ppm-root .status-chip{font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  #ppm-root .chip-open{background:#e5e7eb;color:var(--text-sec)}
+  #ppm-root .chip-progress{background:#fef3c7;color:var(--warn)}
+  #ppm-root .chip-done{background:#d1fae5;color:var(--ok)}
+  #ppm-root .chip-sync{background:#dbeafe;color:#1d4ed8;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:999px;display:inline-block;margin-left:4px}
+  #ppm-root .status-tip-wrap{position:relative;display:inline-flex;align-items:center;cursor:help;outline:none}
+  #ppm-root .status-tip-box{display:none;position:absolute;bottom:calc(100% + 8px);right:0;width:265px;background:#111827;color:#f8fafc;border-radius:8px;padding:10px 12px;font-size:.72rem;line-height:1.45;box-shadow:0 10px 25px rgba(0,0,0,.28);z-index:500;text-align:left;white-space:normal;pointer-events:none}
+  #ppm-root .status-tip-wrap.tip-down .status-tip-box{bottom:auto;top:calc(100% + 8px);right:auto;left:0}
+  #ppm-root .status-tip-wrap:hover .status-tip-box,#ppm-root .status-tip-wrap:focus .status-tip-box,#ppm-root .status-tip-wrap:focus-within .status-tip-box{display:block}
+  #ppm-root .status-tip-title{font-weight:800;color:#fbbf24;text-transform:uppercase;letter-spacing:.04em;font-size:.66rem;margin-bottom:5px;border-bottom:1px solid rgba(255,255,255,.15);padding-bottom:4px}
+  #ppm-root .status-tip-list{margin:0;padding-left:15px}
+  #ppm-root .status-tip-list li{margin-bottom:3px}
 
-  #acm-root .link-btn{border:none;background:none;color:var(--accent);font-weight:700;font-size:.75rem;cursor:pointer;padding:2px 4px}
-  #acm-root .empty-state{text-align:center;padding:34px 10px;color:var(--text-sec);font-size:.875rem}
-  #acm-root .btn-export-excel{background-color:var(--ok);color:#ffffff;font-size:.8rem;font-weight:700;padding:7px 14px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
-  #acm-root .btn-export-excel:hover{background-color:#047857}
-  #acm-root .btn-export-excel svg{width:15px;height:15px}
+  #ppm-root .link-btn{border:none;background:none;color:var(--accent);font-weight:700;font-size:.75rem;cursor:pointer;padding:2px 4px}
+  #ppm-root .empty-state{text-align:center;padding:34px 10px;color:var(--text-sec);font-size:.875rem}
+  #ppm-root .btn-export-excel{background-color:var(--ok);color:#ffffff;font-size:.8rem;font-weight:700;padding:7px 14px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+  #ppm-root .btn-export-excel:hover{background-color:#047857}
+  #ppm-root .btn-export-excel svg{width:15px;height:15px}
 
   /* Forms & Memo Details */
-  #acm-root .form-shell{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px 24px}
-  #acm-root .form-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
-  #acm-root .form-toolbar .rec-select{display:flex;align-items:center;gap:8px;font-size:.875rem;flex-wrap:wrap}
-  #acm-root select.recpick{padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:.75rem;background:var(--input-bg);color:var(--ink);font-family:ui-monospace,monospace}
-  #acm-root .toolbar-status-box{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;background:#f8fafc;border:1px solid var(--line);border-radius:8px;font-size:.74rem}
-  #acm-root .btn{border:none;padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s}
-  #acm-root .btn-sm{padding:5px 10px;font-size:.74rem;border-radius:7px}
-  #acm-root .btn-primary{background:var(--accent);color:#fff}
-  #acm-root .btn-primary:hover{background:var(--accent-2)}
-  #acm-root .btn-ghost{background:var(--line);color:var(--ink-light)}
-  #acm-root .btn-ghost:hover{background:#d1d5db}
-  #acm-root .btn-danger{background:#fee2e2;color:var(--crit)}
-  #acm-root .btn-danger:hover{background:#fca5a5}
-  #acm-root .btn-solid-danger{background:var(--crit);color:#fff}
-  #acm-root .btn-solid-danger:hover{background:#b91c1c}
-  #acm-root .btn-row{display:flex;gap:8px;flex-wrap:wrap}
-  #acm-root .sec{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;transition:all .2s}
-  #acm-root .sec>.sec-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:10px}
-  #acm-root .grid{display:grid;gap:10px}
-  #acm-root .g2{grid-template-columns:1fr 1fr}
-  #acm-root .g3{grid-template-columns:1fr 1fr 1fr}
-  #acm-root .g4{grid-template-columns:1fr 1fr 1fr 1fr}
-  #acm-root .g5{grid-template-columns:repeat(5,1fr)}
-  @media (max-width:720px){#acm-root .g2,#acm-root .g3,#acm-root .g4,#acm-root .g5{grid-template-columns:1fr}}
-  #acm-root label.f{display:flex;flex-direction:column;gap:4px;font-size:.75rem;color:var(--ink-light);font-weight:600}
-  #acm-root input[type=text],#acm-root input[type=date],#acm-root input[type=time],#acm-root input[type=number],#acm-root textarea,#acm-root select{padding:7px 9px;border:1px solid var(--line);border-radius:7px;font-size:.75rem;font-family:inherit;color:var(--ink);background:var(--input-bg);transition:all .2s}
-  #acm-root input.locked-field{background:#e5e7eb!important;color:#4b5563;cursor:not-allowed;pointer-events:none}
-  #acm-root textarea{resize:vertical;min-height:54px}
-  #acm-root .check-row,#acm-root .radio-row{display:flex;flex-wrap:wrap;gap:12px}
-  #acm-root .chk,#acm-root .rad{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--ink-light);cursor:pointer}
-  #acm-root .chk input,#acm-root .rad input{width:15px;height:15px;accent-color:var(--accent)}
-  #acm-root .err-highlight,#acm-root .err-sec{border:1px solid var(--crit)!important;background-color:#fef2f2!important;box-shadow:0 0 0 1px var(--crit)}
+  #ppm-root .form-shell{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px 24px}
+  #ppm-root .form-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+  #ppm-root .form-toolbar .rec-select{display:flex;align-items:center;gap:8px;font-size:.875rem;flex-wrap:wrap}
+  #ppm-root select.recpick{padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-size:.75rem;background:var(--input-bg);color:var(--ink);font-family:ui-monospace,monospace}
+  #ppm-root .toolbar-status-box{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;background:#f8fafc;border:1px solid var(--line);border-radius:8px;font-size:.74rem}
+  #ppm-root .btn{border:none;padding:8px 14px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #ppm-root .btn-sm{padding:5px 10px;font-size:.74rem;border-radius:7px}
+  #ppm-root .btn-primary{background:var(--accent);color:#fff}
+  #ppm-root .btn-primary:hover{background:var(--accent-2)}
+  #ppm-root .btn-ghost{background:var(--line);color:var(--ink-light)}
+  #ppm-root .btn-ghost:hover{background:#d1d5db}
+  #ppm-root .btn-danger{background:#fee2e2;color:var(--crit)}
+  #ppm-root .btn-danger:hover{background:#fca5a5}
+  #ppm-root .btn-solid-danger{background:var(--crit);color:#fff}
+  #ppm-root .btn-solid-danger:hover{background:#b91c1c}
+  #ppm-root .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+  #ppm-root .sec{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;transition:all .2s}
+  #ppm-root .sec>.sec-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:10px}
+  #ppm-root .grid{display:grid;gap:10px}
+  #ppm-root .g2{grid-template-columns:1fr 1fr}
+  #ppm-root .g3{grid-template-columns:1fr 1fr 1fr}
+  #ppm-root .g4{grid-template-columns:1fr 1fr 1fr 1fr}
+  #ppm-root .g5{grid-template-columns:repeat(5,1fr)}
+  @media (max-width:720px){#ppm-root .g2,#ppm-root .g3,#ppm-root .g4,#ppm-root .g5{grid-template-columns:1fr}}
+  #ppm-root label.f{display:flex;flex-direction:column;gap:4px;font-size:.75rem;color:var(--ink-light);font-weight:600}
+  #ppm-root input[type=text],#ppm-root input[type=date],#ppm-root input[type=time],#ppm-root input[type=number],#ppm-root textarea,#ppm-root select{padding:7px 9px;border:1px solid var(--line);border-radius:7px;font-size:.75rem;font-family:inherit;color:var(--ink);background:var(--input-bg);transition:all .2s}
+  #ppm-root input.locked-field{background:#e5e7eb!important;color:#4b5563;cursor:not-allowed;pointer-events:none}
+  #ppm-root textarea{resize:vertical;min-height:54px}
+  #ppm-root .check-row,#ppm-root .radio-row{display:flex;flex-wrap:wrap;gap:12px}
+  #ppm-root .chk,#ppm-root .rad{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--ink-light);cursor:pointer}
+  #ppm-root .chk input,#ppm-root .rad input{width:15px;height:15px;accent-color:var(--accent)}
+  #ppm-root .err-highlight,#ppm-root .err-sec{border:1px solid var(--crit)!important;background-color:#fef2f2!important;box-shadow:0 0 0 1px var(--crit)}
 
   /* Multi-Unit Selector Bar */
-  #acm-root .unit-bar-wrap{margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:9px}
-  #acm-root .unit-bar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-  #acm-root .unit-bar-title{font-size:.74rem;font-weight:800;color:#1e293b}
-  #acm-root .unit-bar-actions{display:flex;gap:6px;flex-wrap:wrap}
-  #acm-root .unit-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-  #acm-root .unit-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid #cbd5e1;background:#ffffff;color:var(--ink);font-size:.74rem;font-weight:700;cursor:pointer;transition:all .15s}
-  #acm-root .unit-pill.active{background:var(--accent);border-color:var(--accent);color:#ffffff;box-shadow:0 2px 6px rgba(37,99,235,.25)}
-  #acm-root .unit-pill.done:not(.active){background:#ecfdf5;border-color:#6ee7b7;color:#065f46}
-  #acm-root .unit-pill .u-rm{border:none;background:transparent;color:inherit;font-weight:900;font-size:.8rem;cursor:pointer;padding:0 2px;opacity:.75;line-height:1}
-  #acm-root .unit-pill .u-rm:hover{opacity:1}
-  #acm-root .active-unit-banner{font-size:.72rem;font-weight:700;color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:6px 10px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+  #ppm-root .unit-bar-wrap{margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:9px}
+  #ppm-root .unit-bar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  #ppm-root .unit-bar-title{font-size:.74rem;font-weight:800;color:#1e293b}
+  #ppm-root .unit-bar-actions{display:flex;gap:6px;flex-wrap:wrap}
+  #ppm-root .unit-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  #ppm-root .unit-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;border:1px solid #cbd5e1;background:#ffffff;color:var(--ink);font-size:.74rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #ppm-root .unit-pill.active{background:var(--accent);border-color:var(--accent);color:#ffffff;box-shadow:0 2px 6px rgba(37,99,235,.25)}
+  #ppm-root .unit-pill.done:not(.active){background:#ecfdf5;border-color:#6ee7b7;color:#065f46}
+  #ppm-root .unit-pill .u-rm{border:none;background:transparent;color:inherit;font-weight:900;font-size:.8rem;cursor:pointer;padding:0 2px;opacity:.75;line-height:1}
+  #ppm-root .unit-pill .u-rm:hover{opacity:1}
+  #ppm-root .active-unit-banner{font-size:.72rem;font-weight:700;color:#1e40af;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:6px 10px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
 
   /* Reference Image Cards */
-  #acm-root .ref-sec-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-  #acm-root .ref-sec-header .sec-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:0}
-  #acm-root .ref-cleaning-toggle-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px dashed #38bdf8;background:#f0f9ff;color:#0369a1;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s}
-  #acm-root .ref-cleaning-toggle-btn:hover{background:#e0f2fe;border-color:#0284c7}
-  #acm-root .ref-cleaning-toggle-btn.active{border-style:solid;border-color:#0284c7;background:#e0f2fe;color:#075985}
-  #acm-root .ref-img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-  @media (max-width:720px){#acm-root .ref-img-grid{grid-template-columns:1fr}}
-  #acm-root .ref-img-card{border:1px solid var(--line);border-radius:10px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-  #acm-root .ref-img-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(15,23,42,.06)}
-  #acm-root .ref-img-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
-  #acm-root .ref-img-badge{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center}
-  #acm-root .badge-before{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
-  #acm-root .badge-cleaning{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
-  #acm-root .badge-after{background:#d1fae5;color:#047857;border:1px solid #a7f3d0}
-  #acm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-  #acm-root .ref-img-stage{position:relative;height:210px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
-  #acm-root .ref-img-preview{width:100%;height:100%;object-fit:contain;display:block;background:#0f172a}
-  #acm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;color:var(--text-sec);transition:transform .15s}
-  #acm-root .ref-img-stage:hover .ref-img-empty{transform:translateY(-2px)}
-  #acm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px;box-shadow:0 2px 6px rgba(37,99,235,.15)}
-  #acm-root .ref-img-empty-title{font-size:.8rem;font-weight:700;color:var(--ink)}
-  #acm-root .ref-img-empty-sub{font-size:.7rem;color:var(--text-sec)}
-  #acm-root .ref-img-footer{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--paper);border-top:1px solid var(--line)}
-  #acm-root .ref-img-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 10px;border-radius:7px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);font-size:.73rem;font-weight:700;cursor:pointer;transition:all .15s}
-  #acm-root .ref-img-btn:hover{background:var(--line);color:var(--ink)}
-  #acm-root .ref-img-btn.cam{background:var(--accent);border-color:var(--accent);color:#fff}
-  #acm-root .ref-img-btn.cam:hover{background:var(--accent-2);border-color:var(--accent-2)}
-  #acm-root .ref-img-btn.del{color:var(--crit);background:#fef2f2;border-color:#fecaca}
-  #acm-root .ref-img-btn.del:hover{background:#fee2e2}
+  #ppm-root .ref-sec-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+  #ppm-root .ref-sec-header .sec-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:0}
+  #ppm-root .ref-cleaning-toggle-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;border:1px dashed #38bdf8;background:#f0f9ff;color:#0369a1;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #ppm-root .ref-cleaning-toggle-btn:hover{background:#e0f2fe;border-color:#0284c7}
+  #ppm-root .ref-cleaning-toggle-btn.active{border-style:solid;border-color:#0284c7;background:#e0f2fe;color:#075985}
+  #ppm-root .ref-img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+  @media (max-width:720px){#ppm-root .ref-img-grid{grid-template-columns:1fr}}
+  #ppm-root .ref-img-card{border:1px solid var(--line);border-radius:10px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  #ppm-root .ref-img-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(15,23,42,.06)}
+  #ppm-root .ref-img-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
+  #ppm-root .ref-img-badge{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center}
+  #ppm-root .badge-before{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
+  #ppm-root .badge-cleaning{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
+  #ppm-root .badge-after{background:#d1fae5;color:#047857;border:1px solid #a7f3d0}
+  #ppm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  #ppm-root .ref-img-stage{position:relative;height:210px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  #ppm-root .ref-img-preview{width:100%;height:100%;object-fit:contain;display:block;background:#0f172a}
+  #ppm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;color:var(--text-sec);transition:transform .15s}
+  #ppm-root .ref-img-stage:hover .ref-img-empty{transform:translateY(-2px)}
+  #ppm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px;box-shadow:0 2px 6px rgba(37,99,235,.15)}
+  #ppm-root .ref-img-empty-title{font-size:.8rem;font-weight:700;color:var(--ink)}
+  #ppm-root .ref-img-empty-sub{font-size:.7rem;color:var(--text-sec)}
+  #ppm-root .ref-img-footer{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--paper);border-top:1px solid var(--line)}
+  #ppm-root .ref-img-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 10px;border-radius:7px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);font-size:.73rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #ppm-root .ref-img-btn:hover{background:var(--line);color:var(--ink)}
+  #ppm-root .ref-img-btn.cam{background:var(--accent);border-color:var(--accent);color:#fff}
+  #ppm-root .ref-img-btn.cam:hover{background:var(--accent-2);border-color:var(--accent-2)}
+  #ppm-root .ref-img-btn.del{color:var(--crit);background:#fef2f2;border-color:#fecaca}
+  #ppm-root .ref-img-btn.del:hover{background:#fee2e2}
 
   /* Modals & Lightbox */
-  #acm-root #acm-modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.7);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease;backdrop-filter:blur(2px)}
-  #acm-root #acm-modal-overlay.active{opacity:1;pointer-events:auto}
-  #acm-root #acm-modal-box{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;width:92%;max-width:440px;box-shadow:0 12px 32px rgba(0,0,0,.18)}
-  #acm-root #acm-modal-title{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:8px}
-  #acm-root #acm-modal-msg{font-size:.85rem;color:var(--ink-light);margin-bottom:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-  #acm-root #acm-modal-input{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:8px;margin-bottom:16px;font-size:.875rem;color:var(--ink);background:var(--input-bg);display:none}
-  #acm-root #acm-modal-actions{display:flex;justify-content:flex-end;gap:8px}
-  #acm-root #acm-lightbox-overlay{position:fixed;inset:0;background:rgba(15,23,42,.82);z-index:99998;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .2s ease}
-  #acm-root #acm-lightbox-overlay.active{opacity:1;pointer-events:auto}
-  #acm-root #acm-lightbox-card{background:var(--paper);border-radius:12px;max-width:92vw;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
-  #acm-root #acm-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:.875rem}
-  #acm-root #acm-lightbox-body{background:#0f172a;display:flex;align-items:center;justify-content:center;overflow:auto;padding:8px}
-  #acm-root #acm-lightbox-body img{max-width:100%;max-height:78vh;object-fit:contain;display:block}
-  #acm-root .modal-offline-banner{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:10px;font-weight:700;font-size:.82rem}
-  #acm-root .modal-offline-banner.entry{background:#fef3c7;border:1px solid #fcd34d;color:#92400e}
-  #acm-root .modal-offline-banner.submit{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
-  #acm-root .modal-offline-banner.synced{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
-  #acm-root .modal-offline-details{background:var(--input-bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:8px;font-size:.76rem;display:flex;flex-direction:column;gap:4px}
-  #acm-root .modal-offline-row{display:flex;justify-content:space-between;gap:8px}
+  #ppm-root #ppm-modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.7);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease;backdrop-filter:blur(2px)}
+  #ppm-root #ppm-modal-overlay.active{opacity:1;pointer-events:auto}
+  #ppm-root #ppm-modal-box{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;width:92%;max-width:440px;box-shadow:0 12px 32px rgba(0,0,0,.18)}
+  #ppm-root #ppm-modal-title{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:8px}
+  #ppm-root #ppm-modal-msg{font-size:.85rem;color:var(--ink-light);margin-bottom:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  #ppm-root #ppm-modal-input{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:8px;margin-bottom:16px;font-size:.875rem;color:var(--ink);background:var(--input-bg);display:none}
+  #ppm-root #ppm-modal-actions{display:flex;justify-content:flex-end;gap:8px}
+  #ppm-root #ppm-lightbox-overlay{position:fixed;inset:0;background:rgba(15,23,42,.82);z-index:99998;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+  #ppm-root #ppm-lightbox-overlay.active{opacity:1;pointer-events:auto}
+  #ppm-root #ppm-lightbox-card{background:var(--paper);border-radius:12px;max-width:92vw;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+  #ppm-root #ppm-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:.875rem}
+  #ppm-root #ppm-lightbox-body{background:#0f172a;display:flex;align-items:center;justify-content:center;overflow:auto;padding:8px}
+  #ppm-root #ppm-lightbox-body img{max-width:100%;max-height:78vh;object-fit:contain;display:block}
+  #ppm-root .modal-offline-banner{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:10px;font-weight:700;font-size:.82rem}
+  #ppm-root .modal-offline-banner.entry{background:#fef3c7;border:1px solid #fcd34d;color:#92400e}
+  #ppm-root .modal-offline-banner.submit{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  #ppm-root .modal-offline-banner.synced{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+  #ppm-root .modal-offline-details{background:var(--input-bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:8px;font-size:.76rem;display:flex;flex-direction:column;gap:4px}
+  #ppm-root .modal-offline-row{display:flex;justify-content:space-between;gap:8px}
 
   /* Memo View (A4 Document) */
-  #acm-root .doc-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
-  #acm-root .doc-scroll{overflow-x:auto;overflow-y:auto;background:#cbd5e1;padding:24px 14px;border-radius:12px;max-height:calc(100vh - 140px)}
-  #acm-root .doc-scale-wrap{margin:0 auto;position:relative}
-  #acm-root .doc-page{width:794px;min-height:1085px;margin:0 auto;background:#ffffff;padding:22px 26px 20px;font-family:Arial,Helvetica,sans-serif;color:#0f172a;font-size:10.5px;box-shadow:0 6px 24px rgba(15,23,42,.18);display:flex;flex-direction:column;justify-content:space-between;border-radius:2px}
-  #acm-root .doc-page table{border-collapse:collapse;width:100%;table-layout:fixed}
-  #acm-root .doc-page td,#acm-root .doc-page th{border:1px solid #334155;padding:3.5px 6px;vertical-align:middle;font-size:10px;color:#0f172a;word-break:break-word}
-  #acm-root .ppm-doc-top{display:flex;justify-content:space-between;align-items:stretch;gap:14px;padding-bottom:8px;border-bottom:2px solid #0f172a;margin-bottom:9px}
-  #acm-root .ppm-doc-brand{flex:1;display:flex;flex-direction:column;justify-content:center}
-  #acm-root .doc-header-title{font-size:16.5px;font-weight:800;letter-spacing:.02em;color:#0f172a;margin:0;text-transform:uppercase}
-  #acm-root .doc-header-sub{font-size:11px;font-weight:700;color:#334155;margin:2px 0 5px}
-  #acm-root .doc-memo-title{font-size:12px;font-weight:800;font-style:italic;color:#1e3a8a;margin:0 0 5px}
-  #acm-root .ppm-doc-status-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  #acm-root .ppm-doc-ctrl{width:268px;flex-shrink:0}
-  #acm-root .ppm-doc-ctrl td{padding:3px 6px;font-size:9.5px}
-  #acm-root .ppm-doc-ctrl .ctrl-lbl{width:44%;background:#f1f5f9;font-weight:700;color:#1e293b}
-  #acm-root .ppm-doc-ctrl .ctrl-val{font-weight:700;text-align:center}
-  #acm-root .ppm-sec{margin-bottom:8px}
-  #acm-root .ppm-sec-bar{background:#f1f5f9;border:1px solid #334155;border-bottom:none;padding:3.5px 8px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#0f172a;display:flex;align-items:center;justify-content:space-between}
-  #acm-root .ppm-sec-bar span.sec-num{color:#1d4ed8;margin-right:5px}
-  #acm-root .ppm-lbl{background:#f8fafc;font-weight:700;color:#334155;font-size:9.5px}
-  #acm-root .ppm-val{font-weight:600;color:#0f172a}
-  #acm-root .ppm-chk-wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:1px 0}
-  #acm-root .ppm-chk-item{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#1e293b}
-  #acm-root .ppm-chk-item.checked{font-weight:800;color:#0f172a}
-  #acm-root .doc-checkbox{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border:1.2px solid #0f172a;font-size:9px;font-weight:900;line-height:1;background:#fff;color:#0f172a}
-  #acm-root .ppm-chk-item.checked .doc-checkbox{background:#dbeafe;border-color:#1e3a8a;color:#1e3a8a}
-  #acm-root .ppm-photo-grid{display:grid;gap:7px;border:1px solid #334155;padding:6px;background:#ffffff}
-  #acm-root .ppm-photo-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-  #acm-root .ppm-photo-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-  #acm-root .ppm-unit-photo-group{border:1px solid #334155;margin-bottom:6px;background:#fff}
-  #acm-root .ppm-unit-photo-group:last-child{margin-bottom:0}
-  #acm-root .ppm-unit-photo-subhead{background:#f8fafc;border-bottom:1px solid #cbd5e1;padding:3px 7px;font-size:9.5px;font-weight:800;color:#1e3a8a;display:flex;justify-content:space-between;align-items:center}
-  #acm-root .ppm-unit-photo-group .ppm-photo-grid{border:none;padding:5px}
-  #acm-root .ppm-photo-box{border:1px solid #94a3b8;border-radius:4px;overflow:hidden;display:flex;flex-direction:column;background:#f8fafc}
-  #acm-root .ppm-photo-head{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:2.5px 6px;background:#f1f5f9;border-bottom:1px solid #cbd5e1;font-size:9px}
-  #acm-root .ppm-photo-tag{font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1px 5px;border-radius:999px;font-size:8px}
-  #acm-root .ppm-tag-before{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
-  #acm-root .ppm-tag-cleaning{background:#e0f2fe;color:#075985;border:1px solid #7dd3fc}
-  #acm-root .ppm-tag-after{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
-  #acm-root .ppm-photo-ts{font-size:8px;color:#475569;font-family:ui-monospace,monospace;white-space:nowrap}
-  #acm-root .ppm-photo-stage{height:190px;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden}
-  #acm-root .ppm-photo-grid.cols-3 .ppm-photo-stage{height:175px}
-  #acm-root .ppm-photo-stage img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;cursor:zoom-in}
-  #acm-root .ppm-photo-empty{font-size:9px;color:#94a3b8;font-style:italic;text-align:center;padding:10px}
-  #acm-root .ppm-notes-box{min-height:52px;white-space:pre-wrap;line-height:1.4;font-size:10px;color:#0f172a;vertical-align:top}
-  #acm-root .ppm-sign-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #334155}
-  #acm-root .ppm-sign-cell{padding:8px 8px 6px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:66px;border-right:1px solid #334155;text-align:center}
-  #acm-root .ppm-sign-cell:last-child{border-right:none}
-  #acm-root .ppm-sign-name{font-size:10.5px;font-weight:800;color:#0f172a;min-height:18px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;line-height:1.25;margin-bottom:4px}
-  #acm-root .ppm-sign-line{width:92%;border-top:1px solid #0f172a;padding-top:3px;font-size:9px;font-weight:700;color:#334155}
-  #acm-root .ppm-doc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:5px;border-top:1px solid #cbd5e1;font-size:8.5px;color:#475569;margin-top:4px}
-  #acm-root .doc-footer-code{font-size:9px;font-weight:700;color:#1e293b;margin:0}
+  #ppm-root .doc-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+  #ppm-root .doc-scroll{overflow-x:auto;overflow-y:auto;background:#cbd5e1;padding:24px 14px;border-radius:12px;max-height:calc(100vh - 140px)}
+  #ppm-root .doc-scale-wrap{margin:0 auto;position:relative}
+  #ppm-root .doc-page{width:794px;min-height:1085px;margin:0 auto;background:#ffffff;padding:22px 26px 20px;font-family:Arial,Helvetica,sans-serif;color:#0f172a;font-size:10.5px;box-shadow:0 6px 24px rgba(15,23,42,.18);display:flex;flex-direction:column;justify-content:space-between;border-radius:2px}
+  #ppm-root .doc-page table{border-collapse:collapse;width:100%;table-layout:fixed}
+  #ppm-root .doc-page td,#ppm-root .doc-page th{border:1px solid #334155;padding:3.5px 6px;vertical-align:middle;font-size:10px;color:#0f172a;word-break:break-word}
+  #ppm-root .ppm-doc-top{display:flex;justify-content:space-between;align-items:stretch;gap:14px;padding-bottom:8px;border-bottom:2px solid #0f172a;margin-bottom:9px}
+  #ppm-root .ppm-doc-brand{flex:1;display:flex;flex-direction:column;justify-content:center}
+  #ppm-root .doc-header-title{font-size:16.5px;font-weight:800;letter-spacing:.02em;color:#0f172a;margin:0;text-transform:uppercase}
+  #ppm-root .doc-header-sub{font-size:11px;font-weight:700;color:#334155;margin:2px 0 5px}
+  #ppm-root .doc-memo-title{font-size:12px;font-weight:800;font-style:italic;color:#1e3a8a;margin:0 0 5px}
+  #ppm-root .ppm-doc-status-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  #ppm-root .ppm-doc-ctrl{width:268px;flex-shrink:0}
+  #ppm-root .ppm-doc-ctrl td{padding:3px 6px;font-size:9.5px}
+  #ppm-root .ppm-doc-ctrl .ctrl-lbl{width:44%;background:#f1f5f9;font-weight:700;color:#1e293b}
+  #ppm-root .ppm-doc-ctrl .ctrl-val{font-weight:700;text-align:center}
+  #ppm-root .ppm-sec{margin-bottom:8px}
+  #ppm-root .ppm-sec-bar{background:#f1f5f9;border:1px solid #334155;border-bottom:none;padding:3.5px 8px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#0f172a;display:flex;align-items:center;justify-content:space-between}
+  #ppm-root .ppm-sec-bar span.sec-num{color:#1d4ed8;margin-right:5px}
+  #ppm-root .ppm-lbl{background:#f8fafc;font-weight:700;color:#334155;font-size:9.5px}
+  #ppm-root .ppm-val{font-weight:600;color:#0f172a}
+  #ppm-root .ppm-chk-wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:1px 0}
+  #ppm-root .ppm-chk-item{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#1e293b}
+  #ppm-root .ppm-chk-item.checked{font-weight:800;color:#0f172a}
+  #ppm-root .doc-checkbox{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border:1.2px solid #0f172a;font-size:9px;font-weight:900;line-height:1;background:#fff;color:#0f172a}
+  #ppm-root .ppm-chk-item.checked .doc-checkbox{background:#dbeafe;border-color:#1e3a8a;color:#1e3a8a}
+  #ppm-root .ppm-photo-grid{display:grid;gap:7px;border:1px solid #334155;padding:6px;background:#ffffff}
+  #ppm-root .ppm-photo-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #ppm-root .ppm-photo-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #ppm-root .ppm-unit-photo-group{border:1px solid #334155;margin-bottom:6px;background:#fff}
+  #ppm-root .ppm-unit-photo-group:last-child{margin-bottom:0}
+  #ppm-root .ppm-unit-photo-subhead{background:#f8fafc;border-bottom:1px solid #cbd5e1;padding:3px 7px;font-size:9.5px;font-weight:800;color:#1e3a8a;display:flex;justify-content:space-between;align-items:center}
+  #ppm-root .ppm-unit-photo-group .ppm-photo-grid{border:none;padding:5px}
+  #ppm-root .ppm-photo-box{border:1px solid #94a3b8;border-radius:4px;overflow:hidden;display:flex;flex-direction:column;background:#f8fafc}
+  #ppm-root .ppm-photo-head{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:2.5px 6px;background:#f1f5f9;border-bottom:1px solid #cbd5e1;font-size:9px}
+  #ppm-root .ppm-photo-tag{font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:1px 5px;border-radius:999px;font-size:8px}
+  #ppm-root .ppm-tag-before{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+  #ppm-root .ppm-tag-cleaning{background:#e0f2fe;color:#075985;border:1px solid #7dd3fc}
+  #ppm-root .ppm-tag-after{background:#d1fae5;color:#065f46;border:1px solid #6ee7b7}
+  #ppm-root .ppm-photo-ts{font-size:8px;color:#475569;font-family:ui-monospace,monospace;white-space:nowrap}
+  #ppm-root .ppm-photo-stage{height:190px;display:flex;align-items:center;justify-content:center;background:#f8fafc;overflow:hidden}
+  #ppm-root .ppm-photo-grid.cols-3 .ppm-photo-stage{height:175px}
+  #ppm-root .ppm-photo-stage img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;cursor:zoom-in}
+  #ppm-root .ppm-photo-empty{font-size:9px;color:#94a3b8;font-style:italic;text-align:center;padding:10px}
+  #ppm-root .ppm-notes-box{min-height:52px;white-space:pre-wrap;line-height:1.4;font-size:10px;color:#0f172a;vertical-align:top}
+  #ppm-root .ppm-sign-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #334155}
+  #ppm-root .ppm-sign-cell{padding:8px 8px 6px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:66px;border-right:1px solid #334155;text-align:center}
+  #ppm-root .ppm-sign-cell:last-child{border-right:none}
+  #ppm-root .ppm-sign-name{font-size:10.5px;font-weight:800;color:#0f172a;min-height:18px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;line-height:1.25;margin-bottom:4px}
+  #ppm-root .ppm-sign-line{width:92%;border-top:1px solid #0f172a;padding-top:3px;font-size:9px;font-weight:700;color:#334155}
+  #ppm-root .ppm-doc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:5px;border-top:1px solid #cbd5e1;font-size:8.5px;color:#475569;margin-top:4px}
+  #ppm-root .doc-footer-code{font-size:9px;font-weight:700;color:#1e293b;margin:0}
   .tc{text-align:center} .b{font-weight:700}
 
   /* Mobile Polish */
   @media (max-width:720px){
-    #acm-root .wrap{padding:12px 10px 48px}
-    #acm-root .form-shell{padding:14px 12px 18px}
-    #acm-root .tabs{width:100%;justify-content:space-between}
-    #acm-root .tab-btn{flex:1;text-align:center;padding:8px 6px;font-size:.8rem}
-    #acm-root input[type=text],#acm-root input[type=date],#acm-root input[type=time],
-    #acm-root input[type=number],#acm-root textarea,#acm-root select,
-    #acm-root .dd-btn,#acm-root .dd-search,#acm-root select.recpick,#acm-root #acm-modal-input{
+    #ppm-root .wrap{padding:12px 10px 48px}
+    #ppm-root .form-shell{padding:14px 12px 18px}
+    #ppm-root .tabs{width:100%;justify-content:space-between}
+    #ppm-root .tab-btn{flex:1;text-align:center;padding:8px 6px;font-size:.8rem}
+    #ppm-root input[type=text],#ppm-root input[type=date],#ppm-root input[type=time],
+    #ppm-root input[type=number],#ppm-root textarea,#ppm-root select,
+    #ppm-root .dd-btn,#ppm-root .dd-search,#ppm-root select.recpick,#ppm-root #ppm-modal-input{
       font-size:16px
     }
-    #acm-root .status-tip-box{width:min(265px,82vw)}
-    #acm-root .doc-scroll{padding:12px 8px;overflow-x:hidden}
+    #ppm-root .status-tip-box{width:min(265px,82vw)}
+    #ppm-root .doc-scroll{padding:12px 8px;overflow-x:hidden}
   }
 
   /* App Update Notification Banner */
@@ -292,25 +292,47 @@
   #ppm-update-banner .upd-btn-later{border:1px solid #4b5563;background:transparent;color:#d1d5db;padding:7px 10px;border-radius:8px;font-size:.76rem;font-weight:700;cursor:pointer}
   #ppm-update-banner .upd-btn-later:hover{background:rgba(255,255,255,.08)}
 
+  /* Exit Confirmation Guard Modal & Toast */
+  #ppm-exit-overlay{position:fixed;inset:0;background:rgba(15,23,42,.72);z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .18s ease;backdrop-filter:blur(2px);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+  #ppm-exit-overlay.active{opacity:1;pointer-events:auto}
+  #ppm-exit-box{background:#ffffff;border:1px solid #e5e7eb;border-radius:14px;padding:20px 22px;width:94%;max-width:420px;box-shadow:0 16px 36px rgba(0,0,0,.24);color:#1f2937}
+  #ppm-exit-box.shake{animation:ppmShake .32s ease}
+  @keyframes ppmShake{0%,100%{transform:translateX(0)}22%{transform:translateX(-6px)}45%{transform:translateX(6px)}68%{transform:translateX(-4px)}85%{transform:translateX(4px)}}
+  #ppm-exit-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;font-size:.74rem;font-weight:800;margin-bottom:10px}
+  #ppm-exit-badge.warn{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+  #ppm-exit-badge.info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+  #ppm-exit-badge.neutral{background:#f3f4f6;color:#374151;border:1px solid #d1d5db}
+  #ppm-exit-title{font-size:1rem;font-weight:800;color:#111827;margin-bottom:8px}
+  #ppm-exit-msg{font-size:.84rem;color:#374151;line-height:1.5;margin-bottom:12px}
+  #ppm-exit-hint{font-size:.72rem;color:#b45309;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:6px 9px;margin-bottom:14px;display:none;font-weight:600}
+  #ppm-exit-hint.visible{display:block}
+  #ppm-exit-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+  #ppm-exit-actions button{border:none;padding:9px 14px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #ppm-exit-stay{background:#2563eb;color:#ffffff;flex:1}
+  #ppm-exit-stay:hover{background:#1d4ed8}
+  #ppm-exit-leave{background:#fee2e2;color:#dc2626}
+  #ppm-exit-leave:hover{background:#fca5a5}
+  #ppm-exit-toast{position:fixed;left:12px;right:12px;bottom:18px;max-width:440px;margin:0 auto;background:#111827;color:#f9fafb;border:1px solid #374151;border-radius:10px;padding:10px 14px;font-size:.78rem;font-weight:600;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.28);z-index:100001;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;animation:ppmFadeIn .2s ease}
+
   @media print{
     @page{size:A4 portrait;margin:8mm 9mm}
     body,html{margin:0;padding:0;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    #acm-root{background:#fff!important;min-height:0!important}
-    #acm-root .topbar,#acm-root .doc-toolbar,#acm-modal-overlay,#acm-lightbox-overlay,#ppm-update-banner{display:none!important}
-    #acm-root .wrap{padding:0!important;margin:0!important;max-width:none!important}
-    #acm-root .doc-scroll{padding:0!important;background:transparent!important;overflow:visible!important;max-height:none!important;border-radius:0!important}
-    #acm-root .doc-scale-wrap{width:100%!important;height:auto!important;margin:0!important}
-    #acm-root .doc-page{width:100%!important;min-height:0!important;box-shadow:none!important;margin:0!important;padding:0!important;transform:none!important}
+    #ppm-root{background:#fff!important;min-height:0!important}
+    #ppm-root .topbar,#ppm-root .doc-toolbar,#ppm-modal-overlay,#ppm-lightbox-overlay,#ppm-update-banner,#ppm-exit-overlay,#ppm-exit-toast{display:none!important}
+    #ppm-root .wrap{padding:0!important;margin:0!important;max-width:none!important}
+    #ppm-root .doc-scroll{padding:0!important;background:transparent!important;overflow:visible!important;max-height:none!important;border-radius:0!important}
+    #ppm-root .doc-scale-wrap{width:100%!important;height:auto!important;margin:0!important}
+    #ppm-root .doc-page{width:100%!important;min-height:0!important;box-shadow:none!important;margin:0!important;padding:0!important;transform:none!important}
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-<div id="acm-root"></div>
+<div id="ppm-root"></div>
 <script>
 (function () {
-  const ROOT = document.getElementById('acm-root');
+  const ROOT = document.getElementById('ppm-root');
   const STORE_KEY = 'ppm-records-v1';
   const DELETE_QUEUE_KEY = 'ppm-delete-queue-v1';
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyD85G0C_ZeJ7Mz2tnz4OilQVxeGEKMitIbEMQmvIC0njcwoeXXLN8h_t0Tyt3J35xg/exec";
@@ -379,7 +401,7 @@
   const RESULT_CAT = { testedOK:'Tested OK', modified:'Modified', pending:'Pending', temporary2:'Temporary', rectified:'Rectified', forceRun:'Force Run', kiv:'KIV' };
   const GROUP_OPTIONS = ['Shift A', 'Shift B', 'Shift C', 'Shift D', 'OH', 'Vendor'];
   const INSPECTION_METHODS = ['Touch', 'Visual', 'Hear', 'Smell'];
-  const TASKS_PERFORMED = ['Clean', 'Lubricate', 'Adjust/Tighten', 'Part Replacement', 'ACM Issued'];
+  const TASKS_PERFORMED = ['Clean', 'Lubricate', 'Adjust/Tighten', 'Part Replacement', 'ppm Issued'];
 
   // IndexedDB Storage Engine (Safe fallback if blocked in sandboxed preview)
   const OfflineDB = (function () {
@@ -691,17 +713,17 @@
     const type = typeof opts === 'string' ? opts : (opts.type || 'alert');
     const errorMode = typeof opts === 'object' ? Boolean(opts.errorMode) : false;
     return new Promise(resolve => {
-      let overlay = document.getElementById('acm-modal-overlay');
+      let overlay = document.getElementById('ppm-modal-overlay');
       if (!overlay) {
         overlay = document.createElement('div');
-        overlay.id = 'acm-modal-overlay';
-        overlay.innerHTML = `<div id="acm-modal-box"><div id="acm-modal-title"></div><div id="acm-modal-msg"></div><input type="password" id="acm-modal-input" placeholder="Enter password..." autocomplete="new-password"/><div id="acm-modal-actions"></div></div>`;
+        overlay.id = 'ppm-modal-overlay';
+        overlay.innerHTML = `<div id="ppm-modal-box"><div id="ppm-modal-title"></div><div id="ppm-modal-msg"></div><input type="password" id="ppm-modal-input" placeholder="Enter password..." autocomplete="new-password"/><div id="ppm-modal-actions"></div></div>`;
       }
       if (overlay.parentNode !== ROOT) ROOT.appendChild(overlay);
-      const titleEl = overlay.querySelector('#acm-modal-title');
-      const msgEl = overlay.querySelector('#acm-modal-msg');
-      const inputEl = overlay.querySelector('#acm-modal-input');
-      const actionsEl = overlay.querySelector('#acm-modal-actions');
+      const titleEl = overlay.querySelector('#ppm-modal-title');
+      const msgEl = overlay.querySelector('#ppm-modal-msg');
+      const inputEl = overlay.querySelector('#ppm-modal-input');
+      const actionsEl = overlay.querySelector('#ppm-modal-actions');
       titleEl.textContent = title;
       inputEl.style.display = type === 'prompt' ? 'block' : 'none';
       inputEl.value = '';
@@ -745,17 +767,17 @@
 
   function openImageLightbox(title, imgSrc) {
     if (!imgSrc) return;
-    let lb = document.getElementById('acm-lightbox-overlay');
+    let lb = document.getElementById('ppm-lightbox-overlay');
     if (!lb) {
       lb = document.createElement('div');
-      lb.id = 'acm-lightbox-overlay';
-      lb.innerHTML = `<div id="acm-lightbox-card"><div id="acm-lightbox-head"><span id="acm-lightbox-title"></span><button type="button" class="btn btn-ghost btn-sm" id="acm-lightbox-close">Close</button></div><div id="acm-lightbox-body"><img id="acm-lightbox-img" alt="Reference Preview"/></div></div>`;
+      lb.id = 'ppm-lightbox-overlay';
+      lb.innerHTML = `<div id="ppm-lightbox-card"><div id="ppm-lightbox-head"><span id="ppm-lightbox-title"></span><button type="button" class="btn btn-ghost btn-sm" id="ppm-lightbox-close">Close</button></div><div id="ppm-lightbox-body"><img id="ppm-lightbox-img" alt="Reference Preview"/></div></div>`;
       lb.addEventListener('click', (e) => { if (e.target === lb) lb.classList.remove('active'); });
-      lb.querySelector('#acm-lightbox-close').addEventListener('click', () => lb.classList.remove('active'));
+      lb.querySelector('#ppm-lightbox-close').addEventListener('click', () => lb.classList.remove('active'));
     }
     if (lb.parentNode !== ROOT) ROOT.appendChild(lb);
-    lb.querySelector('#acm-lightbox-title').textContent = title;
-    lb.querySelector('#acm-lightbox-img').src = imgSrc;
+    lb.querySelector('#ppm-lightbox-title').textContent = title;
+    lb.querySelector('#ppm-lightbox-img').src = imgSrc;
     lb.classList.add('active');
   }
 
@@ -939,7 +961,7 @@
     if (validOrActive.length > 0 && !state.activeId) state.activeId = validOrActive[0].createdAt;
 
     if (state.tab === 'dashboard') {
-      const content = ROOT.querySelector('#acm-content');
+      const content = ROOT.querySelector('#ppm-content');
       if (content && content.querySelector('#dash-kpi-grid')) {
         if (!state.userChangedDateFilter) {
           const { defStart, defEnd } = getDefaultDateBounds();
@@ -968,7 +990,7 @@
         state.cloudFetchError = ok ? null : (errType || 'network');
         finishRefreshIndicator();
         if (!ok && state.tab === 'dashboard') {
-          const content = ROOT.querySelector('#acm-content');
+          const content = ROOT.querySelector('#ppm-content');
           if (content && content.querySelector('#dash-kpi-grid')) updateDashboardUI(content);
         }
         resolve(ok);
@@ -1271,7 +1293,7 @@
         else if (checked.length === 1) span.textContent = checked[0].nextElementSibling?.textContent?.trim() || checked[0].value;
         else span.textContent = `${checked.length} selected`;
         state.tableLimit = 10;
-        const content = ROOT.querySelector('#acm-content');
+        const content = ROOT.querySelector('#ppm-content');
         if (content) updateDashboardUI(content);
       });
     });
@@ -1323,7 +1345,7 @@
     };
 
     // Category Chart (Exact sample_A vertical translucent blue bars)
-    const catCtx = container.querySelector('#acm-category-chart');
+    const catCtx = container.querySelector('#ppm-category-chart');
     if (catCtx) {
       const selCatNames = Array.from(document.querySelectorAll('input[name="dash-cat"]:checked')).map(cb => CATS2[cb.value]).filter(Boolean);
       const catArr = [];
@@ -1423,7 +1445,7 @@
       }
     };
 
-    const stCtx = container.querySelector('#acm-urgency-chart');
+    const stCtx = container.querySelector('#ppm-urgency-chart');
     if (stCtx) {
       const sCounts = { done: 0, progress: 0, open: 0 };
       recs.forEach(r => { const st = getStatus(r); if (sCounts[st] !== undefined) sCounts[st]++; });
@@ -1634,7 +1656,7 @@
             <button class="export-chart-btn" id="save-cat-btn" title="Save Section as JPEG"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>JPEG</button>
           </div>
           <div class="hint">Records count by category across filtered records</div>
-          <div style="height:230px;position:relative;width:100%"><canvas id="acm-category-chart"></canvas></div>
+          <div style="height:230px;position:relative;width:100%"><canvas id="ppm-category-chart"></canvas></div>
         </div>
         <div class="panel">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -1642,7 +1664,7 @@
             <button class="export-chart-btn" id="save-urg-btn" title="Save Section as JPEG"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>JPEG</button>
           </div>
           <div class="hint">Records count by status across filtered records</div>
-          <div style="height:230px;position:relative;width:100%"><canvas id="acm-urgency-chart"></canvas></div>
+          <div style="height:230px;position:relative;width:100%"><canvas id="ppm-urgency-chart"></canvas></div>
         </div>
       </div>
 
@@ -1842,7 +1864,7 @@
   }
 
   function refreshToolbarStatus(container, r) {
-    const box = container.querySelector('#acm-toolbar-status');
+    const box = container.querySelector('#ppm-toolbar-status');
     if (!box) return;
     box.innerHTML = `<span style="font-weight:700;color:#475569">Status:</span>${renderStatusChipHtml(r, true)}${r.isDraft ? `<span class="status-chip chip-open" style="border:1px dashed #94a3b8">Draft</span>` : ''}${!r.isDraft && r.syncPending ? `<span class="chip-sync">Pending Cloud Sync</span>` : ''}`;
   }
@@ -1915,14 +1937,14 @@
         <div class="form-toolbar">
           <div class="rec-select">
             <span style="font-weight:700">Report No.:</span>
-            <select class="recpick" id="acm-recpick">${options}</select>
-            <div class="toolbar-status-box" id="acm-toolbar-status"></div>
+            <select class="recpick" id="ppm-recpick">${options}</select>
+            <div class="toolbar-status-box" id="ppm-toolbar-status"></div>
           </div>
           <div class="btn-row">
-            <button type="button" class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button>
-            <button type="button" class="btn btn-danger" id="acm-del-btn">Delete ✘</button>
-            <button type="button" class="btn btn-primary" id="acm-submit-btn" style="background:var(--ok)">Submit ✔</button>
-            <button type="button" class="btn btn-primary" id="acm-view-btn">View Memo ➜</button>
+            <button type="button" class="btn btn-ghost" id="ppm-new-btn">✚ Add New Memo</button>
+            <button type="button" class="btn btn-danger" id="ppm-del-btn">Delete ✘</button>
+            <button type="button" class="btn btn-primary" id="ppm-submit-btn" style="background:var(--ok)">Submit ✔</button>
+            <button type="button" class="btn btn-primary" id="ppm-view-btn">View Memo ➜</button>
           </div>
         </div>
 
@@ -1961,20 +1983,20 @@
             <div class="unit-bar-head">
               <div class="unit-bar-title">Equipment No. List (${r.units.length} Unit${r.units.length === 1 ? '' : 's'})</div>
               <div class="unit-bar-actions">
-                <button type="button" class="btn btn-primary btn-sm" id="acm-add-unit-btn">✚ Add No.</button>
-                <button type="button" class="btn btn-ghost btn-sm" id="acm-range-unit-btn">⚡ Quick Add Range</button>
-                ${state.activeUnitIdx > 0 ? `<button type="button" class="btn btn-ghost btn-sm" id="acm-copy-prev-btn">📋 Copy from Prev</button>` : ''}
+                <button type="button" class="btn btn-primary btn-sm" id="ppm-add-unit-btn">✚ Add No.</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="ppm-range-unit-btn">⚡ Quick Add Range</button>
+                ${state.activeUnitIdx > 0 ? `<button type="button" class="btn btn-ghost btn-sm" id="ppm-copy-prev-btn">📋 Copy from Prev</button>` : ''}
               </div>
             </div>
             <div class="unit-pills">${unitPillsHtml}</div>
             <div class="grid g2">
-              <label class="f">No. (Active Unit)<input type="text" data-unit-field="equipNo" id="acm-unit-no-input" value="${esc(u.equipNo)}" list="dl-equip-no" autocomplete="off" placeholder="e.g. 01"/><datalist id="dl-equip-no">${noOptions.map(n => `<option value="${esc(n)}">${esc(n)} — ${esc(lineEquipMap[n] || '')}</option>`).join('')}${currentLine ? '<option value="OTHERS">OTHERS</option>' : ''}</datalist></label>
-              <label class="f">Conveyor/Item<input type="text" data-unit-field="conveyorItem" id="acm-unit-conv-input" value="${esc(u.conveyorItem)}" placeholder="Auto-filled from DB or enter item"/></label>
+              <label class="f">No. (Active Unit)<input type="text" data-unit-field="equipNo" id="ppm-unit-no-input" value="${esc(u.equipNo)}" list="dl-equip-no" autocomplete="off" placeholder="e.g. 01"/><datalist id="dl-equip-no">${noOptions.map(n => `<option value="${esc(n)}">${esc(n)} — ${esc(lineEquipMap[n] || '')}</option>`).join('')}${currentLine ? '<option value="OTHERS">OTHERS</option>' : ''}</datalist></label>
+              <label class="f">Conveyor/Item<input type="text" data-unit-field="conveyorItem" id="ppm-unit-conv-input" value="${esc(u.conveyorItem)}" placeholder="Auto-filled from DB or enter item"/></label>
             </div>
           </div>
         </div>
 
-        <div class="active-unit-banner" id="acm-active-unit-banner">
+        <div class="active-unit-banner" id="ppm-active-unit-banner">
           <span>Editing Unit ${state.activeUnitIdx + 1} of ${r.units.length}: <b>${esc([r.lineEquipment, u.equipNo].filter(Boolean).join(' - ') || 'Unspecified')}</b>${u.conveyorItem ? ' — ' + esc(u.conveyorItem) : ''}</span>
           <span style="font-weight:600;color:#475569">Category, Reference Image, Remarks &amp; Result apply to this No.</span>
         </div>
@@ -1989,7 +2011,7 @@
         <div class="sec" id="sec-ref-images">
           <div class="ref-sec-header">
             <div class="sec-title">Reference Image</div>
-            <button type="button" class="ref-cleaning-toggle-btn ${cleaningVisible ? 'active' : ''}" id="acm-toggle-cleaning-btn">${cleaningVisible ? '✓ Cleaning Photo Box Shown' : '✚ Add Cleaning Photo (Optional)'}</button>
+            <button type="button" class="ref-cleaning-toggle-btn ${cleaningVisible ? 'active' : ''}" id="ppm-toggle-cleaning-btn">${cleaningVisible ? '✓ Cleaning Photo Box Shown' : '✚ Add Cleaning Photo (Optional)'}</button>
           </div>
           <div class="ref-img-grid">
             ${renderRefImageCard('before', 'Before', 'badge-before', u.beforeImage, u.beforeImageDate, u.beforeImageTime)}
@@ -2052,8 +2074,8 @@
 
         <div class="form-toolbar" style="justify-content:flex-end;margin-top:14px;margin-bottom:0">
           <div class="btn-row">
-            <button type="button" class="btn btn-primary" id="acm-submit-btn-bottom" style="background:var(--ok)">Submit ✔</button>
-            <button type="button" class="btn btn-primary" id="acm-view-btn-bottom">View Memo ➜</button>
+            <button type="button" class="btn btn-primary" id="ppm-submit-btn-bottom" style="background:var(--ok)">Submit ✔</button>
+            <button type="button" class="btn btn-primary" id="ppm-view-btn-bottom">View Memo ➜</button>
           </div>
         </div>
       </div>
@@ -2063,7 +2085,7 @@
     updateInputHighlights(container, r, u);
 
     // Report No. Picker
-    container.querySelector('#acm-recpick').addEventListener('change', async (e) => {
+    container.querySelector('#ppm-recpick').addEventListener('change', async (e) => {
       const nextId = String(e.target.value);
       if (await wrapUnsaved()) {
         state.showErrors = false;
@@ -2077,7 +2099,7 @@
     });
 
     // Add New Memo
-    container.querySelector('#acm-new-btn').addEventListener('click', async () => {
+    container.querySelector('#ppm-new-btn').addEventListener('click', async () => {
       if (await wrapUnsaved()) {
         if (!navigator.onLine) await notifyOfflineEntry(true);
         const nr = blankRecord();
@@ -2093,7 +2115,7 @@
     });
 
     // Delete Memo
-    container.querySelector('#acm-del-btn').addEventListener('click', async () => {
+    container.querySelector('#ppm-del-btn').addEventListener('click', async () => {
       if (!await showModal("Confirm Deletion", "Delete this record? This cannot be undone.", "confirm")) return;
       const pass = await showModal("Authorization", "Password required to delete this record:", "prompt");
       if (pass === 'KLIA123!') {
@@ -2123,8 +2145,8 @@
 
     // View Memo
     const goViewMemo = async () => { if (await wrapUnsaved()) { state.tab = 'document'; render(); } };
-    container.querySelector('#acm-view-btn').addEventListener('click', goViewMemo);
-    container.querySelector('#acm-view-btn-bottom').addEventListener('click', goViewMemo);
+    container.querySelector('#ppm-view-btn').addEventListener('click', goViewMemo);
+    container.querySelector('#ppm-view-btn-bottom').addEventListener('click', goViewMemo);
 
     // Parent Field Listeners (including Confirmed By 6-digit PIN)
     container.querySelectorAll('[data-field]').forEach(el => {
@@ -2151,7 +2173,7 @@
           }
           if (map && u.equipNo && map[u.equipNo]) {
             u.conveyorItem = map[u.equipNo];
-            const convInp = container.querySelector('#acm-unit-conv-input');
+            const convInp = container.querySelector('#ppm-unit-conv-input');
             if (convInp) convInp.value = u.conveyorItem;
           }
         }
@@ -2177,7 +2199,7 @@
     });
 
     // Multi-Unit Controls: Add No., Quick Add Range, Copy from Prev, Switch/Remove Pill
-    container.querySelector('#acm-add-unit-btn').addEventListener('click', () => {
+    container.querySelector('#ppm-add-unit-btn').addEventListener('click', () => {
       state.isDirty = true;
       const nextNo = suggestNextEquipNo(r);
       const nextConv = (r.lineEquipment && nextNo && EQUIP_DB[r.lineEquipment] && EQUIP_DB[r.lineEquipment][nextNo]) ? EQUIP_DB[r.lineEquipment][nextNo] : '';
@@ -2186,10 +2208,10 @@
       syncParentSummary(r);
       saveRecords();
       renderInput(container);
-      setTimeout(() => container.querySelector('#acm-unit-no-input')?.focus(), 30);
+      setTimeout(() => container.querySelector('#ppm-unit-no-input')?.focus(), 30);
     });
 
-    container.querySelector('#acm-range-unit-btn').addEventListener('click', async () => {
+    container.querySelector('#ppm-range-unit-btn').addEventListener('click', async () => {
       const rangeStr = await showModal("Quick Add Equipment No. Range", "Enter a range (e.g. 01-05) or comma-separated numbers (e.g. 01, 02, 03):", "prompt");
       if (!rangeStr || !rangeStr.trim()) return;
       const toAdd = [];
@@ -2224,7 +2246,7 @@
       renderInput(container);
     });
 
-    container.querySelector('#acm-copy-prev-btn')?.addEventListener('click', () => {
+    container.querySelector('#ppm-copy-prev-btn')?.addEventListener('click', () => {
       if (state.activeUnitIdx <= 0) return;
       const prev = r.units[state.activeUnitIdx - 1];
       state.isDirty = true;
@@ -2277,11 +2299,11 @@
           const map = (r.lineEquipment && EQUIP_DB[r.lineEquipment]) ? EQUIP_DB[r.lineEquipment] : null;
           if (el.value === 'OTHERS') u.conveyorItem = 'OTHERS';
           else if (map && map[el.value]) u.conveyorItem = map[el.value];
-          const convInp = container.querySelector('#acm-unit-conv-input');
+          const convInp = container.querySelector('#ppm-unit-conv-input');
           if (convInp && map && map[el.value]) convInp.value = u.conveyorItem;
           const activePill = container.querySelector(`[data-unit-tab="${state.activeUnitIdx}"] span`);
           if (activePill) activePill.textContent = `● ${u.equipNo ? 'No. ' + u.equipNo : 'Unit ' + (state.activeUnitIdx + 1)}`;
-          const banner = container.querySelector('#acm-active-unit-banner b');
+          const banner = container.querySelector('#ppm-active-unit-banner b');
           if (banner) banner.textContent = [r.lineEquipment, u.equipNo].filter(Boolean).join(' - ') || 'Unspecified';
         }
         syncParentSummary(r);
@@ -2363,7 +2385,7 @@
     }
 
     // Reference Images (Per Active Unit)
-    container.querySelector('#acm-toggle-cleaning-btn')?.addEventListener('click', () => {
+    container.querySelector('#ppm-toggle-cleaning-btn')?.addEventListener('click', () => {
       if (u.cleaningImage) return openImageLightbox('Cleaning Reference Image', u.cleaningImage);
       u.showCleaningBox = !u.showCleaningBox;
       saveRecords();
@@ -2478,7 +2500,7 @@
         state.tab = 'document'; render(); return;
       }
 
-      const submitBtns = [container.querySelector('#acm-submit-btn'), container.querySelector('#acm-submit-btn-bottom')].filter(Boolean);
+      const submitBtns = [container.querySelector('#ppm-submit-btn'), container.querySelector('#ppm-submit-btn-bottom')].filter(Boolean);
       submitBtns.forEach(b => { b.textContent = 'Saving... ⏳'; b.disabled = true; });
       try {
         await postPayloadWithTimeout({ ...r, syncPending: false }, 25000);
@@ -2495,8 +2517,8 @@
       }
     };
 
-    container.querySelector('#acm-submit-btn').addEventListener('click', handleSubmit);
-    container.querySelector('#acm-submit-btn-bottom').addEventListener('click', handleSubmit);
+    container.querySelector('#ppm-submit-btn').addEventListener('click', handleSubmit);
+    container.querySelector('#ppm-submit-btn-bottom').addEventListener('click', handleSubmit);
   }
 
   // ==================== MEMO VIEW TAB ====================
@@ -2744,17 +2766,17 @@
       <div class="doc-toolbar">
         <div class="rec-select">
           <span class="b">Viewing:</span>
-          <select class="recpick" id="acm-doc-recpick">${options}</select>
+          <select class="recpick" id="ppm-doc-recpick">${options}</select>
         </div>
         <div class="btn-row">
-          <button type="button" class="btn btn-ghost" id="acm-edit-btn">← Edit this record</button>
-          <button type="button" class="btn btn-ghost" id="acm-doc-jpeg-btn">Save as JPEG</button>
-          <button type="button" class="btn btn-primary" id="acm-print-btn">Print / Save as PDF</button>
+          <button type="button" class="btn btn-ghost" id="ppm-edit-btn">← Edit this record</button>
+          <button type="button" class="btn btn-ghost" id="ppm-doc-jpeg-btn">Save as JPEG</button>
+          <button type="button" class="btn btn-primary" id="ppm-print-btn">Print / Save as PDF</button>
         </div>
       </div>
-      <div class="doc-scroll" id="acm-doc-scroll">
-        <div class="doc-scale-wrap" id="acm-doc-scale-wrap">
-          <div class="doc-page" id="acm-doc-page">
+      <div class="doc-scroll" id="ppm-doc-scroll">
+        <div class="doc-scale-wrap" id="ppm-doc-scale-wrap">
+          <div class="doc-page" id="ppm-doc-page">
             <div>
               <div class="ppm-doc-top">
                 <div class="ppm-doc-brand">
@@ -2790,9 +2812,9 @@
 
     // Auto-scale A4 Memo View on narrow phone screens
     const scaleMemoView = () => {
-      const scrollEl = container.querySelector('#acm-doc-scroll');
-      const wrapEl = container.querySelector('#acm-doc-scale-wrap');
-      const pageEl = container.querySelector('#acm-doc-page');
+      const scrollEl = container.querySelector('#ppm-doc-scroll');
+      const wrapEl = container.querySelector('#ppm-doc-scale-wrap');
+      const pageEl = container.querySelector('#ppm-doc-page');
       if (!scrollEl || !wrapEl || !pageEl) return;
       const availW = scrollEl.clientWidth - 16;
       if (availW > 0 && availW < 794) {
@@ -2810,7 +2832,7 @@
     };
     window._ppmScaleMemoView = scaleMemoView;
     requestAnimationFrame(scaleMemoView);
-    container.querySelectorAll('#acm-doc-page img').forEach(imgEl => imgEl.addEventListener('load', scaleMemoView));
+    container.querySelectorAll('#ppm-doc-page img').forEach(imgEl => imgEl.addEventListener('load', scaleMemoView));
 
     container.querySelectorAll('[data-doc-slot]').forEach(imgEl => {
       imgEl.addEventListener('click', () => {
@@ -2823,22 +2845,22 @@
       });
     });
 
-    container.querySelector('#acm-doc-recpick').addEventListener('change', (e) => {
+    container.querySelector('#ppm-doc-recpick').addEventListener('change', (e) => {
       state.activeId = String(e.target.value);
       state.activeUnitIdx = 0;
       render();
     });
-    container.querySelector('#acm-edit-btn').addEventListener('click', () => { state.tab = 'input'; render(); });
-    container.querySelector('#acm-print-btn').addEventListener('click', () => window.print());
+    container.querySelector('#ppm-edit-btn').addEventListener('click', () => { state.tab = 'input'; render(); });
+    container.querySelector('#ppm-print-btn').addEventListener('click', () => window.print());
 
-    container.querySelector('#acm-doc-jpeg-btn').addEventListener('click', async () => {
+    container.querySelector('#ppm-doc-jpeg-btn').addEventListener('click', async () => {
       if (typeof window.html2canvas === 'undefined') {
         showModal("Notice", "Export library is still loading. Please try again in a moment.");
         return;
       }
-      const pageEl = container.querySelector('#acm-doc-page');
-      const wrapEl = container.querySelector('#acm-doc-scale-wrap');
-      const jpegBtn = container.querySelector('#acm-doc-jpeg-btn');
+      const pageEl = container.querySelector('#ppm-doc-page');
+      const wrapEl = container.querySelector('#ppm-doc-scale-wrap');
+      const jpegBtn = container.querySelector('#ppm-doc-jpeg-btn');
       const origTxt = jpegBtn.textContent;
       jpegBtn.textContent = 'Preparing photos...';
       jpegBtn.disabled = true;
@@ -2893,7 +2915,7 @@
             </div>
           </div>
         </div>
-        <div id="acm-content"></div>
+        <div id="ppm-content"></div>
       </div>`;
 
     updateNetworkBadge();
@@ -2907,7 +2929,7 @@
       });
     });
 
-    const content = ROOT.querySelector('#acm-content');
+    const content = ROOT.querySelector('#ppm-content');
     if (!state.loaded) {
       content.innerHTML = `<div class="empty-state">Loading records…</div>`;
       return;
@@ -2961,13 +2983,249 @@
       const nowMobileChart = window.innerWidth <= 640;
       if (state.tab === 'dashboard' && nowMobileChart !== lastMobileChart) {
         lastMobileChart = nowMobileChart;
-        const content = ROOT.querySelector('#acm-content');
-        if (content && content.querySelector('#acm-urgency-chart')) {
+        const content = ROOT.querySelector('#ppm-content');
+        if (content && content.querySelector('#ppm-urgency-chart')) {
           renderDashboardCharts(content, getFilteredDashboardRecords());
         }
       }
     }, 150);
   });
+
+  // ==================== EXIT & BACK-BUTTON PROTECTION ====================
+  const exitGuard = {
+    depth: 0,
+    maxDepth: 3,
+    lastArmTs: 0,
+    modalOpen: false,
+    allowExit: false,
+    toastTimer: null
+  };
+
+  function hideExitToast() {
+    if (exitGuard.toastTimer) { clearTimeout(exitGuard.toastTimer); exitGuard.toastTimer = null; }
+    document.getElementById('ppm-exit-toast')?.remove();
+  }
+
+  function showExitToast(msg) {
+    hideExitToast();
+    const toast = document.createElement('div');
+    toast.id = 'ppm-exit-toast';
+    toast.setAttribute('role', 'status');
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    exitGuard.toastTimer = setTimeout(hideExitToast, 4500);
+  }
+
+  function armExitGuard(isUserGesture = false) {
+    if (!window.history || typeof window.history.pushState !== 'function') return;
+    if (isUserGesture && exitGuard.allowExit) {
+      exitGuard.allowExit = false;
+      hideExitToast();
+    }
+    if (exitGuard.allowExit) return;
+
+    const now = Date.now();
+    try {
+      if (!isUserGesture) {
+        if (exitGuard.depth === 0) {
+          history.replaceState({ ppmGuard: 'base', depth: 0 }, '', window.location.href);
+          history.pushState({ ppmGuard: 'trap', depth: 1 }, '', window.location.href);
+          exitGuard.depth = 1;
+          exitGuard.lastArmTs = now;
+        }
+        return;
+      }
+      // On real user gestures, maintain up to 3 user-activated guard states so rapid
+      // accidental Back taps on Android/iOS Chrome are all intercepted cleanly.
+      if (exitGuard.depth < exitGuard.maxDepth && (exitGuard.depth < 1 || (now - exitGuard.lastArmTs) > 300)) {
+        exitGuard.depth += 1;
+        history.pushState({ ppmGuard: 'trap', depth: exitGuard.depth }, '', window.location.href);
+        exitGuard.lastArmTs = now;
+      }
+    } catch (_) {}
+  }
+
+  function closeExitModal(rearm = true) {
+    const overlay = document.getElementById('ppm-exit-overlay');
+    if (overlay) overlay.classList.remove('active');
+    exitGuard.modalOpen = false;
+    if (rearm) armExitGuard(true);
+  }
+
+  function openExitModal() {
+    let overlay = document.getElementById('ppm-exit-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'ppm-exit-overlay';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.innerHTML = `
+        <div id="ppm-exit-box">
+          <div id="ppm-exit-badge"></div>
+          <div id="ppm-exit-title"></div>
+          <div id="ppm-exit-msg"></div>
+          <div id="ppm-exit-hint"></div>
+          <div id="ppm-exit-actions">
+            <button type="button" id="ppm-exit-leave">Exit App</button>
+            <button type="button" id="ppm-exit-stay">Stay in App</button>
+          </div>
+        </div>`;
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeExitModal(true);
+      });
+      document.body.appendChild(overlay);
+    }
+
+    const box = overlay.querySelector('#ppm-exit-box');
+    const badge = overlay.querySelector('#ppm-exit-badge');
+    const titleEl = overlay.querySelector('#ppm-exit-title');
+    const msgEl = overlay.querySelector('#ppm-exit-msg');
+    const hintEl = overlay.querySelector('#ppm-exit-hint');
+    const stayBtn = overlay.querySelector('#ppm-exit-stay');
+    const leaveBtn = overlay.querySelector('#ppm-exit-leave');
+
+    const activeRec = getActive();
+    const inMemoDetails = state.tab === 'input';
+    const hasUnsavedWork = Boolean(state.isDirty || (inMemoDetails && activeRec && activeRec.isDraft));
+    const pendingUploads = getPendingCount();
+
+    hintEl.classList.remove('visible');
+    hintEl.textContent = '';
+
+    if (state.isSyncing) {
+      badge.className = 'warn';
+      badge.textContent = '⏳ Cloud Sync In Progress';
+      titleEl.textContent = 'Wait Before Exiting?';
+      msgEl.innerHTML = 'Your PPM records are currently uploading to Google Sheets &amp; Drive. Leaving now may interrupt the sync.';
+      stayBtn.textContent = 'Stay & Finish Sync';
+      leaveBtn.textContent = 'Exit Anyway';
+    } else if (inMemoDetails && hasUnsavedWork) {
+      const repLabel = activeRec && activeRec.reportNo ? `BHS/PPM ${esc(activeRec.reportNo)}` : 'your current memo';
+      badge.className = 'warn';
+      badge.textContent = '⚠️ Unsaved Work in Memo Details';
+      titleEl.textContent = 'Finish Your Memo Before Exiting?';
+      msgEl.innerHTML = `You are currently working on <b>${repLabel}</b> in <b>Memo Details</b> and have not tapped <b>Submit ✔</b> yet.<br><br>Stay in the app to complete and submit your entry.`;
+      stayBtn.textContent = 'Stay & Continue Memo';
+      leaveBtn.textContent = 'Exit App';
+    } else if (inMemoDetails) {
+      badge.className = 'info';
+      badge.textContent = '📝 Memo Details Open';
+      titleEl.textContent = 'Exit BHS PPM Dashboard?';
+      msgEl.innerHTML = 'You are currently in the <b>Memo Details</b> tab. Tap <b>Stay &amp; Continue</b> to keep working, or <b>Exit App</b> if you meant to leave.';
+      stayBtn.textContent = 'Stay & Continue';
+      leaveBtn.textContent = 'Exit App';
+    } else if (pendingUploads > 0) {
+      badge.className = 'warn';
+      badge.textContent = `📡 ${pendingUploads} Record(s) Pending Sync`;
+      titleEl.textContent = 'Exit BHS PPM Dashboard?';
+      msgEl.innerHTML = `You still have <b>${pendingUploads}</b> offline record(s) waiting to sync to Google Sheets. Are you sure you want to exit?`;
+      stayBtn.textContent = 'Stay in App';
+      leaveBtn.textContent = 'Exit App';
+    } else {
+      badge.className = 'neutral';
+      badge.textContent = '🛡️ Accidental Exit Guard';
+      titleEl.textContent = 'Exit BHS PPM Dashboard?';
+      msgEl.innerHTML = 'You pressed the Back button. Do you want to stay in the dashboard or exit the app?';
+      stayBtn.textContent = 'Stay in App';
+      leaveBtn.textContent = 'Exit App';
+    }
+
+    stayBtn.onclick = () => closeExitModal(true);
+    leaveBtn.onclick = () => {
+      closeExitModal(false);
+      saveRecords();
+      exitGuard.allowExit = true;
+      const curDepth = (history.state && typeof history.state.depth === 'number') ? history.state.depth : exitGuard.depth;
+      const stepsBack = -(curDepth + 1);
+      try { history.go(stepsBack); } catch (_) {}
+      setTimeout(() => { try { window.close(); } catch (_) {} }, 180);
+      // Fallback for iOS standalone PWA / single-tab browsers where JS cannot force-close the window
+      setTimeout(() => {
+        if (document.visibilityState === 'visible') {
+          showExitToast('Exit unlocked — swipe up or close this browser tab safely.');
+        }
+      }, 550);
+    };
+
+    exitGuard.modalOpen = true;
+    box.classList.remove('shake');
+    void overlay.offsetWidth;
+    overlay.classList.add('active');
+    setTimeout(() => stayBtn.focus(), 40);
+  }
+
+  ['pointerdown', 'keydown'].forEach((evtName) => {
+    document.addEventListener(evtName, (e) => {
+      if (e.target && e.target.closest && e.target.closest('#ppm-exit-overlay')) return;
+      armExitGuard(true);
+    }, { passive: true, capture: true });
+  });
+
+  window.addEventListener('popstate', (e) => {
+    if (exitGuard.allowExit) return;
+
+    const landedDepth = (e.state && typeof e.state.depth === 'number') ? e.state.depth : 0;
+    exitGuard.depth = landedDepth;
+
+    // Immediately re-anchor history synchronously so rapid back-button taps cannot force-exit
+    try {
+      exitGuard.depth = landedDepth + 1;
+      history.pushState({ ppmGuard: 'trap', depth: exitGuard.depth }, '', window.location.href);
+    } catch (_) {}
+
+    // 1. Close enlarged photo lightbox first if open
+    const lb = document.getElementById('ppm-lightbox-overlay');
+    if (lb && lb.classList.contains('active')) {
+      lb.classList.remove('active');
+      return;
+    }
+
+    // 2. Close any open multi-select dropdown menu first
+    const openMenus = document.querySelectorAll('.dd-menu.open');
+    if (openMenus.length > 0) {
+      openMenus.forEach(m => m.classList.remove('open'));
+      return;
+    }
+
+    // 3. Do not interrupt another active confirmation/PIN modal
+    const activeModal = document.getElementById('ppm-modal-overlay');
+    if (activeModal && activeModal.classList.contains('active')) {
+      return;
+    }
+
+    // 4. If Exit Confirmation is already visible, swallow repeated accidental Back taps
+    if (exitGuard.modalOpen) {
+      const box = document.getElementById('ppm-exit-box');
+      const hint = document.getElementById('ppm-exit-hint');
+      if (hint) {
+        hint.textContent = 'Back button locked — tap "Stay" to keep working, or tap "Exit App" to leave.';
+        hint.classList.add('visible');
+      }
+      if (box) {
+        box.classList.remove('shake');
+        void box.offsetWidth;
+        box.classList.add('shake');
+      }
+      return;
+    }
+
+    // 5. Show Exit Confirmation Notification
+    openExitModal();
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (exitGuard.allowExit) return;
+    const activeRec = getActive();
+    const workingInMemo = state.tab === 'input' && (state.isDirty || (activeRec && activeRec.isDraft));
+    if (workingInMemo || state.isSyncing) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  window._ppmAllowExitForReload = function () {
+    exitGuard.allowExit = true;
+  };
 
   window._ppmCanApplyUpdate = async function () {
     if (state.isSyncing) {
@@ -2977,9 +3235,11 @@
     if (state.tab === 'input' && state.isDirty) {
       return await wrapUnsaved();
     }
+    exitGuard.allowExit = true;
     return true;
   };
 
+  armExitGuard(false);
   render();
   loadRecords();
 })();
@@ -2987,7 +3247,7 @@
 <script>
 (function initAppUpdater() {
   // Bump APP_VERSION to match version.json and CACHE_NAME in sw.js on every release
-  const APP_VERSION = '1.0.1';
+  const APP_VERSION = '1.0.2';
   let waitingWorker = null;
   let swRegistration = null;
   let reloading = false;
@@ -3041,6 +3301,7 @@
       const forceReload = async () => {
         if (reloading) return;
         reloading = true;
+        if (typeof window._ppmAllowExitForReload === 'function') window._ppmAllowExitForReload();
         try {
           if ('caches' in window) {
             const keys = await caches.keys();
@@ -3101,6 +3362,7 @@
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (reloading) return;
       reloading = true;
+      if (typeof window._ppmAllowExitForReload === 'function') window._ppmAllowExitForReload();
       window.location.reload();
     });
 

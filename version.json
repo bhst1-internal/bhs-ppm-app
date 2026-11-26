@@ -1,4 +1,4 @@
 {
-  "version": "1.0.1",
-  "notes": "Improved mobile Chrome cloud sync reliability and added in-app update notifications."
+  "version": "1.0.2",
+  "notes": "Added accidental back-button exit protection and confirmation dialog to safeguard Memo Details work."
 }
