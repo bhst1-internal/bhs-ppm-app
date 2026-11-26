@@ -167,23 +167,28 @@
   #acm-root .ref-cleaning-toggle-btn.active{border-style:solid;border-color:#0284c7;background:#e0f2fe;color:#075985}
   #acm-root .ref-img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
   @media (max-width:720px){#acm-root .ref-img-grid{grid-template-columns:1fr}}
-  #acm-root .ref-img-card{border:1px solid var(--line);border-radius:10px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:all .2s}
+  #acm-root .ref-img-card{border:1px solid var(--line);border-radius:10px;background:var(--input-bg);overflow:hidden;display:flex;flex-direction:column;transition:all .2s;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  #acm-root .ref-img-card:hover{border-color:#cbd5e1;box-shadow:0 4px 12px rgba(15,23,42,.06)}
   #acm-root .ref-img-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--paper);border-bottom:1px solid var(--line)}
   #acm-root .ref-img-badge{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center}
   #acm-root .badge-before{background:#fef3c7;color:#b45309;border:1px solid #fde68a}
   #acm-root .badge-cleaning{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
   #acm-root .badge-after{background:#d1fae5;color:#047857;border:1px solid #a7f3d0}
-  #acm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-weight:600;font-family:ui-monospace,monospace}
-  #acm-root .ref-img-stage{position:relative;height:205px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  #acm-root .ref-img-meta{font-size:.68rem;color:var(--text-sec);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  #acm-root .ref-img-stage{position:relative;height:210px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
   #acm-root .ref-img-preview{width:100%;height:100%;object-fit:contain;display:block;background:#0f172a}
-  #acm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;color:var(--text-sec)}
-  #acm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+  #acm-root .ref-img-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:18px;text-align:center;color:var(--text-sec);transition:transform .15s}
+  #acm-root .ref-img-stage:hover .ref-img-empty{transform:translateY(-2px)}
+  #acm-root .ref-cam-circle{width:46px;height:46px;border-radius:999px;background:#dbeafe;color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px;box-shadow:0 2px 6px rgba(37,99,235,.15)}
   #acm-root .ref-img-empty-title{font-size:.8rem;font-weight:700;color:var(--ink)}
   #acm-root .ref-img-empty-sub{font-size:.7rem;color:var(--text-sec)}
   #acm-root .ref-img-footer{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--paper);border-top:1px solid var(--line)}
-  #acm-root .ref-img-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 10px;border-radius:7px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);font-size:.73rem;font-weight:700;cursor:pointer}
+  #acm-root .ref-img-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 10px;border-radius:7px;border:1px solid var(--line);background:var(--input-bg);color:var(--ink-light);font-size:.73rem;font-weight:700;cursor:pointer;transition:all .15s}
+  #acm-root .ref-img-btn:hover{background:var(--line);color:var(--ink)}
   #acm-root .ref-img-btn.cam{background:var(--accent);border-color:var(--accent);color:#fff}
+  #acm-root .ref-img-btn.cam:hover{background:var(--accent-2);border-color:var(--accent-2)}
   #acm-root .ref-img-btn.del{color:var(--crit);background:#fef2f2;border-color:#fecaca}
+  #acm-root .ref-img-btn.del:hover{background:#fee2e2}
 
   /* Modals & Lightbox */
   #acm-root #acm-modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.7);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease;backdrop-filter:blur(2px)}
@@ -522,12 +527,20 @@
         resultDetail: r.resultDetail || ''
       }];
     } else {
-      r.units = r.units.map(u => ({
-        ...blankUnit(),
-        ...u,
-        cat2: (u && u.cat2 && typeof u.cat2 === 'object') ? u.cat2 : {},
-        showCleaningBox: Boolean(u && (u.showCleaningBox || u.cleaningImage))
-      }));
+      // Mutate missing default fields in-place so active unit references stay intact
+      const defaults = blankUnit();
+      for (let i = 0; i < r.units.length; i++) {
+        const u = r.units[i];
+        if (!u || typeof u !== 'object') {
+          r.units[i] = blankUnit();
+          continue;
+        }
+        for (const k in defaults) {
+          if (u[k] === undefined) u[k] = defaults[k];
+        }
+        if (!u.cat2 || typeof u.cat2 !== 'object') u.cat2 = {};
+        if (u.cleaningImage) u.showCleaningBox = true;
+      }
     }
     return r;
   }
@@ -1636,17 +1649,26 @@
         <span class="ref-img-badge ${badgeCls}">${label}</span>
         <div style="display:flex;align-items:center;gap:6px">
           <span class="ref-img-meta" data-ref-meta="${slot}">${esc(metaText)}</span>
-          ${canHide ? `<button type="button" data-cam-hide="${slot}" title="Hide Cleaning box" style="border:none;background:transparent;color:var(--text-sec);font-size:.75rem;font-weight:800;cursor:pointer;padding:0 3px">✕</button>` : ''}
+          ${canHide ? `<button type="button" data-cam-hide="${slot}" title="Hide Cleaning box" style="border:none;background:transparent;color:var(--text-sec);font-size:.75rem;font-weight:800;cursor:pointer;padding:0 3px;line-height:1">✕</button>` : ''}
         </div>
       </div>
-      <div class="ref-img-stage" data-ref-stage="${slot}" title="${hasImg ? 'Tap to enlarge' : 'Tap to open camera'}">
+      <div class="ref-img-stage" data-ref-stage="${slot}" title="${hasImg ? 'Tap to enlarge photo' : 'Tap to open camera'}">
         ${hasImg
           ? `<img class="ref-img-preview" src="${esc(imgData)}" alt="${label} Reference"/>`
-          : `<div class="ref-img-empty"><div class="ref-cam-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></div><div class="ref-img-empty-title">Capture "${label}" Photo</div><div class="ref-img-empty-sub">Tap to launch device camera</div></div>`}
+          : `<div class="ref-img-empty">
+               <div class="ref-cam-circle">
+                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+               </div>
+               <div class="ref-img-empty-title">Capture "${label}" Photo</div>
+               <div class="ref-img-empty-sub">Tap to launch device camera</div>
+             </div>`}
       </div>
       <input type="file" accept="image/*" capture="environment" data-cam-input="${slot}" style="display:none"/>
       <div class="ref-img-footer">
-        <button type="button" class="ref-img-btn cam" data-cam-trigger="${slot}">${hasImg ? 'Retake' : 'Take Photo'}</button>
+        <button type="button" class="ref-img-btn cam" data-cam-trigger="${slot}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+          ${hasImg ? 'Retake' : 'Take Photo'}
+        </button>
         ${hasImg ? `<button type="button" class="ref-img-btn" data-cam-zoom="${slot}">Zoom</button><button type="button" class="ref-img-btn del" data-cam-clear="${slot}">Clear</button>` : ''}
       </div>
     </div>`;
