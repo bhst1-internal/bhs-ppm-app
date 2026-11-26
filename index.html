@@ -613,7 +613,7 @@
     isSyncing: false,
     cloudNotice: '',
     charts: { cat: null, status: null },
-    filters: { start: '', end: '', insp: [], status: [], cat: [], line: '', conveyor: '' }
+    filters: { start: '', end: '', insp: [], task: [], status: [], cat: [], line: '', conveyor: '' }
   };
 
   // Modal Engine (zero alert/confirm/prompt usage)
@@ -1086,6 +1086,7 @@
       const t = getTs(r.happeningDate);
       if ((f.start || f.end) && (!t || t < startTs || t >= endTs)) return false;
       if (f.insp.length && !units.some(u => f.insp.includes(u.inspectionMethod || ''))) return false;
+      if (f.task.length && !units.some(u => parseMultiList(u.taskPerformed).some(tk => f.task.includes(tk)))) return false;
       if (f.status.length && !f.status.includes(getStatusKey(r))) return false;
       if (f.cat.length && !units.some(u => f.cat.some(c => u.cat2 && u.cat2[c]))) return false;
       if (lineQ) {
@@ -1379,6 +1380,12 @@
               <div class="dd-menu">${INSPECTION_METHODS.map(m => `<label class="chk"><input type="checkbox" value="${escapeHtml(m)}" data-label="${escapeHtml(m)}" ${state.filters.insp.includes(m) ? 'checked' : ''}/> <span>${escapeHtml(m)}</span></label>`).join('')}</div>
             </div>
           </label>
+          <label class="f">Task Performed
+            <div class="dd-wrapper" id="dd-task-filter-wrapper">
+              <button type="button" class="dd-btn">All</button>
+              <div class="dd-menu">${TASKS_PERFORMED.map(t => `<label class="chk"><input type="checkbox" value="${escapeHtml(t)}" data-label="${escapeHtml(t)}" ${state.filters.task.includes(t) ? 'checked' : ''}/> <span>${escapeHtml(t)}</span></label>`).join('')}</div>
+            </div>
+          </label>
           <label class="f">Status
             <div class="dd-wrapper" id="dd-status-wrapper">
               <button type="button" class="dd-btn">All</button>
@@ -1439,6 +1446,7 @@
     `;
 
     setupDropdownMenu(container.querySelector('#dd-insp-wrapper'), 'All', vals => { state.filters.insp = vals; updateDashboardData(container); });
+    setupDropdownMenu(container.querySelector('#dd-task-filter-wrapper'), 'All', vals => { state.filters.task = vals; updateDashboardData(container); });
     setupDropdownMenu(container.querySelector('#dd-status-wrapper'), 'All', vals => { state.filters.status = vals; updateDashboardData(container); });
     setupDropdownMenu(container.querySelector('#dd-cat-wrapper'), 'All', vals => { state.filters.cat = vals; updateDashboardData(container); });
 
@@ -1448,7 +1456,7 @@
     container.querySelector('#dash-conveyor').addEventListener('input', e => { state.filters.conveyor = e.target.value; updateDashboardData(container); });
 
     container.querySelector('#dash-reset-btn').addEventListener('click', () => {
-      state.filters = { start: '', end: '', insp: [], status: [], cat: [], line: '', conveyor: '' };
+      state.filters = { start: '', end: '', insp: [], task: [], status: [], cat: [], line: '', conveyor: '' };
       renderDashboard(container);
     });
 
@@ -2309,7 +2317,7 @@
       const unitPhotoRowsHtml = units.map((u, idx) => {
         const hasCleaning = Boolean(u.cleaningImage);
         const colCls = hasCleaning ? 'cols-3' : 'cols-2';
-        const unitLabel = `${r.lineEquipment ? escapeHtml(r.lineEquipment) + ' - ' : ''}No. ${escapeHtml(u.equipNo || String(idx + 1))}`;
+        const unitLabel = `${r.lineEquipment ? escapeHtml(r.lineEquipment) + ' - ' : ''}${escapeHtml(u.equipNo || String(idx + 1))}`;
         const boxes = [
           buildDocPhotoBox(idx, 'before', 'Before', 'ppm-tag-before', u.beforeImage, u.beforeImageDate, u.beforeImageTime, 'No "Before" photo', stageHeight),
           buildDocPhotoBox(idx, 'after', 'After', 'ppm-tag-after', u.afterImage, u.afterImageDate, u.afterImageTime, 'No "After" photo', stageHeight),
@@ -2370,7 +2378,7 @@
 
         <div class="ppm-sec">
           <div class="ppm-sec-bar">
-            <span><span class="sec-num">03</span>Reference Images (Grouped by No. — Max 3 per Row)</span>
+            <span><span class="sec-num">03</span>Reference Images</span>
             <span style="font-size:8.5px;font-weight:600;color:#64748b;text-transform:none">Before • After • Cleaning (Optional)</span>
           </div>
           <div class="ppm-unit-photos-wrap">${unitPhotoRowsHtml}</div>
