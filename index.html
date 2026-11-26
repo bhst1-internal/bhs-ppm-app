@@ -2439,7 +2439,7 @@
 
       bodyHtml = `
         <div class="ppm-sec">
-          <div class="ppm-sec-bar"><span><span class="sec-num">01</span>Issuance &amp; Equipment Details</span></div>
+          <div class="ppm-sec-bar"><span><span class="sec-num">01</span>PPM Summary</span></div>
           <table>
             <tr>
               <td class="ppm-lbl" style="width:13%">Date</td><td class="ppm-val mono-font tc" style="width:15%">${esc(displayFullDate(r))}</td>
@@ -2535,6 +2535,7 @@
           <div class="ppm-sec-bar"><span><span class="sec-num">01</span>PPM Summary</span></div>
           <table>
             <tr>
+              <td class="ppm-lbl" style="width:13%">Date</td><td class="ppm-val mono-font tc" style="width:15%">${esc(displayFullDate(r))}</td>
               <td class="ppm-lbl" style="width:11%">Date</td><td class="ppm-val mono-font tc" style="width:14%">${esc(displayFullDate(r))}</td>
               <td class="ppm-lbl" style="width:10%">Time</td><td class="ppm-val mono-font tc" style="width:11%">${esc(r.timeOfHappening) || '—'}</td>
               <td class="ppm-lbl" style="width:12%">Issued By</td><td class="ppm-val" style="width:18%">${esc(r.issuedBy) || '—'}</td>
