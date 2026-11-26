@@ -64,12 +64,36 @@
   #acm-root table.list th{text-align:left;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-sec);background-color:var(--input-bg);padding:6px 8px;border-bottom:2px solid var(--line);white-space:nowrap}
   #acm-root table.list td{font-size:.72rem;color:var(--ink-light);padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
   #acm-root table.list tr:hover td{background:var(--input-bg)}
-  #acm-root .status-chip{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-block}
+  #acm-root table.list tr.grp-multi-first td{border-top:2px solid #cbd5e1}
+  #acm-root table.list tr.grp-multi-sub td{border-top:1px dashed #e2e8f0}
+  #acm-root table.list td.grp-accent{border-left:3px solid #2563eb;background:#f8fafc}
+  #acm-root .status-chip{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
   #acm-root .chip-open{background:#e5e7eb;color:var(--text-sec)}
   #acm-root .chip-progress{background:#fef3c7;color:var(--warn)}
   #acm-root .chip-done{background:#d1fae5;color:var(--ok)}
   #acm-root .link-btn{border:none;background:none;color:var(--accent);font-weight:700;font-size:.75rem;cursor:pointer;padding:2px 4px}
   #acm-root .empty-state{text-align:center;padding:34px 10px;color:var(--text-sec);font-size:.875rem}
+
+  /* Pending Items Hover Tooltip for In Progress Status */
+  #acm-root .status-tip-wrap{position:relative;display:inline-flex;align-items:center;cursor:help}
+  #acm-root .status-tip-box{
+    display:none;position:absolute;right:0;bottom:calc(100% + 8px);width:265px;
+    background:#111827;color:#f8fafc;border-radius:9px;padding:10px 12px;
+    box-shadow:0 10px 24px rgba(15,23,42,.28);z-index:220;text-align:left;pointer-events:none
+  }
+  #acm-root .status-tip-box::after{
+    content:'';position:absolute;top:100%;right:18px;border:6px solid transparent;border-top-color:#111827
+  }
+  #acm-root .status-tip-wrap:hover .status-tip-box,
+  #acm-root .status-tip-wrap:focus-within .status-tip-box{display:block}
+  #acm-root .status-tip-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#fbbf24;margin-bottom:5px;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:4px}
+  #acm-root .status-tip-list{margin:0;padding-left:15px;font-size:.71rem;line-height:1.45;color:#e2e8f0}
+  #acm-root .status-tip-list li{margin-bottom:2px}
+
+  /* Pagination Footer Bar */
+  #acm-root .table-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+  #acm-root .table-pager-info{font-size:.75rem;color:var(--text-sec);font-weight:600}
+  #acm-root .table-pager-actions{display:flex;gap:8px;flex-wrap:wrap}
 
   /* Forms & Toolbars */
   #acm-root .form-shell{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px 24px}
@@ -105,7 +129,6 @@
   #acm-root .check-row,#acm-root .radio-row{display:flex;flex-wrap:wrap;gap:12px}
   #acm-root .chk,#acm-root .rad{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--ink-light);cursor:pointer}
   #acm-root .chk input,#acm-root .rad input{width:15px;height:15px;accent-color:var(--accent)}
-  #acm-root .err-highlight,#acm-root .err-sec{border:1px solid var(--crit)!important;background-color:#fef2f2!important;box-shadow:0 0 0 1px var(--crit)}
 
   /* Multi-Unit Selector Bar */
   #acm-root .unit-bar-wrap{margin-top:12px;padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #cbd5e1}
@@ -548,6 +571,7 @@
     return checkReq(u.equipNo) && checkReq(u.inspectionMethod) && checkReq(u.taskPerformed) && checkReq(u.resultCat);
   }
 
+  // Returns clean standardized status: "Open", "In Progress", or "Completed"
   function getStatus(r) {
     const units = ensureUnits(r);
     const allUnitsCore = units.every(u =>
@@ -560,16 +584,36 @@
     const checkValid = (r.checkByName || '').trim().length >= 3;
     const confirmValid = checkReq(r.confirmedByName);
     if (allUnitsCore && doneValid && checkValid && confirmValid) return 'Completed';
-    if (allUnitsCore && doneValid && checkValid && !confirmValid) return 'In progress - Confirmed By (pending)';
-    if (anyUnitProgress || doneValid || checkValid || confirmValid) return 'In progress';
+    if (anyUnitProgress || doneValid || checkValid || confirmValid) return 'In Progress';
     return 'Open';
   }
 
   function getStatusKey(r) {
     const label = getStatus(r);
     if (label === 'Completed') return 'done';
-    if (label.startsWith('In progress')) return 'progress';
+    if (label === 'In Progress') return 'progress';
     return 'open';
+  }
+
+  // Computes the exact list of missing items needed to complete a Report No.
+  function getPendingItems(r) {
+    const units = ensureUnits(r);
+    const multi = units.length > 1;
+    const items = [];
+    units.forEach((u, idx) => {
+      const missing = [];
+      if (!checkReq(u.inspectionMethod)) missing.push('Inspection Method');
+      if (!checkReq(u.taskPerformed)) missing.push('Task Performed');
+      if (!checkReq(u.resultCat)) missing.push('Result');
+      if (missing.length) {
+        const prefix = multi ? `${u.equipNo || `Unit ${idx + 1}`}: ` : '';
+        items.push(`${prefix}${missing.join(', ')}`);
+      }
+    });
+    if ((r.doneByName || '').trim().length < 3) items.push('Sign-off: Done By (TECH)');
+    if ((r.checkByName || '').trim().length < 3) items.push('Sign-off: Check By (TO)');
+    if (!checkReq(r.confirmedByName)) items.push('Sign-off: Confirmed By (TE/E/SE)');
+    return items;
   }
 
   function blankRecord() {
@@ -611,7 +655,7 @@
     showErrors: false,
     isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
     isSyncing: false,
-    cloudNotice: '',
+    visibleLimit: 10,
     charts: { cat: null, status: null },
     filters: { start: '', end: '', insp: [], task: [], status: [], cat: [], line: '', conveyor: '' }
   };
@@ -773,7 +817,6 @@
   function mergeCloudRecords(googleData) {
     if (!Array.isArray(googleData)) return;
     state.isOnline = true;
-    state.cloudNotice = '';
     const cleanDate = iso => (!iso || typeof iso !== 'string' || !iso.includes('T')) ? iso : iso.substring(0, 10);
     const cleanTime = iso => (!iso || typeof iso !== 'string' || !iso.includes('T')) ? iso : new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     const delSet = new Set((state.deleteQueue || []).map(d => String(d.createdAt)));
@@ -803,7 +846,7 @@
     if (window.google && window.google.script && window.google.script.run) {
       window.google.script.run
         .withSuccessHandler(data => mergeCloudRecords(data))
-        .withFailureHandler(() => { state.cloudNotice = 'Unable to load records from Google Sheets.'; updateNetworkBadge(); })
+        .withFailureHandler(() => { updateNetworkBadge(); })
         .readAllRecords();
       return;
     }
@@ -1138,7 +1181,6 @@
     if (state.charts.cat) { state.charts.cat.destroy(); state.charts.cat = null; }
     if (state.charts.status) { state.charts.status.destroy(); state.charts.status = null; }
 
-    // White canvas backdrop for JPEG exports (exact sample_A style)
     const customBgPlugin = {
       id: 'customCanvasBackgroundColor',
       beforeDraw: (c, a, o) => {
@@ -1151,7 +1193,6 @@
       }
     };
 
-    // Category vertical bar chart (exact sample_A style)
     const catCountsArr = CATS2.map(c => ({
       name: c.label,
       count: recs.filter(r => ensureUnits(r).some(u => u.cat2 && u.cat2[c.key])).length
@@ -1200,7 +1241,6 @@
       });
     }
 
-    // Center total & slice percentage plugins for Status doughnut (exact sample_A style)
     const centerTextPlugin = {
       id: 'centerText',
       beforeDraw: (c) => {
@@ -1253,7 +1293,7 @@
         type: 'doughnut',
         plugins: [customBgPlugin, centerTextPlugin, sliceLabelsPlugin],
         data: {
-          labels: ['Completed', 'In progress', 'Open'],
+          labels: ['Completed', 'In Progress', 'Open'],
           datasets: [{
             data: [stCompleted, stProgress, stOpen],
             backgroundColor: ['rgba(5, 150, 105, 0.45)', 'rgba(217, 119, 6, 0.45)', 'rgba(156, 163, 175, 0.45)'],
@@ -1288,7 +1328,7 @@
   }
 
   function updateDashboardData(container) {
-    const filtered = getFilteredDashboardRecords();
+    const filtered = getFilteredDashboardRecords().sort((a, b) => b.createdAt - a.createdAt);
     const k = computeKPIs(filtered);
     const completionPct = k.total === 0 ? null : Math.round((k.completedCount / k.total) * 100);
 
@@ -1312,35 +1352,87 @@
         </div>`).join('');
     }
 
-    const rowsHtml = filtered.slice().sort((a, b) => b.createdAt - a.createdAt).map(r => {
+    // Recent 10 pagination slice on Report No. records
+    const visibleRecs = filtered.slice(0, state.visibleLimit);
+    const remainingCount = Math.max(0, filtered.length - visibleRecs.length);
+
+    const rowsHtml = visibleRecs.map(r => {
       const units = ensureUnits(r);
+      const uLen = units.length;
+      const isMulti = uLen > 1;
       const stKey = getStatusKey(r);
       const stLabel = getStatus(r);
-      const typeList = CATS2.filter(c => units.some(u => u.cat2 && u.cat2[c.key])).map(c => c.label);
-      const inspList = Array.from(new Set(units.map(u => (u.inspectionMethod || '').trim()).filter(Boolean)));
-      const taskList = Array.from(new Set(units.flatMap(u => parseMultiList(u.taskPerformed))));
-      const equipNos = units.map(u => (u.equipNo || '').trim()).filter(Boolean).join(', ');
-      const convItems = Array.from(new Set(units.map(u => (u.conveyorItem || '').trim()).filter(Boolean))).join(', ');
       const syncTag = r.syncPending ? `<span class="chip-sync">Pending Sync</span>` : '';
-      return `<tr>
-        <td><button type="button" class="link-btn mono-font" data-act="open" data-id="${r.createdAt}" style="text-decoration:underline;padding:0;text-align:left">${escapeHtml(r.reportNo || '—')}</button></td>
-        <td class="mono-font">${escapeHtml(fmtDate(r))}</td>
-        <td>${escapeHtml(r.title) || '<span style="color:var(--line-dark)">Untitled</span>'}</td>
-        <td>${escapeHtml(r.lineEquipment) || '—'}</td>
-        <td>${escapeHtml(equipNos) || '—'}</td>
-        <td>${escapeHtml(convItems) || '—'}</td>
-        <td>${escapeHtml(typeList.join(', ')) || '—'}</td>
-        <td>${escapeHtml(inspList.join(', ')) || '—'}</td>
-        <td>${escapeHtml(taskList.join(', ')) || '—'}</td>
-        <td><span class="status-chip ${stKey === 'done' ? 'chip-done' : stKey === 'progress' ? 'chip-progress' : 'chip-open'}">${escapeHtml(stLabel)}</span>${syncTag}</td>
-      </tr>`;
+
+      let statusHtml = '';
+      if (stKey === 'progress') {
+        const pendingItems = getPendingItems(r);
+        const listHtml = pendingItems.length
+          ? pendingItems.map(p => `<li>${escapeHtml(p)}</li>`).join('')
+          : '<li>Pending final verification</li>';
+        statusHtml = `
+          <span class="status-tip-wrap" tabindex="0">
+            <span class="status-chip chip-progress">In Progress <span style="font-size:.6rem;opacity:.8">ⓘ</span></span>
+            <div class="status-tip-box">
+              <div class="status-tip-title">Pending Items</div>
+              <ul class="status-tip-list">${listHtml}</ul>
+            </div>
+          </span>${syncTag}`;
+      } else {
+        statusHtml = `<span class="status-chip ${stKey === 'done' ? 'chip-done' : 'chip-open'}">${escapeHtml(stLabel)}</span>${syncTag}`;
+      }
+
+      return units.map((u, uIdx) => {
+        const rowCls = isMulti ? (uIdx === 0 ? 'grp-multi-first' : 'grp-multi-sub') : '';
+        const unitTypes = CATS2.filter(c => u.cat2 && u.cat2[c.key]).map(c => c.label).join(', ');
+        const unitTasks = parseMultiList(u.taskPerformed).join(', ');
+        const noText = `<span class="mono-font b" style="color:var(--ink)">${escapeHtml(u.equipNo) || '—'}</span>`;
+
+        if (uIdx === 0) {
+          const rs = uLen > 1 ? ` rowspan="${uLen}"` : '';
+          const multiBadge = isMulti ? `<div style="font-size:.62rem;color:#2563eb;font-weight:700;margin-top:2px">${uLen} units</div>` : '';
+          return `<tr class="${rowCls}">
+            <td${rs} class="${isMulti ? 'grp-accent' : ''}">
+              <button type="button" class="link-btn mono-font" data-act="open" data-id="${r.createdAt}" style="text-decoration:underline;padding:0;text-align:left">${escapeHtml(r.reportNo || '—')}</button>
+              ${multiBadge}
+            </td>
+            <td${rs} class="mono-font">${escapeHtml(fmtDate(r))}</td>
+            <td${rs}>${escapeHtml(r.title) || '<span style="color:var(--line-dark)">Untitled</span>'}</td>
+            <td${rs} class="b">${escapeHtml(r.lineEquipment) || '—'}</td>
+            <td>${noText}</td>
+            <td>${escapeHtml(u.conveyorItem) || '—'}</td>
+            <td>${escapeHtml(unitTypes) || '—'}</td>
+            <td>${escapeHtml(u.inspectionMethod) || '—'}</td>
+            <td>${escapeHtml(unitTasks) || '—'}</td>
+            <td${rs}>${statusHtml}</td>
+          </tr>`;
+        }
+        return `<tr class="${rowCls}">
+          <td>${noText}</td>
+          <td>${escapeHtml(u.conveyorItem) || '—'}</td>
+          <td>${escapeHtml(unitTypes) || '—'}</td>
+          <td>${escapeHtml(u.inspectionMethod) || '—'}</td>
+          <td>${escapeHtml(unitTasks) || '—'}</td>
+        </tr>`;
+      }).join('');
     }).join('');
+
+    const pagerHtml = filtered.length > 0 ? `
+      <div class="table-pager">
+        <div class="table-pager-info">Showing <b>${visibleRecs.length}</b> of <b>${filtered.length}</b> Report No. record${filtered.length === 1 ? '' : 's'}</div>
+        <div class="table-pager-actions">
+          ${remainingCount > 0 ? `<button type="button" class="btn btn-primary" id="btn-load-more-10" style="padding:6px 12px;font-size:.75rem">Show Next ${Math.min(10, remainingCount)} Records</button>` : ''}
+          ${remainingCount > 10 ? `<button type="button" class="btn btn-ghost" id="btn-show-all-recs" style="padding:6px 12px;font-size:.75rem">Show All (${filtered.length})</button>` : ''}
+          ${state.visibleLimit > 10 && filtered.length > 10 ? `<button type="button" class="btn btn-ghost" id="btn-reset-recent-10" style="padding:6px 12px;font-size:.75rem">Show Recent 10</button>` : ''}
+        </div>
+      </div>` : '';
 
     const tContainer = container.querySelector('#dash-table-container');
     if (tContainer) {
       tContainer.innerHTML = filtered.length === 0
         ? `<div class="empty-state">No submitted PPM records found matching filters. Click <b>Memo Details</b> to create one.</div>`
-        : `<table class="list"><thead><tr><th>Report No.</th><th>Date</th><th>Title</th><th>Line/Equipment</th><th>No.</th><th>Conveyor/Item</th><th>Type</th><th>Inspection Method</th><th>Task Performed</th><th>Status</th></tr></thead><tbody>${rowsHtml}</tbody></table>`;
+        : `<table class="list"><thead><tr><th>Report No.</th><th>Date</th><th>Title</th><th>Line/Equipment</th><th>No.</th><th>Conveyor/Item</th><th>Type</th><th>Inspection Method</th><th>Task Performed</th><th>Status</th></tr></thead><tbody>${rowsHtml}</tbody></table>${pagerHtml}`;
+
       tContainer.querySelectorAll('[data-act="open"]').forEach(btn => {
         btn.addEventListener('click', () => {
           state.activeId = String(btn.dataset.id);
@@ -1348,6 +1440,19 @@
           state.tab = 'input';
           render();
         });
+      });
+
+      tContainer.querySelector('#btn-load-more-10')?.addEventListener('click', () => {
+        state.visibleLimit += 10;
+        updateDashboardData(container);
+      });
+      tContainer.querySelector('#btn-show-all-recs')?.addEventListener('click', () => {
+        state.visibleLimit = filtered.length;
+        updateDashboardData(container);
+      });
+      tContainer.querySelector('#btn-reset-recent-10')?.addEventListener('click', () => {
+        state.visibleLimit = 10;
+        updateDashboardData(container);
       });
     }
 
@@ -1381,7 +1486,7 @@
             </div>
           </label>
           <label class="f">Task Performed
-            <div class="dd-wrapper" id="dd-task-filter-wrapper">
+            <div class="dd-wrapper" id="dd-task-wrapper">
               <button type="button" class="dd-btn">All</button>
               <div class="dd-menu">${TASKS_PERFORMED.map(t => `<label class="chk"><input type="checkbox" value="${escapeHtml(t)}" data-label="${escapeHtml(t)}" ${state.filters.task.includes(t) ? 'checked' : ''}/> <span>${escapeHtml(t)}</span></label>`).join('')}</div>
             </div>
@@ -1391,7 +1496,7 @@
               <button type="button" class="dd-btn">All</button>
               <div class="dd-menu">
                 <label class="chk"><input type="checkbox" value="open" data-label="Open" ${state.filters.status.includes('open') ? 'checked' : ''}/> <span>Open</span></label>
-                <label class="chk"><input type="checkbox" value="progress" data-label="In progress" ${state.filters.status.includes('progress') ? 'checked' : ''}/> <span>In progress</span></label>
+                <label class="chk"><input type="checkbox" value="progress" data-label="In Progress" ${state.filters.status.includes('progress') ? 'checked' : ''}/> <span>In Progress</span></label>
                 <label class="chk"><input type="checkbox" value="done" data-label="Completed" ${state.filters.status.includes('done') ? 'checked' : ''}/> <span>Completed</span></label>
               </div>
             </div>
@@ -1445,18 +1550,20 @@
       </div>
     `;
 
-    setupDropdownMenu(container.querySelector('#dd-insp-wrapper'), 'All', vals => { state.filters.insp = vals; updateDashboardData(container); });
-    setupDropdownMenu(container.querySelector('#dd-task-filter-wrapper'), 'All', vals => { state.filters.task = vals; updateDashboardData(container); });
-    setupDropdownMenu(container.querySelector('#dd-status-wrapper'), 'All', vals => { state.filters.status = vals; updateDashboardData(container); });
-    setupDropdownMenu(container.querySelector('#dd-cat-wrapper'), 'All', vals => { state.filters.cat = vals; updateDashboardData(container); });
+    const applyFilterChange = () => { state.visibleLimit = 10; updateDashboardData(container); };
+    setupDropdownMenu(container.querySelector('#dd-insp-wrapper'), 'All', vals => { state.filters.insp = vals; applyFilterChange(); });
+    setupDropdownMenu(container.querySelector('#dd-task-wrapper'), 'All', vals => { state.filters.task = vals; applyFilterChange(); });
+    setupDropdownMenu(container.querySelector('#dd-status-wrapper'), 'All', vals => { state.filters.status = vals; applyFilterChange(); });
+    setupDropdownMenu(container.querySelector('#dd-cat-wrapper'), 'All', vals => { state.filters.cat = vals; applyFilterChange(); });
 
-    container.querySelector('#dash-start').addEventListener('change', e => { state.filters.start = e.target.value; updateDashboardData(container); });
-    container.querySelector('#dash-end').addEventListener('change', e => { state.filters.end = e.target.value; updateDashboardData(container); });
-    container.querySelector('#dash-line').addEventListener('input', e => { state.filters.line = e.target.value; updateDashboardData(container); });
-    container.querySelector('#dash-conveyor').addEventListener('input', e => { state.filters.conveyor = e.target.value; updateDashboardData(container); });
+    container.querySelector('#dash-start').addEventListener('change', e => { state.filters.start = e.target.value; applyFilterChange(); });
+    container.querySelector('#dash-end').addEventListener('change', e => { state.filters.end = e.target.value; applyFilterChange(); });
+    container.querySelector('#dash-line').addEventListener('input', e => { state.filters.line = e.target.value; applyFilterChange(); });
+    container.querySelector('#dash-conveyor').addEventListener('input', e => { state.filters.conveyor = e.target.value; applyFilterChange(); });
 
     container.querySelector('#dash-reset-btn').addEventListener('click', () => {
       state.filters = { start: '', end: '', insp: [], task: [], status: [], cat: [], line: '', conveyor: '' };
+      state.visibleLimit = 10;
       renderDashboard(container);
     });
 
@@ -1466,15 +1573,14 @@
       const csvRows = [['Report No.', 'Date', 'Title', 'Line/Equipment', 'No.', 'Conveyor/Item', 'Type', 'Inspection Method', 'Task Performed', 'Status']];
       recs.forEach(r => {
         const units = ensureUnits(r);
-        const typeList = CATS2.filter(c => units.some(u => u.cat2 && u.cat2[c.key])).map(c => c.label);
-        const inspList = Array.from(new Set(units.map(u => (u.inspectionMethod || '').trim()).filter(Boolean)));
-        const taskList = Array.from(new Set(units.flatMap(u => parseMultiList(u.taskPerformed))));
-        const nos = units.map(u => (u.equipNo || '').trim()).filter(Boolean).join(', ');
-        const convs = Array.from(new Set(units.map(u => (u.conveyorItem || '').trim()).filter(Boolean))).join(', ');
-        csvRows.push([
-          r.reportNo || '', fmtDate(r), r.title || '', r.lineEquipment || '', nos, convs,
-          typeList.join(', '), inspList.join(', '), taskList.join(', '), getStatus(r)
-        ].map(v => `"${String(v).replace(/"/g, '""')}"`));
+        const stLabel = getStatus(r);
+        units.forEach(u => {
+          const typeList = CATS2.filter(c => u.cat2 && u.cat2[c.key]).map(c => c.label);
+          csvRows.push([
+            r.reportNo || '', fmtDate(r), r.title || '', r.lineEquipment || '', u.equipNo || '', u.conveyorItem || '',
+            typeList.join(', '), u.inspectionMethod || '', parseMultiList(u.taskPerformed).join(', '), stLabel
+          ].map(v => `"${String(v).replace(/"/g, '""')}"`));
+        });
       });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(new Blob(['\uFEFF' + csvRows.map(e => e.join(',')).join('\n')], { type: 'text/csv;charset=utf-8;' }));
@@ -1633,7 +1739,6 @@
           </div>
         </div>
 
-        <!-- 1. Notification & Work Order -->
         <div class="sec">
           <div class="sec-title">Notification &amp; Work Order</div>
           <div class="grid g5">
@@ -1663,7 +1768,6 @@
           </div>
         </div>
 
-        <!-- 2. Title & Equipment + Multi-Unit Selector -->
         <div class="sec">
           <div class="sec-title">Title &amp; Equipment</div>
           <div class="grid g2">
@@ -1698,7 +1802,6 @@
           </div>
         </div>
 
-        <!-- 3. Category (Per Unit) -->
         <div class="sec" id="sec-category">
           <div class="sec-title">Category — No. ${escapeHtml(u.equipNo || String(state.activeUnitIdx + 1))}</div>
           <div class="check-row">
@@ -1706,7 +1809,6 @@
           </div>
         </div>
 
-        <!-- 4. Reference Image (Per Unit: Before -> After -> Cleaning) -->
         <div class="sec" id="sec-ref-images">
           <div class="ref-sec-header">
             <div class="sec-title">Reference Image — No. ${escapeHtml(u.equipNo || String(state.activeUnitIdx + 1))}</div>
@@ -1721,7 +1823,6 @@
           </div>
         </div>
 
-        <!-- 5. Remarks (Per Unit, with Multi-Select Task Performed) -->
         <div class="sec">
           <div class="sec-title">Remarks — No. ${escapeHtml(u.equipNo || String(state.activeUnitIdx + 1))}</div>
           <div class="grid g2" style="margin-bottom:10px">
@@ -1743,7 +1844,6 @@
           <label class="f">Describe the details<textarea data-unit-field="reasonDetail">${escapeHtml(u.reasonDetail)}</textarea></label>
         </div>
 
-        <!-- 6. Result (Per Unit) -->
         <div class="sec">
           <div class="sec-title">Result — No. ${escapeHtml(u.equipNo || String(state.activeUnitIdx + 1))}</div>
           <div class="radio-row">
@@ -1760,7 +1860,6 @@
           </div>
         </div>
 
-        <!-- 7. Sign-off (Parent Level) -->
         <div class="sec">
           <div class="sec-title">Sign-off</div>
           <div class="grid g3">
@@ -1782,7 +1881,6 @@
       <datalist id="dl-equip-no">${noOptions.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} — ${escapeHtml(EQUIP_DB[curLine][n] || '')}</option>`).join('')}</datalist>
     `;
 
-    // Bind Task Performed multi-select dropdown
     setupDropdownMenu(container.querySelector('#dd-task-wrapper'), 'Select tasks...', vals => {
       u.taskPerformed = vals.join(', ');
       state.dirty = true;
@@ -1799,7 +1897,6 @@
       return true;
     };
 
-    // Parent field listeners
     container.querySelectorAll('[data-field]').forEach(el => {
       const ev = el.tagName === 'SELECT' ? 'change' : 'input';
       el.addEventListener(ev, async () => {
@@ -1829,7 +1926,6 @@
       });
     });
 
-    // Group + Vendor selector
     const grpBase = container.querySelector('#inp-group-base');
     const grpVendor = container.querySelector('#inp-group-vendor');
     grpBase?.addEventListener('change', () => {
@@ -1844,7 +1940,6 @@
       saveRecords();
     });
 
-    // Active Unit No. & Conveyor/Item (in-place update without destroying focus)
     const inpUnitNo = container.querySelector('#inp-unit-no');
     const inpUnitConv = container.querySelector('#inp-unit-conv');
     inpUnitNo?.addEventListener('input', () => {
@@ -1869,7 +1964,6 @@
       saveRecords();
     });
 
-    // Unit selector buttons
     container.querySelector('#btn-add-unit')?.addEventListener('click', () => {
       const line = (r.lineEquipment || '').trim().toUpperCase();
       const existing = new Set(units.map(x => (x.equipNo || '').trim().toUpperCase()));
@@ -1937,7 +2031,6 @@
       });
     });
 
-    // Unit Category checkboxes & fields
     container.querySelectorAll('[data-unit-cat]').forEach(cb => {
       cb.addEventListener('change', () => {
         if (!u.cat2) u.cat2 = {};
@@ -1958,7 +2051,6 @@
       });
     });
 
-    // Reference Images (Per Unit)
     container.querySelector('#acm-toggle-cleaning-btn')?.addEventListener('click', () => {
       if (u.cleaningImage) return openImageLightbox(`No. ${u.equipNo || state.activeUnitIdx + 1} — Cleaning`, u.cleaningImage);
       u.showCleaningBox = !u.showCleaningBox;
@@ -2032,7 +2124,6 @@
       });
     });
 
-    // Toolbar Actions
     container.querySelector('#acm-recpick').addEventListener('change', async (e) => {
       if (await wrapUnsaved()) {
         state.activeId = String(e.target.value);
@@ -2182,7 +2273,6 @@
     let bodySectionsHtml = '';
 
     if (!isMulti) {
-      // ---- SINGLE UNIT A4 LAYOUT ----
       const u = units[0];
       const hasCleaning = Boolean(u.cleaningImage);
       const catItemsHtml = CATS2.map(c => {
@@ -2289,7 +2379,6 @@
         </div>
       `;
     } else {
-      // ---- MULTI-UNIT A4 LAYOUT (ROWS PER NO., MAX 3 IMAGES PER ROW) ----
       const nosSummary = units.map(u => (u.equipNo || '').trim()).filter(Boolean).join(', ');
       const stageHeight = units.length === 2 ? 148 : (units.length === 3 ? 116 : (units.length <= 5 ? 90 : 112));
 
@@ -2313,7 +2402,6 @@
         </tr>`;
       }).join('');
 
-      // Dedicated row per Equipment No. — strictly max 3 images per row (Before, After, optional Cleaning)
       const unitPhotoRowsHtml = units.map((u, idx) => {
         const hasCleaning = Boolean(u.cleaningImage);
         const colCls = hasCleaning ? 'cols-3' : 'cols-2';
@@ -2454,7 +2542,6 @@
       </div>
     `;
 
-    // Zoom Lightbox on any photo in Memo View
     container.querySelectorAll('[data-doc-zoom]').forEach(imgEl => {
       imgEl.addEventListener('click', () => {
         const uIdx = parseInt(imgEl.dataset.docUnit, 10) || 0;
@@ -2462,7 +2549,7 @@
         const unit = units[uIdx] || units[0];
         const labelMap = { before: 'Before', after: 'After', cleaning: 'Cleaning' };
         const src = slot === 'before' ? unit.beforeImage : (slot === 'cleaning' ? unit.cleaningImage : unit.afterImage);
-        openImageLightbox(`${r.lineEquipment || 'Unit'} No. ${unit.equipNo || (uIdx + 1)} — ${labelMap[slot] || ''}`, src);
+        openImageLightbox(`${r.lineEquipment ? r.lineEquipment + ' - ' : ''}${unit.equipNo || (uIdx + 1)} — ${labelMap[slot] || ''}`, src);
       });
     });
 
