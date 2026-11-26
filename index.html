@@ -1405,7 +1405,7 @@
           </div>
         </div>`;
 
-        tContainer.innerHTML = `<div class="table-scroll"><table class="list"><thead><tr><th>Report No.</th><th>Date</th><th>Title</th><th>Line/Equipment</th><th>No.</th><th>Conveyor/Item</th><th>Type</th><th>Inspection Method</th><th>Task Performed</th><th>Status</th></tr></thead><tbody>${tbodyHtml}</tbody></table></div>${pagerHtml}`;
+        tContainer.innerHTML = `<div class="table-scroll"><table class="list"><thead><tr><th>Report No.</th><th>Date</th><th>Title</th><th>Line</th><th>No.</th><th>Conveyor/Item</th><th>Type</th><th>Inspection Method</th><th>Task Performed</th><th>Status</th></tr></thead><tbody>${tbodyHtml}</tbody></table></div>${pagerHtml}`;
 
         tContainer.querySelectorAll('[data-act="open"]').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -1539,7 +1539,7 @@
     container.querySelector('#dash-export-btn').addEventListener('click', () => {
       const filteredForExport = getFilteredDashboardRecords().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
       if (filteredForExport.length === 0) return showModal("Export Failed", "No records to export based on current filters.", { errorMode: true });
-      const csvRows = [['Report No.', 'Date', 'Title', 'Line/Equipment', 'No.', 'Conveyor/Item', 'Type', 'Inspection Method', 'Task Performed', 'Status']];
+      const csvRows = [['Report No.', 'Date', 'Title', 'Line', 'No.', 'Conveyor/Item', 'Type', 'Inspection Method', 'Task Performed', 'Status']];
       filteredForExport.forEach(r => {
         const stLabel = getStatusLabel(getStatus(r));
         normalizeRecord(r).units.forEach(u => {
@@ -2467,7 +2467,7 @@
           </table>
         </div>
         <div class="ppm-sec" style="margin-bottom:4px">
-          <div class="ppm-sec-bar"><span><span class="sec-num">05</span>Sign-off &amp; Verification</span></div>
+          <div class="ppm-sec-bar"><span><span class="sec-num">05</span>Verification</span></div>
           <div class="ppm-sign-grid">
             <div class="ppm-sign-cell"><div class="ppm-sign-name">${esc(r.doneByName) || '&nbsp;'}</div><div class="ppm-sign-line">Done By ( TECH )</div></div>
             <div class="ppm-sign-cell"><div class="ppm-sign-name">${esc(r.checkByName) || '&nbsp;'}</div><div class="ppm-sign-line">Check By ( TO )</div></div>
@@ -2510,7 +2510,7 @@
 
       bodyHtml = `
         <div class="ppm-sec">
-          <div class="ppm-sec-bar"><span><span class="sec-num">01</span>Issuance &amp; Work Summary</span></div>
+          <div class="ppm-sec-bar"><span><span class="sec-num">01</span>PPM Summary</span></div>
           <table>
             <tr>
               <td class="ppm-lbl" style="width:11%">Date</td><td class="ppm-val mono-font tc" style="width:14%">${esc(displayFullDate(r))}</td>
@@ -2526,7 +2526,7 @@
           </table>
         </div>
         <div class="ppm-sec">
-          <div class="ppm-sec-bar"><span><span class="sec-num">02</span>Unit Inspection, Remarks &amp; Result Matrix</span></div>
+          <div class="ppm-sec-bar"><span><span class="sec-num">02</span>Details Matrix</span></div>
           <table>
             <thead>
               <tr style="background:#f8fafc">
@@ -2542,7 +2542,7 @@
           <div>${unitPhotoGroups}</div>
         </div>
         <div class="ppm-sec" style="margin-bottom:4px">
-          <div class="ppm-sec-bar"><span><span class="sec-num">04</span>Sign-off &amp; Verification</span></div>
+          <div class="ppm-sec-bar"><span><span class="sec-num">04</span>Verification</span></div>
           <div class="ppm-sign-grid">
             <div class="ppm-sign-cell"><div class="ppm-sign-name">${esc(r.doneByName) || '&nbsp;'}</div><div class="ppm-sign-line">Done By ( TECH )</div></div>
             <div class="ppm-sign-cell"><div class="ppm-sign-name">${esc(r.checkByName) || '&nbsp;'}</div><div class="ppm-sign-line">Check By ( TO )</div></div>
