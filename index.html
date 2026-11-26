@@ -94,6 +94,9 @@
   #acm-root .dd-search{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-size:.72rem;background:var(--input-bg);color:var(--ink);margin-bottom:4px;outline:none}
   #acm-root .dd-search:focus{border-color:var(--accent)}
   #acm-root .dd-selected-note{font-size:.68rem;color:var(--text-sec);margin-top:3px;line-height:1.35}
+  #acm-root .table-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+  #acm-root .table-pager-info{font-size:.75rem;color:var(--text-sec)}
+  #acm-root .table-pager-actions{display:flex;gap:8px;flex-wrap:wrap}
 
   /* Forms & Toolbars */
   #acm-root .form-shell{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px 24px}
@@ -1948,6 +1951,20 @@
       <datalist id="dl-equip-no">${noOptions.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} — ${escapeHtml(EQUIP_DB[curLine][n] || '')}</option>`).join('')}</datalist>
     `;
 
+    // Confirm before discarding unsaved edits when switching reports, adding a memo, or viewing
+    const wrapUnsaved = async () => {
+      if (state.dirty) {
+        const discard = await showModal(
+          'Unsaved Changes Detected',
+          'You have entered or modified data that has not been submitted yet.\n\nPlease click "Submit ✔" to record your data, or click "Discard Data" to abandon your recent changes.',
+          { confirm: true, danger: true, okText: 'Discard Data', cancelText: 'Cancel & Keep Editing' }
+        );
+        if (!discard) return false;
+        revertActiveRecord();
+      }
+      return true;
+    };
+
     // Bind Task Performed multi-select dropdown
     setupDropdownMenu(container.querySelector('#dd-task-wrapper'), 'Select tasks...', vals => {
       u.taskPerformed = vals.join(', ');
@@ -1990,6 +2007,50 @@
 
     const inpUnitNo = container.querySelector('#inp-unit-no');
     const inpUnitConv = container.querySelector('#inp-unit-conv');
+
+    // Bind parent-level fields (Notification, Work Order, Title, Line/Equipment, Issued/Check/Confirmed By)
+    container.querySelectorAll('[data-field]').forEach(el => {
+      const fieldName = el.dataset.field;
+      if (el.readOnly) return;
+      const ev = el.tagName === 'SELECT' ? 'change' : 'input';
+      el.addEventListener(ev, async () => {
+        const newVal = el.value;
+        if (fieldName === 'confirmedByName' && newVal !== '') {
+          const pwd = await showModal(
+            'Authorization',
+            `Enter 6-digit pin for ${newVal}:`,
+            { input: true, inputType: 'password', placeholder: 'Enter 6-digit pin...', okText: 'Confirm' }
+          );
+          if (pwd !== CONF_PASS[newVal]) {
+            await showModal('Error', 'Incorrect pin. Signature reversed.', { errorMode: true });
+            el.value = r.confirmedByName || '';
+            return;
+          }
+        }
+        r[fieldName] = newVal;
+        state.dirty = true;
+
+        if (fieldName === 'lineEquipment') {
+          const lineKey = newVal.trim().toUpperCase();
+          const dlNo = container.querySelector('#dl-equip-no');
+          if (dlNo) {
+            const opts = (lineKey && EQUIP_DB[lineKey]) ? Object.keys(EQUIP_DB[lineKey]).sort() : [];
+            dlNo.innerHTML = opts.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} — ${escapeHtml(EQUIP_DB[lineKey][n] || '')}</option>`).join('');
+          }
+          if (lineKey && EQUIP_DB[lineKey] && u.equipNo && EQUIP_DB[lineKey][u.equipNo]) {
+            u.conveyorItem = EQUIP_DB[lineKey][u.equipNo];
+            if (inpUnitConv) inpUnitConv.value = u.conveyorItem;
+          }
+          const banner = container.querySelector('#active-unit-banner-text');
+          if (banner) banner.textContent = `Editing Unit ${state.activeUnitIdx + 1} of ${units.length}: ${r.lineEquipment || 'Line'} - ${u.equipNo || '(No. not set)'}`;
+          syncParentSummaryFromUnits(r);
+        }
+
+        saveRecords();
+        refreshInputStatus();
+      });
+    });
+
     inpUnitNo?.addEventListener('input', () => {
       u.equipNo = inpUnitNo.value.trim();
       const line = (r.lineEquipment || '').trim().toUpperCase();
@@ -2176,24 +2237,14 @@
     });
 
     container.querySelector('#acm-recpick').addEventListener('change', async (e) => {
+      const targetId = String(e.target.value);
       if (await wrapUnsaved()) {
-        state.activeId = String(e.target.value);
+        state.activeId = targetId;
         state.activeUnitIdx = 0;
         state.dirty = false;
         render();
-      } else e.target.value = state.activeId;
-    });
-
-    container.querySelector('#acm-new-btn').addEventListener('click', async () => {
-      if (await wrapUnsaved()) {
-        const nr = blankRecord();
-        nr.reportNo = getNextReportNo();
-        state.records.unshift(nr);
-        state.activeId = nr.createdAt;
-        state.activeUnitIdx = 0;
-        state.dirty = false;
-        saveRecords();
-        render();
+      } else {
+        e.target.value = String(state.activeId);
       }
     });
 
