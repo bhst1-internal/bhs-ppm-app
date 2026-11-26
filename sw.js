@@ -1,5 +1,5 @@
 // Bump CACHE_NAME every time you deploy an updated index.html
-const CACHE_NAME = 'bhs-ppm-v1.0.2';
+const CACHE_NAME = 'bhs-ppm-v1.0.1';
 const CORE_ASSETS = [
   './',
   './index.html'
