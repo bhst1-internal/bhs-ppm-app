@@ -210,6 +210,8 @@
   #acm-root .net-syncing{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
   #acm-root .net-syncing .net-dot{background:#2563eb;animation:ppmPulse 1s infinite}
   #acm-root .sync-now-btn{border:1px solid #f59e0b;background:#fffbeb;color:#b45309;padding:4px 10px;border-radius:999px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+  #acm-root .refresh-now-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink-light);padding:4px 9px;border-radius:999px;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .15s}
+  #acm-root .refresh-now-btn:hover{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
   #acm-root .chip-sync{background:#dbeafe;color:#1d4ed8;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:999px;display:inline-block;margin-left:4px}
   @keyframes ppmPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.85)}}
 
@@ -680,6 +682,7 @@
     showErrors: false,
     isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
     isSyncing: false,
+    lastSyncTime: null,
     visibleLimit: 10,
     charts: { cat: null, status: null },
     filters: { start: '', end: '', insp: [], task: [], status: [], cat: [], line: '', conveyor: '' }
@@ -792,63 +795,118 @@
     const wrap = ROOT.querySelector('#ppm-net-status');
     if (!wrap) return;
     const pending = getPendingCount();
+    const syncTimeStr = state.lastSyncTime
+      ? state.lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+      : '—';
+    const refreshBtnHtml = state.isOnline && !state.isSyncing
+      ? `<button type="button" class="refresh-now-btn" id="ppm-manual-refresh-btn" title="Auto-refreshes every 30s • Last synced: ${escapeHtml(syncTimeStr)}">↻ Refresh</button>`
+      : '';
+
     if (state.isSyncing) {
       wrap.innerHTML = `<span class="net-badge net-syncing"><span class="net-dot"></span>Syncing to Cloud...</span>`;
     } else if (!state.isOnline) {
-      wrap.innerHTML = `<span class="net-badge net-offline"><span class="net-dot"></span>Offline Mode${pending ? ` • ${pending} Queued` : ''}</span>`;
+      wrap.innerHTML = `<span class="net-badge net-offline" title="Offline Mode: Records & camera photos are saved locally in IndexedDB"><span class="net-dot"></span>Offline Mode${pending ? ` • ${pending} Queued` : ''}</span>`;
     } else if (pending > 0) {
-      wrap.innerHTML = `<span class="net-badge net-online"><span class="net-dot"></span>Online</span><button type="button" class="sync-now-btn" id="ppm-manual-sync-btn">↻ Sync Pending (${pending})</button>`;
+      wrap.innerHTML = `<span class="net-badge net-online"><span class="net-dot"></span>Online</span><button type="button" class="sync-now-btn" id="ppm-manual-sync-btn">↻ Sync Pending (${pending})</button>${refreshBtnHtml}`;
       wrap.querySelector('#ppm-manual-sync-btn')?.addEventListener('click', () => syncOfflineQueue(true));
     } else {
-      wrap.innerHTML = `<span class="net-badge net-online"><span class="net-dot"></span>Online • Synced</span>`;
+      wrap.innerHTML = `<span class="net-badge net-online" title="Auto-refreshes every 30s • Last synced: ${escapeHtml(syncTimeStr)}"><span class="net-dot"></span>Online • Synced</span>${refreshBtnHtml}`;
     }
+
+    wrap.querySelector('#ppm-manual-refresh-btn')?.addEventListener('click', () => {
+      if (getPendingCount() > 0) syncOfflineQueue(false);
+      else fetchCloudRecords(false);
+    });
   }
 
   async function saveRecords() {
     try {
       await OfflineDB.saveAllRecords(state.records);
-      try { localStorage.setItem(STORE_KEY, JSON.stringify(state.records)); } catch (e) {}
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(state.records));
+      } catch (quotaErr) {
+        const slim = state.records.map(rec => ({
+          ...rec,
+          beforeImage: String(rec.beforeImage || '').startsWith('http') ? rec.beforeImage : '',
+          afterImage: String(rec.afterImage || '').startsWith('http') ? rec.afterImage : '',
+          cleaningImage: String(rec.cleaningImage || '').startsWith('http') ? rec.cleaningImage : '',
+          units: (rec.units || []).map(u => ({
+            ...u,
+            beforeImage: String(u.beforeImage || '').startsWith('http') ? u.beforeImage : '',
+            afterImage: String(u.afterImage || '').startsWith('http') ? u.afterImage : '',
+            cleaningImage: String(u.cleaningImage || '').startsWith('http') ? u.cleaningImage : ''
+          }))
+        }));
+        localStorage.setItem(STORE_KEY, JSON.stringify(slim));
+      }
     } catch (e) {}
     updateNetworkBadge();
   }
 
   async function saveDeleteQueue() {
     await OfflineDB.setMeta(DELETE_QUEUE_KEY, state.deleteQueue);
-    try { localStorage.setItem(DELETE_QUEUE_KEY, JSON.stringify(state.deleteQueue)); } catch (e) {}
+    try {
+      localStorage.setItem(DELETE_QUEUE_KEY, JSON.stringify(state.deleteQueue));
+    } catch (e) {}
     updateNetworkBadge();
   }
 
   function postPayloadWithTimeout(payloadObj, timeoutMs = 20000) {
     if (window.google && window.google.script && window.google.script.run) {
       return new Promise((resolve, reject) => {
-        const runner = window.google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
-        if (payloadObj.action === 'delete') runner.deleteRecordFromClient(payloadObj.createdAt);
-        else runner.saveRecordFromClient(JSON.stringify(payloadObj));
+        if (payloadObj && payloadObj.action === 'delete') {
+          window.google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            .deleteRecordFromClient(payloadObj.createdAt);
+        } else {
+          window.google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            .saveRecordFromClient(JSON.stringify(payloadObj));
+        }
       });
     }
     return new Promise((resolve, reject) => {
       if (!navigator.onLine) return reject(new Error('Device is offline'));
       const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      const timer = setTimeout(() => { if (controller) controller.abort(); reject(new Error('Request timed out')); }, timeoutMs);
+      const timer = setTimeout(() => {
+        if (controller) controller.abort();
+        reject(new Error('Request timed out'));
+      }, timeoutMs);
       fetch(WEB_APP_URL, {
         method: 'POST',
         mode: 'no-cors',
         body: new URLSearchParams({ payload: JSON.stringify(payloadObj) }),
         signal: controller ? controller.signal : undefined
-      }).then(() => { clearTimeout(timer); resolve(true); }).catch(err => { clearTimeout(timer); reject(err); });
+      })
+        .then(() => { clearTimeout(timer); resolve(true); })
+        .catch(err => { clearTimeout(timer); reject(err); });
     });
   }
 
-  function mergeCloudRecords(googleData) {
+  function mergeCloudRecords(googleData, isBackground = false) {
     if (!Array.isArray(googleData)) return;
     state.isOnline = true;
+    state.lastSyncTime = new Date();
     const cleanDate = iso => (!iso || typeof iso !== 'string' || !iso.includes('T')) ? iso : iso.substring(0, 10);
     const cleanTime = iso => (!iso || typeof iso !== 'string' || !iso.includes('T')) ? iso : new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     const delSet = new Set((state.deleteQueue || []).map(d => String(d.createdAt)));
 
+    // Keep local records that have unsynced offline edits so background refresh never overwrites them
+    const pendingMap = new Map(
+      state.records.filter(r => !r.isDraft && r.syncPending).map(r => [String(r.createdAt), r])
+    );
+
     let validData = [];
     googleData.forEach(g => {
       if (!g || !g.createdAt || delSet.has(String(g.createdAt))) return;
+      const idStr = String(g.createdAt);
+      if (pendingMap.has(idStr)) {
+        validData.push(pendingMap.get(idStr));
+        pendingMap.delete(idStr);
+        return;
+      }
       g.happeningDate = cleanDate(g.happeningDate);
       g.timeOfHappening = cleanTime(g.timeOfHappening);
       ensureUnits(g);
@@ -857,20 +915,41 @@
     });
 
     const drafts = state.records.filter(r => r.isDraft);
-    const cloudMap = new Map(validData.map(g => [String(g.createdAt), g]));
-    const localPending = state.records.filter(r => !r.isDraft && !cloudMap.has(String(r.createdAt)));
+    const remainingPending = Array.from(pendingMap.values());
+    const prevActiveJson = (state.tab === 'document' && getActive()) ? JSON.stringify(getActive()) : '';
 
-    state.records = [...drafts, ...localPending, ...validData].sort((a, b) => b.createdAt - a.createdAt);
+    state.records = [...drafts, ...remainingPending, ...validData].sort((a, b) => b.createdAt - a.createdAt);
     saveRecords();
     if (!state.activeId && state.records.length) state.activeId = state.records[0].createdAt;
+
+    if (isBackground) {
+      if (state.tab === 'dashboard') {
+        const content = ROOT.querySelector('#acm-content');
+        if (content && content.querySelector('#dash-kpi-grid')) {
+          updateDashboardData(content);
+          updateNetworkBadge();
+          return;
+        }
+      } else if (state.tab === 'input') {
+        updateNetworkBadge();
+        return;
+      } else if (state.tab === 'document') {
+        const nextActiveJson = getActive() ? JSON.stringify(getActive()) : '';
+        if (prevActiveJson === nextActiveJson) {
+          updateNetworkBadge();
+          return;
+        }
+      }
+    }
+
     if (!(state.tab === 'input' && state.dirty)) render();
     else updateNetworkBadge();
   }
 
-  function fetchCloudRecords() {
+  function fetchCloudRecords(isBackground = false) {
     if (window.google && window.google.script && window.google.script.run) {
       window.google.script.run
-        .withSuccessHandler(data => mergeCloudRecords(data))
+        .withSuccessHandler(data => mergeCloudRecords(data, isBackground))
         .withFailureHandler(() => { updateNetworkBadge(); })
         .readAllRecords();
       return;
@@ -878,7 +957,7 @@
     if (!navigator.onLine || !WEB_APP_URL) return;
     const oldScript = document.getElementById('ppm-sheets-sync');
     if (oldScript) oldScript.remove();
-    window.syncGoogleSheets = mergeCloudRecords;
+    window.syncGoogleSheets = (data) => mergeCloudRecords(data, isBackground);
     const script = document.createElement('script');
     script.id = 'ppm-sheets-sync';
     script.src = `${WEB_APP_URL}?action=read&callback=syncGoogleSheets&t=${Date.now()}`;
@@ -2248,6 +2327,19 @@
       }
     });
 
+    container.querySelector('#acm-new-btn').addEventListener('click', async () => {
+      if (await wrapUnsaved()) {
+        const nr = blankRecord();
+        nr.reportNo = getNextReportNo();
+        state.records.unshift(nr);
+        state.activeId = nr.createdAt;
+        state.activeUnitIdx = 0;
+        state.dirty = false;
+        await saveRecords();
+        render();
+      }
+    });
+
     container.querySelector('#acm-del-btn').addEventListener('click', async () => {
       if (!await showModal('Confirm Deletion', 'Delete this record? This cannot be undone.', { confirm: true, danger: true, okText: 'Delete' })) return;
       const pass = await showModal('Authorization', 'Password required to delete this record:', { input: true, inputType: 'password', placeholder: 'Enter password...', okText: 'Confirm' });
@@ -2754,6 +2846,19 @@
   });
   window.addEventListener('online', () => { state.isOnline = true; updateNetworkBadge(); syncOfflineQueue(false); });
   window.addEventListener('offline', () => { state.isOnline = false; updateNetworkBadge(); });
+
+  // Automatic background refresh & offline-queue retry every 30 seconds
+  const AUTO_REFRESH_MS = 30000;
+  function runBackgroundRefresh() {
+    if (!navigator.onLine || state.isSyncing) return;
+    if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+    if (getPendingCount() > 0) syncOfflineQueue(false);
+    else fetchCloudRecords(true);
+  }
+  setInterval(runBackgroundRefresh, AUTO_REFRESH_MS);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') runBackgroundRefresh();
+  });
 
   render();
   loadRecords();
