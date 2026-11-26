@@ -22,6 +22,10 @@
   #acm-root .tab-btn{border:none;background:transparent;padding:8px 14px;border-radius:8px;font-size:.875rem;font-weight:600;color:var(--text-sec);cursor:pointer;transition:all .15s}
   #acm-root .tab-btn.active{background:var(--paper);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
   #acm-root .tab-btn:hover:not(.active){color:var(--ink)}
+  #acm-root .cloud-alert{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 14px;border-radius:10px;margin-bottom:14px;font-size:.78rem;font-weight:600;border:1px solid transparent}
+  #acm-root .cloud-alert.loading{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+  #acm-root .cloud-alert.warn{background:#fffbeb;border-color:#fcd34d;color:#92400e}
+  #acm-root .cloud-alert.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
   #acm-root .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
   @media (max-width:980px){#acm-root .kpi-grid{grid-template-columns:repeat(2,1fr)}}
   #acm-root .kpi-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:visible}
@@ -270,6 +274,9 @@
   const DELETE_QUEUE_KEY = "bhs_ppm_delete_queue_v2";
   const ROOT = document.getElementById('acm-root');
   if (!ROOT) return;
+
+  const isPlaceholderUrl = () => !WEB_APP_URL || WEB_APP_URL.includes('YOUR_DEPLOYMENT_ID_HERE');
+  const hasGoogleScriptRun = () => typeof window !== 'undefined' && window.google && window.google.script && window.google.script.run;
 
   // =========================================================================
   // EQUIPMENT REFERENCE DATABASE (COMPRESSED_DB)
@@ -742,9 +749,26 @@
     showErrors: false,
     isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
     isSyncing: false,
-    offlineEntryNotified: false
+    offlineEntryNotified: false,
+    cloudStatus: 'idle',
+    cloudErrorMsg: ''
   };
   const checkReq = v => v != null && String(v).trim() !== '';
+
+  function updateCloudAlertBanner() {
+    const el = document.getElementById('dash-cloud-banner');
+    if (!el) return;
+    if (state.cloudStatus === 'loading') {
+      el.innerHTML = `<div class="cloud-alert loading"><span>⏳ Syncing records from Google Sheets...</span></div>`;
+    } else if (state.cloudStatus === 'unconfigured') {
+      el.innerHTML = `<div class="cloud-alert warn"><span>⚠️ <b>Cloud Backend Not Linked:</b> <code>WEB_APP_URL</code> in <code>index.html</code> is still set to <code>YOUR_DEPLOYMENT_ID_HERE</code>. Paste your Google Apps Script <code>/exec</code> URL (or open the deployed Apps Script Web App link) to load shared records.</span></div>`;
+    } else if (state.cloudStatus === 'error') {
+      el.innerHTML = `<div class="cloud-alert error"><span>⚠️ <b>Unable to Load Cloud Records:</b> ${esc(state.cloudErrorMsg || 'Ensure WEB_APP_URL ends with /exec and Apps Script Web App access is set to "Anyone".')}</span><button type="button" class="btn btn-ghost" id="dash-retry-cloud-btn" style="padding:4px 10px;font-size:.72rem">Retry Sync</button></div>`;
+      el.querySelector('#dash-retry-cloud-btn')?.addEventListener('click', () => fetchCloudRecords());
+    } else {
+      el.innerHTML = '';
+    }
+  }
 
   function getPendingCount() {
     const pendingRecs = state.records.filter(r => !r.isDraft && r.syncPending).length;
@@ -757,12 +781,14 @@
     const pendingCount = getPendingCount();
     let badgeHtml = '';
 
-    if (state.isSyncing) {
+    if (state.isSyncing || state.cloudStatus === 'loading') {
       badgeHtml = `<span class="net-badge net-syncing"><span class="net-dot"></span>Syncing to Cloud...</span>`;
     } else if (!state.isOnline) {
       badgeHtml = `<span class="net-badge net-offline" title="Offline Mode: Records and photos are saved locally on this device"><span class="net-dot"></span>Offline Mode${pendingCount > 0 ? ` • ${pendingCount} Queued` : ''}</span>`;
     } else if (pendingCount > 0) {
       badgeHtml = `<span class="net-badge net-online"><span class="net-dot"></span>Online</span><button type="button" class="sync-now-btn" id="ppm-manual-sync-btn" title="Push offline records & images to Google Sheets & Drive">↻ Sync Pending (${pendingCount})</button>`;
+    } else if (state.cloudStatus === 'unconfigured') {
+      badgeHtml = `<span class="net-badge net-offline" title="Set WEB_APP_URL in index.html to connect Google Sheets"><span class="net-dot"></span>Cloud URL Not Set</span>`;
     } else {
       badgeHtml = `<span class="net-badge net-online"><span class="net-dot"></span>Online • Synced</span>`;
     }
@@ -786,6 +812,20 @@
     return new Promise((resolve, reject) => {
       if (!navigator.onLine) {
         return reject(new Error('Device is offline'));
+      }
+      if (hasGoogleScriptRun() && isPlaceholderUrl()) {
+        const runner = window.google.script.run
+          .withSuccessHandler(() => resolve(true))
+          .withFailureHandler((err) => reject(err || new Error('Apps Script call failed')));
+        if (payloadObj && payloadObj.action === 'delete') {
+          runner.deleteRecordFromClient(payloadObj.createdAt);
+        } else {
+          runner.saveRecordFromClient(JSON.stringify(payloadObj));
+        }
+        return;
+      }
+      if (isPlaceholderUrl()) {
+        return reject(new Error('WEB_APP_URL is not configured'));
       }
       const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
       const timer = setTimeout(() => {
@@ -812,14 +852,71 @@
 
   function fetchCloudRecords() {
     if (!navigator.onLine) return;
+
+    if (hasGoogleScriptRun() && isPlaceholderUrl()) {
+      state.cloudStatus = 'loading';
+      updateNetworkBadge();
+      updateCloudAlertBanner();
+      window.google.script.run
+        .withSuccessHandler((data) => {
+          state.cloudStatus = 'ok';
+          window.syncGoogleSheets(data);
+        })
+        .withFailureHandler((err) => {
+          state.cloudStatus = 'error';
+          state.cloudErrorMsg = (err && err.message) ? err.message : 'Failed to load records from Google Sheets.';
+          updateNetworkBadge();
+          updateCloudAlertBanner();
+          if (state.tab === 'dashboard') updateDashboardUI();
+        })
+        .readAllRecords();
+      return;
+    }
+
+    if (isPlaceholderUrl()) {
+      state.cloudStatus = 'unconfigured';
+      updateNetworkBadge();
+      updateCloudAlertBanner();
+      return;
+    }
+
+    state.cloudStatus = 'loading';
+    updateNetworkBadge();
+    updateCloudAlertBanner();
+
+    let responded = false;
+    const origSync = window.syncGoogleSheets;
+    const timeoutTimer = setTimeout(() => {
+      if (!responded && state.cloudStatus === 'loading') {
+        state.cloudStatus = 'error';
+        state.cloudErrorMsg = 'Connection to Google Sheets timed out. Check that WEB_APP_URL ends with /exec and Web App access is set to "Anyone".';
+        updateNetworkBadge();
+        updateCloudAlertBanner();
+        if (state.tab === 'dashboard') updateDashboardUI();
+      }
+    }, 12000);
+
+    window.syncGoogleSheets = function(data) {
+      responded = true;
+      clearTimeout(timeoutTimer);
+      state.cloudStatus = 'ok';
+      if (typeof origSync === 'function') origSync(data);
+    };
+
     const oldScript = document.getElementById('ppm-sheets-sync');
     if (oldScript) oldScript.remove();
     const script = document.createElement('script');
     script.id = 'ppm-sheets-sync';
     script.src = `${WEB_APP_URL}?action=read&callback=syncGoogleSheets&t=${Date.now()}`;
     script.onerror = () => {
+      responded = true;
+      clearTimeout(timeoutTimer);
       state.isOnline = navigator.onLine;
+      state.cloudStatus = 'error';
+      state.cloudErrorMsg = 'Could not load records from Google Sheets. Verify WEB_APP_URL ends with /exec and Deployment "Who has access" is set to "Anyone".';
       updateNetworkBadge();
+      updateCloudAlertBanner();
+      if (state.tab === 'dashboard') updateDashboardUI();
     };
     document.body.appendChild(script);
   }
@@ -937,6 +1034,7 @@
     window.syncGoogleSheets = function(googleData) {
       if (!Array.isArray(googleData)) return;
       state.isOnline = true;
+      state.cloudStatus = 'ok';
       const cleanDate = iso => { if (!iso || typeof iso !== 'string' || !iso.includes('T')) return iso; const d = new Date(iso); if (isNaN(d)) return iso; return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
       const cleanTime = iso => (!iso || typeof iso !== 'string' || !iso.includes('T')) ? iso : new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
       const delSet = new Set((state.deleteQueue || []).map(d => String(d.createdAt)));
@@ -1260,6 +1358,7 @@
   }
 
   function updateDashboardUI() {
+    updateCloudAlertBanner();
     const filtered = getFilteredDashboardRecords(), k = computeKPIs(filtered);
     const totalCompletionRate = k.total === 0 ? null : Math.round((k.completedCount / k.total) * 100);
     const kpiCards = [
@@ -1295,7 +1394,8 @@
     }).join('');
     
     const tContainer = document.getElementById('dash-table-container');
-    if (tContainer) tContainer.innerHTML = filtered.length===0?`<div class="empty-state">No records found matching filters.</div>`:`<table class="list"><thead><tr><th>Report No.</th><th>Date</th><th>Title</th><th>Line/Equipment</th><th>No.</th><th>Conveyor/Item</th><th>Type</th><th>Inspection Method</th><th>Task Performed</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
+    const emptyMsg = state.cloudStatus === 'loading' ? 'Loading records from Google Sheets...' : 'No records found matching filters.';
+    if (tContainer) tContainer.innerHTML = filtered.length===0?`<div class="empty-state">${emptyMsg}</div>`:`<table class="list"><thead><tr><th>Report No.</th><th>Date</th><th>Title</th><th>Line/Equipment</th><th>No.</th><th>Conveyor/Item</th><th>Type</th><th>Inspection Method</th><th>Task Performed</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
 
     document.querySelectorAll('[data-act="open"]').forEach(btn => btn.addEventListener('click', () => { state.activeId = String(btn.getAttribute('data-id')); state.tab = 'input'; render(); }));
 
@@ -1534,7 +1634,7 @@
     for (let l in EQUIP_DB) for (let n in EQUIP_DB[l]) { allLinesNos.push(l + '-' + n); allConveyors.add(EQUIP_DB[l][n]); }
     allConveyors.add('OTHERS'); allConveyors = Array.from(allConveyors).sort(); allLinesNos.sort();
 
-    container.innerHTML = `<div class="form-shell" style="margin-bottom:16px;padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0;font-size:.875rem;font-weight:800;color:var(--ink)">Global Filters &amp; Controls</h3><button class="btn btn-ghost" id="dash-reset-btn" style="padding:4px 10px;font-size:.75rem">Reset All Filters</button></div><div class="grid g4" id="dash-filters"><label class="f">Start Date<input type="date" id="dash-start" value="${defStart}"/></label><label class="f">End Date<input type="date" id="dash-end" value="${defEnd}"/></label><label class="f">Inspection Method<div class="dd-wrapper" id="dd-insp-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu">${INSPECTION_METHODS.map(m=>`<label class="chk"><input type="checkbox" name="dash-insp" value="${m}"/> <span>${m}</span></label>`).join('')}</div></div></label><label class="f">Status<div class="dd-wrapper" id="dd-status-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu"><label class="chk"><input type="checkbox" name="dash-status" value="open"/> <span>Open</span></label><label class="chk"><input type="checkbox" name="dash-status" value="progress"/> <span>In progress</span></label><label class="chk"><input type="checkbox" name="dash-status" value="done"/> <span>Completed</span></label></div></div></label><label class="f">Category<div class="dd-wrapper" id="dd-cat-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu">${Object.entries(CATS2).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-cat" value="${k}"/> <span>${v}</span></label>`).join('')}</div></div></label><label class="f">Line/Equipment - No.<input type="text" id="dash-line" list="dl-lines" placeholder="e.g. BM1-04" autocomplete="off"/><datalist id="dl-lines">${allLinesNos.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label><label class="f">Conveyor/Item<input type="text" id="dash-conveyor" list="dl-conv" placeholder="e.g. TRANSFER CONVEYOR" autocomplete="off"/><datalist id="dl-conv">${allConveyors.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label></div></div><div class="kpi-grid" id="dash-kpi-grid"></div><div class="panel" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">PPM Timeline</h3><div style="display:flex;gap:6px;"><button class="export-chart-btn" id="full-view-btn" title="Open Full Screen View" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>Full View</button><button class="export-chart-btn" id="save-chart-btn" title="Save Section as JPEG" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>JPEG</button></div></div><div class="hint">Gantt-style timeline showing submission to completion duration for filtered records.<br/><b>Note:</b> Drag inside chart area to pan (up/down/left/right). Scroll mouse wheel to zoom. Double-click to reset view.</div><div id="timeline-custom-legend" style="display:flex; justify-content:flex-end; gap:16px; margin-bottom: 8px; font-size: 11px; padding-right:10px;"><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(5, 150, 105, 0.45); border:1px solid rgba(5, 150, 105, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="0" style="display:none"> Completed</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(217, 119, 6, 0.45); border:1px solid rgba(217, 119, 6, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="1" style="display:none"> In progress</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(156, 163, 175, 0.45); border:1px solid rgba(156, 163, 175, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="2" style="display:none"> Open</label></div><div style="background:transparent;padding:0;margin-top:0;position:relative"><div id="timeline-empty-state" style="display:none;text-align:center;padding-top:40px;color:var(--text-sec);font-size:12px;position:absolute;top:0;left:0;width:100%;height:100%;background:var(--paper);z-index:10">No memos found for the selected view.</div><div class="chart-wrap" style="height:345px;overflow:hidden;position:relative;"><div id="timeline-scroll-container" style="position:relative;width:100%;height:345px;"><canvas id="acm-timeline-chart"></canvas></div></div></div></div>
+    container.innerHTML = `<div id="dash-cloud-banner"></div><div class="form-shell" style="margin-bottom:16px;padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0;font-size:.875rem;font-weight:800;color:var(--ink)">Global Filters &amp; Controls</h3><button class="btn btn-ghost" id="dash-reset-btn" style="padding:4px 10px;font-size:.75rem">Reset All Filters</button></div><div class="grid g4" id="dash-filters"><label class="f">Start Date<input type="date" id="dash-start" value="${defStart}"/></label><label class="f">End Date<input type="date" id="dash-end" value="${defEnd}"/></label><label class="f">Inspection Method<div class="dd-wrapper" id="dd-insp-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu">${INSPECTION_METHODS.map(m=>`<label class="chk"><input type="checkbox" name="dash-insp" value="${m}"/> <span>${m}</span></label>`).join('')}</div></div></label><label class="f">Status<div class="dd-wrapper" id="dd-status-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu"><label class="chk"><input type="checkbox" name="dash-status" value="open"/> <span>Open</span></label><label class="chk"><input type="checkbox" name="dash-status" value="progress"/> <span>In progress</span></label><label class="chk"><input type="checkbox" name="dash-status" value="done"/> <span>Completed</span></label></div></div></label><label class="f">Category<div class="dd-wrapper" id="dd-cat-wrapper"><button type="button" class="dd-btn">All</button><div class="dd-menu">${Object.entries(CATS2).map(([k,v])=>`<label class="chk"><input type="checkbox" name="dash-cat" value="${k}"/> <span>${v}</span></label>`).join('')}</div></div></label><label class="f">Line/Equipment - No.<input type="text" id="dash-line" list="dl-lines" placeholder="e.g. BM1-04" autocomplete="off"/><datalist id="dl-lines">${allLinesNos.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label><label class="f">Conveyor/Item<input type="text" id="dash-conveyor" list="dl-conv" placeholder="e.g. TRANSFER CONVEYOR" autocomplete="off"/><datalist id="dl-conv">${allConveyors.map(x=>`<option value="${x}"></option>`).join('')}</datalist></label></div></div><div class="kpi-grid" id="dash-kpi-grid"></div><div class="panel" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">PPM Timeline</h3><div style="display:flex;gap:6px;"><button class="export-chart-btn" id="full-view-btn" title="Open Full Screen View" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>Full View</button><button class="export-chart-btn" id="save-chart-btn" title="Save Section as JPEG" style="display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:4px;border:1px solid var(--line);font-size:.65rem;font-weight:700;color:var(--text-sec);cursor:pointer;background:var(--bg)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>JPEG</button></div></div><div class="hint">Gantt-style timeline showing submission to completion duration for filtered records.<br/><b>Note:</b> Drag inside chart area to pan (up/down/left/right). Scroll mouse wheel to zoom. Double-click to reset view.</div><div id="timeline-custom-legend" style="display:flex; justify-content:flex-end; gap:16px; margin-bottom: 8px; font-size: 11px; padding-right:10px;"><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(5, 150, 105, 0.45); border:1px solid rgba(5, 150, 105, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="0" style="display:none"> Completed</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(217, 119, 6, 0.45); border:1px solid rgba(217, 119, 6, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="1" style="display:none"> In progress</label><label style="cursor:pointer; display:flex; align-items:center; gap:4px; opacity:1; transition:0.2s"><span style="display:inline-block; width:12px; height:12px; background:rgba(156, 163, 175, 0.45); border:1px solid rgba(156, 163, 175, 1); border-radius:50%"></span><input type="checkbox" checked class="leg-chk" value="2" style="display:none"> Open</label></div><div style="background:transparent;padding:0;margin-top:0;position:relative"><div id="timeline-empty-state" style="display:none;text-align:center;padding-top:40px;color:var(--text-sec);font-size:12px;position:absolute;top:0;left:0;width:100%;height:100%;background:var(--paper);z-index:10">No memos found for the selected view.</div><div class="chart-wrap" style="height:345px;overflow:hidden;position:relative;"><div id="timeline-scroll-container" style="position:relative;width:100%;height:345px;"><canvas id="acm-timeline-chart"></canvas></div></div></div></div>
     
     <div class="charts-grid">
       <div class="panel">
@@ -2382,12 +2482,14 @@
         submitBtns.forEach(b => { b.innerHTML = 'Saving to Sheet ⏳'; b.style.pointerEvents = 'none'; });
         try {
           await postPayloadWithTimeout({ ...r, syncPending: false }, 20000);
+          r.syncPending = false;
+          await saveRecords();
           setTimeout(async () => {
             await syncOfflineQueue(false, false);
             await showModal("Success", "Record and images sent to Google Sheets & Drive!\nMoving to Memo View.", "alert");
             state.tab = 'document';
             render();
-          }, 1400);
+          }, 1000);
         } catch (e) {
           console.error(e);
           const photoCount = units.reduce((acc, item) => acc + (item.beforeImage ? 1 : 0) + (item.cleaningImage ? 1 : 0) + (item.afterImage ? 1 : 0), 0);
@@ -2395,9 +2497,9 @@
           const weakNetHtml = `
             <div class="modal-offline-banner submit">
               <div class="modal-offline-icon">💾</div>
-              <div>Saved Offline (Weak / Unavailable Internet)</div>
+              <div>Saved Offline (Cloud Endpoint Unreachable)</div>
             </div>
-            <div>Could not reach Google Sheets right now. Your PPM submission and images are safely saved on this device and will upload automatically once internet stabilizes.</div>
+            <div>Could not reach Google Sheets right now. Your PPM submission and images are safely saved on this device and will upload automatically once connected.</div>
             <div class="modal-offline-details">
               <div class="modal-offline-row"><span>Report No.:</span><span class="mono-font">BHS/PPM ${esc(r.reportNo || 'N/A')}</span></div>
               <div class="modal-offline-row"><span>Reference Photos:</span><span>${photoCount} photo(s) stored locally</span></div>
@@ -2492,6 +2594,23 @@
       const fileId = extractDriveFileId(url);
       if (!fileId || !navigator.onLine) return resolve('');
       if (DRIVE_IMG_CACHE[fileId]) return resolve(DRIVE_IMG_CACHE[fileId]);
+
+      if (hasGoogleScriptRun() && isPlaceholderUrl()) {
+        window.google.script.run
+          .withSuccessHandler((res) => {
+            if (res && res.ok && res.dataUrl) {
+              DRIVE_IMG_CACHE[fileId] = res.dataUrl;
+              resolve(res.dataUrl);
+            } else {
+              resolve('');
+            }
+          })
+          .withFailureHandler(() => resolve(''))
+          .getDriveImageBase64(fileId);
+        return;
+      }
+
+      if (isPlaceholderUrl()) return resolve('');
 
       const cbName = 'ppmImgCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
       const script = document.createElement('script');
