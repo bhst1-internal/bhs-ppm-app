@@ -313,7 +313,11 @@
   #ppm-exit-leave{background:#fee2e2;color:#dc2626}
   #ppm-exit-leave:hover{background:#fca5a5}
   @keyframes ppmExitFadeIn{from{opacity:0}to{opacity:1}}
-  #ppm-exit-toast{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#000000;color:#ffffff;display:flex;align-items:center;justify-content:center;padding:24px;font-size:1.1rem;font-weight:700;text-align:center;line-height:1.5;z-index:100001;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;animation:ppmExitFadeIn .2s ease}
+  #ppm-exit-toast{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#000000;color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;box-sizing:border-box;text-align:center;z-index:100001;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;animation:ppmExitFadeIn .2s ease}
+  #ppm-exit-toast .exit-line-top{font-size:1.35rem;font-weight:800;letter-spacing:.02em;color:#ffffff;line-height:1.3}
+  #ppm-exit-toast .exit-line-sub{font-size:1rem;font-weight:500;color:#d1d5db;line-height:1.45;max-width:340px}
+  #ppm-exit-toast .exit-reopen-btn{margin-top:20px;border:1px solid #374151;background:#111827;color:#e5e7eb;padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;transition:background .15s ease}
+  #ppm-exit-toast .exit-reopen-btn:hover{background:#1f2937}
 
   @media print{
     @page{size:A4 portrait;margin:8mm 9mm}
@@ -3000,6 +3004,7 @@
     modalOpen: false,
     allowExit: false,
     closing: false,
+    exitingNow: false,
     toastTimer: null
   };
 
@@ -3008,18 +3013,48 @@
     document.getElementById('ppm-exit-toast')?.remove();
   }
 
-  function showExitToast(msg, durationMs = 3000, onComplete = null) {
+  function showExitToast(topLine, subLine, durationMs = 1000, onComplete = null, keepVisible = true) {
     hideExitToast();
     const toast = document.createElement('div');
     toast.id = 'ppm-exit-toast';
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'assertive');
-    toast.textContent = msg;
+    const topEl = document.createElement('div');
+    topEl.className = 'exit-line-top';
+    topEl.textContent = topLine;
+    const subEl = document.createElement('div');
+    subEl.className = 'exit-line-sub';
+    subEl.textContent = subLine;
+    toast.appendChild(topEl);
+    toast.appendChild(subEl);
     document.body.appendChild(toast);
-    exitGuard.toastTimer = setTimeout(() => {
+    if (durationMs > 0) {
+      exitGuard.toastTimer = setTimeout(() => {
+        if (!keepVisible) hideExitToast();
+        if (typeof onComplete === 'function') onComplete();
+      }, durationMs);
+    }
+    return toast;
+  }
+
+  function showClosedFallbackScreen() {
+    const toast = showExitToast(
+      'App Closed Safely',
+      'Your browser restricts auto-closing. Press Back, swipe up, or close this tab.',
+      0
+    );
+    const reopenBtn = document.createElement('button');
+    reopenBtn.type = 'button';
+    reopenBtn.className = 'exit-reopen-btn';
+    reopenBtn.textContent = 'Reopen App';
+    reopenBtn.onclick = () => {
+      exitGuard.closing = false;
+      exitGuard.exitingNow = false;
+      exitGuard.allowExit = false;
       hideExitToast();
-      if (typeof onComplete === 'function') onComplete();
-    }, durationMs);
+      armExitGuard(true);
+    };
+    toast.appendChild(reopenBtn);
   }
 
   function armExitGuard(isUserGesture = false) {
@@ -3143,6 +3178,7 @@
       saveRecords();
       exitGuard.allowExit = true;
       exitGuard.closing = true;
+      exitGuard.exitingNow = false;
 
       // 1. Unwind pushed guard trap entries cleanly back to base entry (depth 0)
       const curDepth = (history.state && typeof history.state.depth === 'number') ? history.state.depth : exitGuard.depth;
@@ -3151,20 +3187,36 @@
       }
       exitGuard.depth = 0;
 
-      // 2. Show full-screen black banner for 3 seconds, then close/exit the app
-      showExitToast('Exit unlocked - closing the app safely.', 3000, () => {
+      // 2. Show full-screen black overlay (2 centered lines) for 1 second, then close/exit automatically
+      showExitToast('Exit Unlocked', 'Closing the app safely.', 1000, () => {
+        exitGuard.exitingNow = true;
+
+        // Native WebView / hybrid wrapper close (if applicable)
+        try {
+          if (navigator.app && typeof navigator.app.exitApp === 'function') {
+            navigator.app.exitApp();
+          }
+        } catch (_) {}
+
+        // Direct window close (installed Android/Desktop PWAs & script-opened tabs)
         try { window.close(); } catch (_) {}
+
+        // Step back past base entry (exits tab/app if opened from a previous page or launcher)
         try { history.back(); } catch (_) {}
+
+        // Secondary Chromium/WebView close fallback
         setTimeout(() => {
           try { window.open('', '_self'); window.close(); } catch (_) {}
-          // If the browser/OS blocks programmatic window close, unlock state safely
-          setTimeout(() => {
-            if (document.visibilityState === 'visible') {
-              exitGuard.closing = false;
-            }
-          }, 400);
         }, 120);
-      });
+
+        // If the browser/OS security policy blocks closing (e.g., iOS Safari or direct browser tab),
+        // remain on the black closed screen instead of returning back to the app.
+        setTimeout(() => {
+          if (document.visibilityState === 'visible') {
+            showClosedFallbackScreen();
+          }
+        }, 500);
+      }, true);
     };
 
     exitGuard.modalOpen = true;
@@ -3182,6 +3234,12 @@
   });
 
   window.addEventListener('popstate', (e) => {
+    if (exitGuard.exitingNow) {
+      if (e.state && e.state.ppmGuard) {
+        try { history.back(); } catch (_) {}
+      }
+      return;
+    }
     if (exitGuard.allowExit) return;
 
     const landedDepth = (e.state && typeof e.state.depth === 'number') ? e.state.depth : 0;
