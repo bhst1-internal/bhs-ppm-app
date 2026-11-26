@@ -608,6 +608,8 @@
     isAutoRefreshing: false,
     refreshShownAt: 0,
     offlineEntryNotified: false,
+    userChangedDateFilter: false,
+    cloudFetchError: null,
     tableLimit: 10,
     charts: { cat: null, status: null }
   };
@@ -775,6 +777,11 @@
       badgeHtml = `<span class="net-badge net-offline"><span class="net-dot"></span>Offline Mode${pendingCount > 0 ? ` • ${pendingCount} Queued` : ''}</span>`;
     } else if (pendingCount > 0) {
       badgeHtml = `<span class="net-badge net-online"><span class="net-dot"></span>Online</span><button type="button" class="sync-now-btn" id="ppm-manual-sync-btn">↻ Sync Pending (${pendingCount})</button>`;
+    } else if (state.cloudFetchError) {
+      const errLabel = state.cloudFetchError === 'auth' ? 'Access Blocked (Check Script)' : 'Sync Failed';
+      badgeHtml = `<span class="net-badge net-offline"><span class="net-dot"></span>${errLabel}</span><button type="button" class="sync-now-btn" id="ppm-retry-read-btn">↻ Retry</button>`;
+    } else if (state.isAutoRefreshing && state.records.filter(r => !r.isDraft).length === 0) {
+      badgeHtml = `<span class="net-badge net-syncing"><span class="net-dot"></span>Loading Cloud Data...</span>`;
     } else {
       badgeHtml = `<span class="net-badge net-online"><span class="net-dot"></span>Online • Synced</span>`;
     }
@@ -782,6 +789,8 @@
     wrap.innerHTML = badgeHtml + refreshIndHtml;
     const manualBtn = document.getElementById('ppm-manual-sync-btn');
     if (manualBtn) manualBtn.addEventListener('click', () => syncOfflineQueue(true, true));
+    const retryBtn = document.getElementById('ppm-retry-read-btn');
+    if (retryBtn) retryBtn.addEventListener('click', () => fetchCloudRecords(true));
   }
 
   function startRefreshIndicator() {
@@ -848,6 +857,8 @@
       fetch(WEB_APP_URL, {
         method: 'POST',
         mode: 'no-cors',
+        credentials: 'omit',
+        redirect: 'follow',
         body: new URLSearchParams({ payload: JSON.stringify(payloadObj) }),
         signal: controller ? controller.signal : undefined
       }).then(() => { clearTimeout(timer); resolve(true); })
@@ -855,14 +866,24 @@
     });
   }
 
+  function parseCloudPayload(rawText, cbName) {
+    const trimmed = String(rawText || '').replace(/^\uFEFF/, '').trim();
+    if (!trimmed) throw new Error('EMPTY_RESPONSE');
+    if (trimmed.startsWith('<')) throw new Error('HTML_AUTH_REDIRECT');
+    let jsonStr = trimmed;
+    if (cbName) {
+      const escapedCb = cbName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp('^(?:/\\*\\*/\\s*)?' + escapedCb + '\\s*\\(([\\s\\S]*)\\)\\s*;?\\s*$');
+      const m = jsonStr.match(re);
+      if (m) jsonStr = m[1].trim();
+    }
+    return JSON.parse(jsonStr);
+  }
+
   function mergeCloudRecords(googleData, isBackground = false) {
     if (!Array.isArray(googleData)) return;
     state.isOnline = true;
-    const cleanDate = iso => {
-      if (!iso || typeof iso !== 'string' || !iso.includes('T')) return iso;
-      const d = new Date(iso); if (isNaN(d)) return iso;
-      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    };
+    state.cloudFetchError = null;
     const cleanTime = iso => (!iso || typeof iso !== 'string' || !iso.includes('T')) ? iso : new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     const delSet = new Set((state.deleteQueue || []).map(d => String(d.createdAt)));
 
@@ -870,7 +891,7 @@
     googleData.forEach(g => {
       if (!g || !g.createdAt || String(g.createdAt).trim() === '') return;
       if (delSet.has(String(g.createdAt))) return;
-      g.happeningDate = cleanDate(g.happeningDate);
+      g.happeningDate = normalizeDateStr(g.happeningDate);
       g.timeOfHappening = cleanTime(g.timeOfHappening);
       g.syncPending = false;
       normalizeRecord(g);
@@ -906,9 +927,16 @@
     const validOrActive = state.records.filter(r => !r.isDraft || String(r.createdAt) === String(state.activeId));
     if (validOrActive.length > 0 && !state.activeId) state.activeId = validOrActive[0].createdAt;
 
-    if (isBackground && state.tab === 'dashboard') {
+    if (state.tab === 'dashboard') {
       const content = ROOT.querySelector('#acm-content');
       if (content && content.querySelector('#dash-kpi-grid')) {
+        if (!state.userChangedDateFilter) {
+          const { defStart, defEnd } = getDefaultDateBounds();
+          const sEl = document.getElementById('dash-start');
+          const eEl = document.getElementById('dash-end');
+          if (sEl) sEl.value = defStart;
+          if (eEl) eEl.value = defEnd;
+        }
         updateDashboardUI(content);
         updateNetworkBadge();
         return;
@@ -924,34 +952,80 @@
   function fetchCloudRecords(isBackground = false) {
     return new Promise((resolve) => {
       if (!navigator.onLine) return resolve(false);
-      if (isBackground) startRefreshIndicator();
-      const finish = (ok) => {
-        if (isBackground) finishRefreshIndicator();
+      startRefreshIndicator();
+      const finish = (ok, errType = null) => {
+        state.cloudFetchError = ok ? null : (errType || 'network');
+        finishRefreshIndicator();
+        if (!ok && state.tab === 'dashboard') {
+          const content = ROOT.querySelector('#acm-content');
+          if (content && content.querySelector('#dash-kpi-grid')) updateDashboardUI(content);
+        }
         resolve(ok);
       };
+
       if (window.google && window.google.script && window.google.script.run) {
         window.google.script.run
           .withSuccessHandler(data => { mergeCloudRecords(data, isBackground); finish(true); })
-          .withFailureHandler(() => finish(false))
+          .withFailureHandler(() => finish(false, 'script'))
           .readAllRecords();
         return;
       }
+
       const cbName = 'syncGoogleSheets_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-      const script = document.createElement('script');
-      const timer = setTimeout(() => { cleanup(); finish(false); }, 12000);
-      function cleanup() {
-        clearTimeout(timer);
-        delete window[cbName];
-        if (script.parentNode) script.parentNode.removeChild(script);
-      }
-      window[cbName] = function (cloudData) {
-        cleanup();
-        mergeCloudRecords(cloudData, isBackground);
-        finish(true);
-      };
-      script.onerror = function () { cleanup(); state.isOnline = navigator.onLine; updateNetworkBadge(); finish(false); };
-      script.src = `${WEB_APP_URL}?action=read&callback=${cbName}&t=${Date.now()}`;
-      document.body.appendChild(script);
+      const reqUrl = `${WEB_APP_URL}?action=read&callback=${cbName}&t=${Date.now()}`;
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timer = setTimeout(() => { if (controller) controller.abort(); }, 25000);
+
+      // Primary: Cookie-free CORS fetch (prevents Android multi-account & iOS WebKit ORB blocks)
+      fetch(reqUrl, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'omit',
+        redirect: 'follow',
+        cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+      })
+        .then(res => {
+          clearTimeout(timer);
+          if (!res.ok) throw new Error('HTTP_' + res.status);
+          return res.text();
+        })
+        .then(text => {
+          const cloudData = parseCloudPayload(text, cbName);
+          if (!Array.isArray(cloudData)) throw new Error('INVALID_PAYLOAD');
+          mergeCloudRecords(cloudData, isBackground);
+          finish(true);
+        })
+        .catch(err => {
+          clearTimeout(timer);
+          if (err && err.message === 'HTML_AUTH_REDIRECT') {
+            console.error('Apps Script returned an HTML login page. Set Web App access to "Anyone".');
+            finish(false, 'auth');
+            return;
+          }
+          // Fallback: Anonymous script tag (omits Google cookies)
+          const script = document.createElement('script');
+          script.crossOrigin = 'anonymous';
+          const fbTimer = setTimeout(() => { cleanup(); finish(false, 'timeout'); }, 25000);
+          function cleanup() {
+            clearTimeout(fbTimer);
+            try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
+            if (script.parentNode) script.parentNode.removeChild(script);
+          }
+          window[cbName] = function (cloudData) {
+            cleanup();
+            if (!Array.isArray(cloudData)) return finish(false, 'invalid');
+            mergeCloudRecords(cloudData, isBackground);
+            finish(true);
+          };
+          script.onerror = function () {
+            cleanup();
+            state.isOnline = navigator.onLine;
+            finish(false, 'orb_or_network');
+          };
+          script.src = `${WEB_APP_URL}?action=read&callback=${cbName}&t=${Date.now()}_fb`;
+          document.body.appendChild(script);
+        });
     });
   }
 
@@ -1067,28 +1141,65 @@
     return prefix + String(max + 1).padStart(3, '0');
   }
 
+  function normalizeDateStr(val) {
+    if (!val) return '';
+    const s = String(val).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    if (s.includes('T')) {
+      const d = new Date(s);
+      if (!isNaN(d)) {
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+    }
+    const slash = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (slash) {
+      const yyyy = slash[3].length === 2 ? '20' + slash[3] : slash[3];
+      return `${yyyy}-${slash[2].padStart(2, '0')}-${slash[1].padStart(2, '0')}`;
+    }
+    return s;
+  }
+
   function fmtDate(r) {
-    if (r.happeningDate) {
-      const p = String(r.happeningDate).substring(0, 10).split('-');
+    const norm = normalizeDateStr(r.happeningDate);
+    if (norm) {
+      const p = norm.substring(0, 10).split('-');
       if (p.length === 3) return `${p[2]}/${p[1]}/${p[0].slice(-2)}`;
     }
     return '—';
   }
 
   function displayFullDate(r) {
-    if (r.happeningDate && String(r.happeningDate).includes('-')) {
-      const p = String(r.happeningDate).substring(0, 10).split('-');
+    const norm = normalizeDateStr(r.happeningDate);
+    if (norm && norm.includes('-')) {
+      const p = norm.substring(0, 10).split('-');
       if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
     }
     return r.beforeImageDate || '—';
   }
 
   function getTs(iso) {
-    if (iso && typeof iso === 'string') {
-      const p = iso.split('-');
-      if (p.length === 3) return new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)).getTime();
+    const norm = normalizeDateStr(iso);
+    if (norm) {
+      const p = norm.split('-');
+      if (p.length === 3) {
+        const ts = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10)).getTime();
+        if (!isNaN(ts)) return ts;
+      }
     }
     return null;
+  }
+
+  function getDefaultDateBounds() {
+    const toIsoStr = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    let minTs = Date.now(), maxTs = Date.now();
+    state.records.filter(r => !r.isDraft).forEach(r => {
+      const t = getTs(r.happeningDate) || Number(r.createdAt);
+      if (t && !isNaN(t)) {
+        if (t < minTs) minTs = t;
+        if (t > maxTs) maxTs = t;
+      }
+    });
+    return { defStart: toIsoStr(new Date(minTs)), defEnd: toIsoStr(new Date(maxTs)) };
   }
 
   function getActive() {
@@ -1382,7 +1493,21 @@
     const tContainer = container.querySelector('#dash-table-container');
     if (tContainer) {
       if (filtered.length === 0) {
-        tContainer.innerHTML = `<div class="empty-state">No records found matching filters.</div>`;
+        const totalNonDraft = state.records.filter(r => !r.isDraft).length;
+        if (totalNonDraft === 0 && state.isAutoRefreshing) {
+          tContainer.innerHTML = `<div class="empty-state">Loading records from cloud…</div>`;
+        } else if (totalNonDraft === 0 && state.cloudFetchError) {
+          const isLocalFile = window.location.protocol === 'file:' || window.location.protocol === 'content:';
+          const reason = isLocalFile
+            ? 'This dashboard was opened as a local file attachment. Open it via its HTTPS web URL in Chrome.'
+            : (state.cloudFetchError === 'auth'
+              ? 'Google Apps Script blocked access. Set Web App deployment access to "Anyone".'
+              : 'Unable to retrieve cloud records. Check your connection and tap Retry.');
+          tContainer.innerHTML = `<div class="empty-state"><div style="margin-bottom:10px">${esc(reason)}</div><button type="button" class="btn btn-primary btn-sm" id="dash-empty-retry-btn">↻ Retry Cloud Sync</button></div>`;
+          tContainer.querySelector('#dash-empty-retry-btn')?.addEventListener('click', () => fetchCloudRecords(true));
+        } else {
+          tContainer.innerHTML = `<div class="empty-state">No records found matching filters.</div>`;
+        }
       } else {
         const tbodyHtml = visibleRecs.map(r => {
           const units = normalizeRecord(r).units;
@@ -1436,10 +1561,7 @@
   }
 
   function renderDashboard(container) {
-    const toIsoStr = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    let minTs = Date.now();
-    state.records.filter(r => !r.isDraft).forEach(r => { const t = getTs(r.happeningDate); if (t && t < minTs) minTs = t; });
-    const defStart = toIsoStr(new Date(minTs)), defEnd = toIsoStr(new Date());
+    const { defStart, defEnd } = getDefaultDateBounds();
 
     const allLinesNos = [], allConveyors = new Set();
     for (const l in EQUIP_DB) {
@@ -1530,14 +1652,17 @@
     ['dash-start', 'dash-end', 'dash-line', 'dash-conveyor'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener(id.includes('line') || id.includes('conveyor') ? 'input' : 'change', () => {
+        if (id === 'dash-start' || id === 'dash-end') state.userChangedDateFilter = true;
         state.tableLimit = 10;
         updateDashboardUI(container);
       });
     });
 
     container.querySelector('#dash-reset-btn').addEventListener('click', () => {
-      document.getElementById('dash-start').value = defStart;
-      document.getElementById('dash-end').value = defEnd;
+      const freshBounds = getDefaultDateBounds();
+      state.userChangedDateFilter = false;
+      document.getElementById('dash-start').value = freshBounds.defStart;
+      document.getElementById('dash-end').value = freshBounds.defEnd;
       document.querySelectorAll('input[name="dash-insp"], input[name="dash-task"], input[name="dash-cat"], input[name="dash-status"]').forEach(cb => cb.checked = false);
       ['dd-insp-wrapper', 'dd-task-wrapper', 'dd-status-wrapper', 'dd-cat-wrapper'].forEach(id => {
         const sp = document.querySelector(`#${id} .dd-btn span`);
@@ -2379,17 +2504,47 @@
       if (!fileId || !navigator.onLine) return resolve('');
       if (DRIVE_IMG_CACHE[fileId]) return resolve(DRIVE_IMG_CACHE[fileId]);
       const cbName = 'ppmImgCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-      const script = document.createElement('script');
-      const timer = setTimeout(() => { cleanup(); resolve(''); }, 15000);
-      function cleanup() { clearTimeout(timer); delete window[cbName]; if (script.parentNode) script.parentNode.removeChild(script); }
-      window[cbName] = function (res) {
-        cleanup();
-        if (res && res.ok && res.dataUrl) { DRIVE_IMG_CACHE[fileId] = res.dataUrl; resolve(res.dataUrl); }
-        else resolve('');
-      };
-      script.onerror = function () { cleanup(); resolve(''); };
-      script.src = `${WEB_APP_URL}?action=image&id=${encodeURIComponent(fileId)}&callback=${cbName}&t=${Date.now()}`;
-      document.body.appendChild(script);
+      const reqUrl = `${WEB_APP_URL}?action=image&id=${encodeURIComponent(fileId)}&callback=${cbName}&t=${Date.now()}`;
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timer = setTimeout(() => { if (controller) controller.abort(); }, 20000);
+
+      fetch(reqUrl, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'omit',
+        redirect: 'follow',
+        cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+      })
+        .then(res => {
+          clearTimeout(timer);
+          if (!res.ok) throw new Error('HTTP_' + res.status);
+          return res.text();
+        })
+        .then(text => {
+          const res = parseCloudPayload(text, cbName);
+          if (res && res.ok && res.dataUrl) { DRIVE_IMG_CACHE[fileId] = res.dataUrl; resolve(res.dataUrl); }
+          else resolve('');
+        })
+        .catch(() => {
+          clearTimeout(timer);
+          const script = document.createElement('script');
+          script.crossOrigin = 'anonymous';
+          const fbTimer = setTimeout(() => { cleanup(); resolve(''); }, 15000);
+          function cleanup() {
+            clearTimeout(fbTimer);
+            try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
+            if (script.parentNode) script.parentNode.removeChild(script);
+          }
+          window[cbName] = function (res) {
+            cleanup();
+            if (res && res.ok && res.dataUrl) { DRIVE_IMG_CACHE[fileId] = res.dataUrl; resolve(res.dataUrl); }
+            else resolve('');
+          };
+          script.onerror = function () { cleanup(); resolve(''); };
+          script.src = `${WEB_APP_URL}?action=image&id=${encodeURIComponent(fileId)}&callback=${cbName}&t=${Date.now()}_fb`;
+          document.body.appendChild(script);
+        });
     });
   }
 
