@@ -86,14 +86,14 @@
   }
   #acm-root .status-tip-wrap:hover .status-tip-box,
   #acm-root .status-tip-wrap:focus-within .status-tip-box{display:block}
+  #acm-root .status-tip-wrap.tip-below .status-tip-box{bottom:auto;top:calc(100% + 8px);right:auto;left:0}
+  #acm-root .status-tip-wrap.tip-below .status-tip-box::after{top:auto;bottom:100%;right:auto;left:18px;border-top-color:transparent;border-bottom-color:#111827}
   #acm-root .status-tip-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#fbbf24;margin-bottom:5px;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:4px}
   #acm-root .status-tip-list{margin:0;padding-left:15px;font-size:.71rem;line-height:1.45;color:#e2e8f0}
   #acm-root .status-tip-list li{margin-bottom:2px}
-
-  /* Pagination Footer Bar */
-  #acm-root .table-pager{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
-  #acm-root .table-pager-info{font-size:.75rem;color:var(--text-sec);font-weight:600}
-  #acm-root .table-pager-actions{display:flex;gap:8px;flex-wrap:wrap}
+  #acm-root .dd-search{width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-size:.72rem;background:var(--input-bg);color:var(--ink);margin-bottom:4px;outline:none}
+  #acm-root .dd-search:focus{border-color:var(--accent)}
+  #acm-root .dd-selected-note{font-size:.68rem;color:var(--text-sec);margin-top:3px;line-height:1.35}
 
   /* Forms & Toolbars */
   #acm-root .form-shell{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:20px 22px 24px}
@@ -262,7 +262,7 @@
   #acm-root .ppm-sign-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #334155}
   #acm-root .ppm-sign-cell{padding:8px 10px 6px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-height:64px;border-right:1px solid #334155;text-align:center}
   #acm-root .ppm-sign-cell:last-child{border-right:none}
-  #acm-root .ppm-sign-name{font-size:11px;font-weight:800;color:#0f172a;min-height:16px;display:flex;align-items:center;gap:4px;margin-bottom:4px}
+  #acm-root .ppm-sign-name{font-size:10.5px;font-weight:800;color:#0f172a;min-height:16px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px;margin-bottom:4px;line-height:1.25}
   #acm-root .ppm-sign-line{width:92%;border-top:1px solid #0f172a;padding-top:3px;font-size:9px;font-weight:700;color:#334155}
   #acm-root .ppm-doc-foot{display:flex;justify-content:space-between;align-items:center;padding-top:5px;border-top:1px solid #cbd5e1;font-size:8.8px;color:#475569;margin-top:2px}
   #acm-root .doc-footer-code{font-size:9px;font-weight:700;color:#1e293b;margin:0}
@@ -567,6 +567,28 @@
     r.resultDetail = first.resultDetail || '';
   }
 
+  function syncDateTimeFromFirstBefore(r) {
+    const units = ensureUnits(r);
+    const firstWithBefore = units.find(item => item.beforeImage && (item.beforeImageDate || item.beforeImageTime));
+    if (!firstWithBefore) {
+      r.happeningDate = '';
+      r.timeOfHappening = '';
+      return;
+    }
+    if (firstWithBefore.beforeImageDate && String(firstWithBefore.beforeImageDate).includes('/')) {
+      const p = String(firstWithBefore.beforeImageDate).split('/');
+      if (p.length === 3) {
+        r.happeningDate = `${p[2]}-${p[1].padStart(2, '0')}-${p[0].padStart(2, '0')}`;
+      }
+    }
+    if (firstWithBefore.beforeImageTime && String(firstWithBefore.beforeImageTime).includes(':')) {
+      const tp = String(firstWithBefore.beforeImageTime).split(':');
+      if (tp.length >= 2) {
+        r.timeOfHappening = `${tp[0].padStart(2, '0')}:${tp[1].padStart(2, '0')}`;
+      }
+    }
+  }
+
   function isUnitComplete(u) {
     return checkReq(u.equipNo) && checkReq(u.inspectionMethod) && checkReq(u.taskPerformed) && checkReq(u.resultCat);
   }
@@ -580,7 +602,7 @@
     const anyUnitProgress = units.some(u =>
       checkReq(u.taskPerformed) || checkReq(u.afterImage) || checkReq(u.resultCat)
     );
-    const doneValid = (r.doneByName || '').trim().length >= 3;
+    const doneValid = parseMultiList(r.doneByName).length > 0;
     const checkValid = (r.checkByName || '').trim().length >= 3;
     const confirmValid = checkReq(r.confirmedByName);
     if (allUnitsCore && doneValid && checkValid && confirmValid) return 'Completed';
@@ -610,7 +632,7 @@
         items.push(`${prefix}${missing.join(', ')}`);
       }
     });
-    if ((r.doneByName || '').trim().length < 3) items.push('Sign-off: Done By (TECH)');
+    if (parseMultiList(r.doneByName).length === 0) items.push('Sign-off: Done By (TECH)');
     if ((r.checkByName || '').trim().length < 3) items.push('Sign-off: Check By (TO)');
     if (!checkReq(r.confirmedByName)) items.push('Sign-off: Confirmed By (TE/E/SE)');
     return items;
@@ -1706,6 +1728,8 @@
     const noOptions = (curLine && EQUIP_DB[curLine]) ? Object.keys(EQUIP_DB[curLine]).sort() : [];
     const cleaningVisible = Boolean(u.showCleaningBox || u.cleaningImage);
     const selectedTasks = parseMultiList(u.taskPerformed);
+    const selectedDoneBy = parseMultiList(r.doneByName);
+    const doneByOptions = Array.from(new Set([...selectedDoneBy, ...TECH_NAMES])).sort((a, b) => a.localeCompare(b));
 
     const selectPersonnelField = (lbl, fieldName, val, opts) => {
       const list = (val && !opts.includes(val)) ? [val, ...opts] : opts;
@@ -1724,12 +1748,45 @@
       </div>`;
     }).join('');
 
+    const buildInputStatusHtml = () => {
+      const stKey = getStatusKey(r);
+      const stLabel = getStatus(r);
+      let statusChipHtml = '';
+      if (stKey === 'progress') {
+        const pendingItems = getPendingItems(r);
+        const listHtml = pendingItems.length
+          ? pendingItems.map(p => `<li>${escapeHtml(p)}</li>`).join('')
+          : '<li>Pending final verification</li>';
+        statusChipHtml = `
+          <span class="status-tip-wrap tip-below" tabindex="0">
+            <span class="status-chip chip-progress">In Progress <span style="font-size:.6rem;opacity:.8">ⓘ</span></span>
+            <div class="status-tip-box">
+              <div class="status-tip-title">Pending Items</div>
+              <ul class="status-tip-list">${listHtml}</ul>
+            </div>
+          </span>`;
+      } else {
+        const stChipCls = stKey === 'done' ? 'chip-done' : 'chip-open';
+        statusChipHtml = `<span class="status-chip ${stChipCls}">${escapeHtml(stLabel)}</span>`;
+      }
+      return `<span style="font-size:.75rem;font-weight:700;color:#475569">Status:</span>
+        ${statusChipHtml}
+        ${r.isDraft ? `<span class="status-chip chip-open" style="border:1px dashed #94a3b8">Draft (Unsubmitted)</span>` : ''}
+        ${!r.isDraft && r.syncPending ? `<span class="chip-sync">Pending Cloud Sync</span>` : ''}`;
+    };
+
+    const refreshInputStatus = () => {
+      const statusRow = container.querySelector('#acm-input-status-row');
+      if (statusRow) statusRow.innerHTML = buildInputStatusHtml();
+    };
+
     container.innerHTML = `
       <div class="form-shell">
         <div class="form-toolbar">
-          <div class="rec-select">
+          <div class="rec-select" style="flex-wrap:wrap">
             <span class="b">Report No.:</span>
             <select class="recpick" id="acm-recpick">${recordOptions}</select>
+            <div id="acm-input-status-row" class="ppm-doc-status-row" style="margin-left:6px">${buildInputStatusHtml()}</div>
           </div>
           <div class="btn-row">
             <button type="button" class="btn btn-ghost" id="acm-new-btn">✚ Add New Memo</button>
@@ -1739,6 +1796,7 @@
           </div>
         </div>
 
+        <!-- 1. Notification & Work Order -->
         <div class="sec">
           <div class="sec-title">Notification &amp; Work Order</div>
           <div class="grid g5">
@@ -1751,10 +1809,10 @@
               </select>
             </label>
             <label class="f">Report No. (BHS/PPM)<input type="text" data-field="reportNo" value="${escapeHtml(r.reportNo)}" readonly style="background:var(--line);cursor:not-allowed"/></label>
-            <label class="f">Time of Happening<input type="time" data-field="timeOfHappening" value="${escapeHtml(r.timeOfHappening)}"/></label>
+            <label class="f">Time of Record<input type="time" id="inp-time-record" data-field="timeOfHappening" value="${escapeHtml(r.timeOfHappening)}" readonly tabindex="-1" title="Auto-recorded from first Before image" style="background:var(--line);cursor:not-allowed;pointer-events:none"/></label>
           </div>
           <div class="grid g3" style="margin-top:10px">
-            <label class="f">Date<input type="date" data-field="happeningDate" value="${escapeHtml(r.happeningDate)}"/></label>
+            <label class="f">Date<input type="date" id="inp-date-record" data-field="happeningDate" value="${escapeHtml(r.happeningDate)}" readonly tabindex="-1" title="Auto-recorded from first Before image" style="background:var(--line);cursor:not-allowed;pointer-events:none"/></label>
             ${selectPersonnelField('Issued By', 'issuedBy', r.issuedBy, TECH_NAMES)}
             <label class="f">Group
               <div style="display:flex;gap:6px">
@@ -1863,7 +1921,16 @@
         <div class="sec">
           <div class="sec-title">Sign-off</div>
           <div class="grid g3">
-            ${selectPersonnelField('Done By (TECH)', 'doneByName', r.doneByName, TECH_NAMES)}
+            <label class="f">Done By (TECH) — Multiple Selection
+              <div class="dd-wrapper" id="dd-doneby-wrapper">
+                <button type="button" class="dd-btn">Select technician(s)...</button>
+                <div class="dd-menu">
+                  <input type="text" class="dd-search" id="dd-doneby-search" placeholder="Search technician..." autocomplete="off"/>
+                  ${doneByOptions.map(n => `<label class="chk" data-doneby-item="${escapeHtml(n.toLowerCase())}"><input type="checkbox" value="${escapeHtml(n)}" data-label="${escapeHtml(n)}" ${selectedDoneBy.includes(n) ? 'checked' : ''}/> <span>${escapeHtml(n)}</span></label>`).join('')}
+                </div>
+              </div>
+              <div class="dd-selected-note" id="dd-doneby-summary">${selectedDoneBy.length ? escapeHtml(selectedDoneBy.join(', ')) : ''}</div>
+            </label>
             ${selectPersonnelField('Check By (TO)', 'checkByName', r.checkByName, TO_NAMES)}
             ${selectPersonnelField('Confirmed By (TE/E/SE)', 'confirmedByName', r.confirmedByName, CONF_NAMES)}
           </div>
@@ -1881,48 +1948,29 @@
       <datalist id="dl-equip-no">${noOptions.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} — ${escapeHtml(EQUIP_DB[curLine][n] || '')}</option>`).join('')}</datalist>
     `;
 
+    // Bind Task Performed multi-select dropdown
     setupDropdownMenu(container.querySelector('#dd-task-wrapper'), 'Select tasks...', vals => {
       u.taskPerformed = vals.join(', ');
       state.dirty = true;
       syncParentSummaryFromUnits(r);
       saveRecords();
+      refreshInputStatus();
     });
 
-    const wrapUnsaved = async () => {
-      if (state.dirty) {
-        const discard = await showModal('Unsaved Changes', 'You have unsaved changes. Click "Discard" to abandon them, or "Cancel" to keep editing.', { confirm: true, danger: true, okText: 'Discard Data', cancelText: 'Keep Editing' });
-        if (!discard) return false;
-        revertActiveRecord();
-      }
-      return true;
-    };
-
-    container.querySelectorAll('[data-field]').forEach(el => {
-      const ev = el.tagName === 'SELECT' ? 'change' : 'input';
-      el.addEventListener(ev, async () => {
-        const fieldName = el.dataset.field;
-        const newVal = el.value;
-        if (fieldName === 'confirmedByName' && newVal !== '') {
-          const pwd = await showModal('Authorization', `Enter 6-digit pin for ${newVal}:`, { input: true, inputType: 'password', placeholder: 'Enter password...', okText: 'Confirm' });
-          if (pwd !== CONF_PASS[newVal]) {
-            await showModal('Error', 'Incorrect pin. Signature reversed.', { errorMode: true });
-            el.value = r.confirmedByName || '';
-            return;
-          }
-        }
-        r[fieldName] = newVal;
-        state.dirty = true;
-        if (fieldName === 'lineEquipment') {
-          const upper = newVal.trim().toUpperCase();
-          const dl = container.querySelector('#dl-equip-no');
-          if (dl) {
-            const opts = (upper && EQUIP_DB[upper]) ? Object.keys(EQUIP_DB[upper]).sort() : [];
-            dl.innerHTML = opts.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)} — ${escapeHtml(EQUIP_DB[upper][n] || '')}</option>`).join('');
-          }
-          const banner = container.querySelector('#active-unit-banner-text');
-          if (banner) banner.textContent = `Editing Unit ${state.activeUnitIdx + 1} of ${units.length}: ${newVal || 'Line'} - ${u.equipNo || '(No. not set)'}`;
-        }
-        saveRecords();
+    // Bind Done By (TECH) multi-select dropdown with live search
+    setupDropdownMenu(container.querySelector('#dd-doneby-wrapper'), 'Select technician(s)...', vals => {
+      r.doneByName = vals.join(', ');
+      const sumEl = container.querySelector('#dd-doneby-summary');
+      if (sumEl) sumEl.textContent = vals.join(', ');
+      state.dirty = true;
+      saveRecords();
+      refreshInputStatus();
+    });
+    const doneBySearch = container.querySelector('#dd-doneby-search');
+    doneBySearch?.addEventListener('input', () => {
+      const q = doneBySearch.value.trim().toLowerCase();
+      container.querySelectorAll('#dd-doneby-wrapper [data-doneby-item]').forEach(lbl => {
+        lbl.style.display = (!q || lbl.dataset.donebyItem.includes(q)) ? 'flex' : 'none';
       });
     });
 
@@ -2048,6 +2096,7 @@
         state.dirty = true;
         syncParentSummaryFromUnits(r);
         saveRecords();
+        refreshInputStatus();
       });
     });
 
@@ -2080,7 +2129,10 @@
       });
       container.querySelector(`[data-cam-clear="${slot}"]`)?.addEventListener('click', () => {
         state.dirty = true;
-        if (slot === 'before') { u.beforeImage = ''; u.beforeImageDate = ''; u.beforeImageTime = ''; }
+        if (slot === 'before') {
+          u.beforeImage = ''; u.beforeImageDate = ''; u.beforeImageTime = '';
+          syncDateTimeFromFirstBefore(r);
+        }
         else if (slot === 'cleaning') { u.cleaningImage = ''; u.cleaningImageDate = ''; u.cleaningImageTime = ''; }
         else { u.afterImage = ''; u.afterImageDate = ''; u.afterImageTime = ''; }
         syncParentSummaryFromUnits(r);
@@ -2096,7 +2148,7 @@
           const now = new Date();
           const yyyy = now.getFullYear(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0');
           const hNoPad = String(now.getHours()), hh = hNoPad.padStart(2, '0'), min = String(now.getMinutes()).padStart(2, '0'), ss = String(now.getSeconds()).padStart(2, '0');
-          const isoDate = `${yyyy}-${mm}-${dd}`, formattedDate = `${dd}/${mm}/${yyyy}`, wmTime = `${hNoPad}:${min}:${ss}`, inputTime = `${hh}:${min}`;
+          const formattedDate = `${dd}/${mm}/${yyyy}`, wmTime = `${hNoPad}:${min}:${ss}`;
           const locText = [r.lineEquipment, u.equipNo].filter(Boolean).join(' - ') || 'Not Specified';
 
           const dataUrl = await optimizeCameraImage(file, {
@@ -2107,8 +2159,7 @@
           state.dirty = true;
           if (slot === 'before') {
             u.beforeImage = dataUrl; u.beforeImageDate = formattedDate; u.beforeImageTime = wmTime;
-            if (!r.happeningDate) r.happeningDate = isoDate;
-            if (!r.timeOfHappening) r.timeOfHappening = inputTime;
+            syncDateTimeFromFirstBefore(r);
           } else if (slot === 'cleaning') {
             u.cleaningImage = dataUrl; u.cleaningImageDate = formattedDate; u.cleaningImageTime = wmTime; u.showCleaningBox = true;
           } else {
@@ -2179,7 +2230,7 @@
 
     const handleSubmit = async () => {
       const errs = [];
-      if (!checkReq(r.happeningDate) || !checkReq(r.timeOfHappening)) errs.push('[Notification & Work Order] Date & Time of Happening');
+      if (!checkReq(r.happeningDate) || !checkReq(r.timeOfHappening)) errs.push("[Notification & Work Order] Date & Time of Record (Capture the first 'Before' image in Reference Image)");
       if (!checkReq(r.issuedBy)) errs.push('[Notification & Work Order] Issued By');
       if (!checkReq(r.issuedGroup) || r.issuedGroup.trim().toUpperCase() === 'VENDOR') errs.push('[Notification & Work Order] Group');
       if (!checkReq(r.maintenanceType)) errs.push('[Notification & Work Order] Maintenance Type');
