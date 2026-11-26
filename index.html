@@ -312,7 +312,8 @@
   #ppm-exit-stay:hover{background:#1d4ed8}
   #ppm-exit-leave{background:#fee2e2;color:#dc2626}
   #ppm-exit-leave:hover{background:#fca5a5}
-  #ppm-exit-toast{position:fixed;left:12px;right:12px;bottom:18px;max-width:440px;margin:0 auto;background:#111827;color:#f9fafb;border:1px solid #374151;border-radius:10px;padding:10px 14px;font-size:.78rem;font-weight:600;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.28);z-index:100001;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;animation:ppmFadeIn .2s ease}
+  @keyframes ppmExitFadeIn{from{opacity:0}to{opacity:1}}
+  #ppm-exit-toast{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;background:#000000;color:#ffffff;display:flex;align-items:center;justify-content:center;padding:24px;font-size:1.1rem;font-weight:700;text-align:center;line-height:1.5;z-index:100001;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;animation:ppmExitFadeIn .2s ease}
 
   @media print{
     @page{size:A4 portrait;margin:8mm 9mm}
@@ -2998,6 +2999,7 @@
     lastArmTs: 0,
     modalOpen: false,
     allowExit: false,
+    closing: false,
     toastTimer: null
   };
 
@@ -3006,18 +3008,23 @@
     document.getElementById('ppm-exit-toast')?.remove();
   }
 
-  function showExitToast(msg) {
+  function showExitToast(msg, durationMs = 3000, onComplete = null) {
     hideExitToast();
     const toast = document.createElement('div');
     toast.id = 'ppm-exit-toast';
     toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'assertive');
     toast.textContent = msg;
     document.body.appendChild(toast);
-    exitGuard.toastTimer = setTimeout(hideExitToast, 4500);
+    exitGuard.toastTimer = setTimeout(() => {
+      hideExitToast();
+      if (typeof onComplete === 'function') onComplete();
+    }, durationMs);
   }
 
   function armExitGuard(isUserGesture = false) {
     if (!window.history || typeof window.history.pushState !== 'function') return;
+    if (exitGuard.closing) return;
     if (isUserGesture && exitGuard.allowExit) {
       exitGuard.allowExit = false;
       hideExitToast();
@@ -3135,16 +3142,29 @@
       closeExitModal(false);
       saveRecords();
       exitGuard.allowExit = true;
+      exitGuard.closing = true;
+
+      // 1. Unwind pushed guard trap entries cleanly back to base entry (depth 0)
       const curDepth = (history.state && typeof history.state.depth === 'number') ? history.state.depth : exitGuard.depth;
-      const stepsBack = -(curDepth + 1);
-      try { history.go(stepsBack); } catch (_) {}
-      setTimeout(() => { try { window.close(); } catch (_) {} }, 180);
-      // Fallback for iOS standalone PWA / single-tab browsers where JS cannot force-close the window
-      setTimeout(() => {
-        if (document.visibilityState === 'visible') {
-          showExitToast('Exit unlocked — swipe up or close this browser tab safely.');
-        }
-      }, 550);
+      if (curDepth > 0) {
+        try { history.go(-curDepth); } catch (_) {}
+      }
+      exitGuard.depth = 0;
+
+      // 2. Show full-screen black banner for 3 seconds, then close/exit the app
+      showExitToast('Exit unlocked - closing the app safely.', 3000, () => {
+        try { window.close(); } catch (_) {}
+        try { history.back(); } catch (_) {}
+        setTimeout(() => {
+          try { window.open('', '_self'); window.close(); } catch (_) {}
+          // If the browser/OS blocks programmatic window close, unlock state safely
+          setTimeout(() => {
+            if (document.visibilityState === 'visible') {
+              exitGuard.closing = false;
+            }
+          }, 400);
+        }, 120);
+      });
     };
 
     exitGuard.modalOpen = true;
@@ -3247,7 +3267,7 @@
 <script>
 (function initAppUpdater() {
   // Bump APP_VERSION to match version.json and CACHE_NAME in sw.js on every release
-  const APP_VERSION = '1.0.1';
+  const APP_VERSION = '1.0.2';
   let waitingWorker = null;
   let swRegistration = null;
   let reloading = false;
